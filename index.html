@@ -1118,6 +1118,9 @@
             justify-content: center;
             position: relative;
             cursor: ns-resize;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            touch-action: none;
         }
 
         .fader-track {
@@ -1155,11 +1158,25 @@
             cursor: ns-resize;
             transition: all 0.1s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            touch-action: none;
+            z-index: 10;
         }
 
         .fader-handle:hover {
             transform: scale(1.05);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .fader-handle {
+                height: 24px;
+                top: -12px;
+                left: -8px;
+                right: -8px;
+                min-height: 44px;
+            }
         }
 
         .budget-slider {
@@ -1173,6 +1190,8 @@
             transition: all 0.3s ease;
             margin: 0 auto;
             display: none; /* Hide the horizontal slider, using vertical fader as main control */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
         }
 
         .budget-amount-display {
@@ -1289,10 +1308,13 @@
             }
 
             .header {
-                padding: 48px 32px;
+                padding: 0;
                 margin-bottom: 32px;
                 border-radius: 0;
                 min-height: 360px;
+                margin-left: -16px;
+                margin-right: -16px;
+                width: calc(100% + 32px);
             }
 
             .header-banner-title-wrapper {
@@ -1565,6 +1587,13 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
             position: relative;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            min-height: 44px;
+            min-width: 44px;
         }
 
         .btn::before {
@@ -1601,6 +1630,8 @@
             padding: 8px 16px;
             font-size: 0.75rem;
             border-radius: 0;
+            min-height: 44px;
+            min-width: 44px;
         }
 
         .btn-danger:hover {
@@ -2981,7 +3012,7 @@
                        placeholder="Income"
                        readonly
                        style="font-size: 0.7rem; padding: 6px; text-align: center; cursor: default;">
-                <div class="budget-slider-container" id="slider-container-income" onmousedown="startIncomeFaderDrag(event)">
+                <div class="budget-slider-container" id="slider-container-income" onmousedown="startIncomeFaderDrag(event)" ontouchstart="startIncomeFaderDrag(event)">
                     <div class="fader-track income-fader-track" id="income-fader-track">
                         <div class="fader-level income-fader-level" id="income-fader-level" style="height: ${incomeFaderHeight}%"></div>
                         <div class="fader-handle income-fader-handle" id="income-fader-handle" style="top: ${incomeHandleTop}px"></div>
@@ -3016,7 +3047,7 @@
                            placeholder="Budget item name"
                            oninput="updateBudgetItem(${index}, 'name', this.value)"
                            style="font-size: 0.7rem; padding: 6px; text-align: center;">
-                    <div class="budget-slider-container" id="slider-container-${index}" onmousedown="startFaderDrag(event, ${index})">
+                    <div class="budget-slider-container" id="slider-container-${index}" onmousedown="startFaderDrag(event, ${index})" ontouchstart="startFaderDrag(event, ${index})">
                         <div class="fader-track" id="fader-track-${index}">
                             <div class="fader-level" id="fader-level-${index}" style="height: ${faderHeight}%"></div>
                             <div class="fader-handle" id="fader-handle-${index}" style="top: ${handleTop}px"></div>
@@ -3245,18 +3276,23 @@
             event.stopPropagation();
             isIncomeDragging = true;
             const currentValue = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-            incomeDragStartY = event.clientY;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            incomeDragStartY = clientY;
             incomeDragStartValue = currentValue;
             document.addEventListener('mousemove', dragIncomeFader);
             document.addEventListener('mouseup', stopIncomeFaderDrag);
+            document.addEventListener('touchmove', dragIncomeFader, { passive: false });
+            document.addEventListener('touchend', stopIncomeFaderDrag);
         }
 
         function dragIncomeFader(event) {
             if (!isIncomeDragging) return;
+            event.preventDefault();
 
             const track = document.getElementById('income-fader-track');
             const trackHeight = track ? track.offsetHeight : 200;
-            const deltaY = incomeDragStartY - event.clientY;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            const deltaY = incomeDragStartY - clientY;
             const deltaPercent = deltaY / trackHeight;
 
             const maxValue = 50000;
@@ -3278,24 +3314,31 @@
             isIncomeDragging = false;
             document.removeEventListener('mousemove', dragIncomeFader);
             document.removeEventListener('mouseup', stopIncomeFaderDrag);
+            document.removeEventListener('touchmove', dragIncomeFader);
+            document.removeEventListener('touchend', stopIncomeFaderDrag);
         }
 
         function startFaderDrag(event, index) {
             event.preventDefault();
             isDragging = true;
             dragIndex = index;
-            dragStartY = event.clientY;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            dragStartY = clientY;
             dragStartValue = budgetItems[index].amount;
             document.addEventListener('mousemove', dragFader);
             document.addEventListener('mouseup', stopFaderDrag);
+            document.addEventListener('touchmove', dragFader, { passive: false });
+            document.addEventListener('touchend', stopFaderDrag);
         }
 
         function dragFader(event) {
             if (!isDragging || dragIndex === -1) return;
+            event.preventDefault();
 
             const track = document.getElementById(`fader-track-${dragIndex}`);
             const trackHeight = track ? track.offsetHeight : 200;
-            const deltaY = dragStartY - event.clientY;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            const deltaY = dragStartY - clientY;
             const deltaPercent = deltaY / trackHeight;
 
             const maxValue = 5000;
@@ -3313,6 +3356,8 @@
             dragIndex = -1;
             document.removeEventListener('mousemove', dragFader);
             document.removeEventListener('mouseup', stopFaderDrag);
+            document.removeEventListener('touchmove', dragFader);
+            document.removeEventListener('touchend', stopFaderDrag);
         }
 
         function updateFaderVisuals(index) {
@@ -4162,6 +4207,29 @@
             });
         }
 
+        // Chart resize handler
+        let resizeTimeout;
+        function handleChartResize() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (savingsChart) {
+                    savingsChart.resize();
+                }
+                if (spendingChart) {
+                    spendingChart.resize();
+                }
+            }, 150);
+        }
+
+        // Debounced calculate function for input fields
+        let calculateTimeout;
+        function debouncedCalculate() {
+            clearTimeout(calculateTimeout);
+            calculateTimeout = setTimeout(() => {
+                calculate();
+            }, 300);
+        }
+
         // Initialize
         initBudgetItems();
         // Initialize income fader visuals
@@ -4170,6 +4238,16 @@
         setTimeout(() => initScrollAnimations(), 100);
         // Initialize header banner
         initHeaderBanner();
+        // Add window resize listener for charts
+        window.addEventListener('resize', handleChartResize);
+        // Add debounced input handlers
+        document.querySelectorAll('.form-input[oninput]').forEach(input => {
+            const originalOnInput = input.getAttribute('oninput');
+            if (originalOnInput && originalOnInput.includes('calculate()')) {
+                input.removeAttribute('oninput');
+                input.addEventListener('input', debouncedCalculate);
+            }
+        });
         calculate();
 
         // Email signup handler
