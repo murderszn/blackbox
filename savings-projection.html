@@ -1,0 +1,4343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Box - Lifestyle Affordability Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #050505;
+            --card: #0a0a0a;
+            --card-hover: #0f0f0f;
+            --card-active: #141414;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-tertiary: #555555;
+            --text-muted: #333333;
+            --border: #1a1a1a;
+            --border-light: #252525;
+            --border-focus: #404040;
+            --accent: #ffffff;
+            --accent-hover: rgba(255, 255, 255, 0.85);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        @keyframes expandLine {
+            to { transform: scaleX(1); }
+        }
+
+        /* Scroll-triggered animation classes */
+        .scroll-fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .scroll-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-scale-in {
+            opacity: 0;
+            transform: scale(0.96) translateY(30px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .scroll-scale-in.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.015em;
+        }
+
+        /* Grid background system */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 48px 24px;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .header {
+            margin-bottom: 64px;
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            padding: 0;
+            background: var(--bg);
+            border-radius: 0;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.9), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+            min-height: 400px;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-banner-media {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 0;
+            z-index: 0;
+        }
+
+        .header-banner-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%) scale(1.05);
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-out;
+            filter: brightness(1.0) contrast(1.0);
+            z-index: 0;
+        }
+
+        .header-banner-image.loaded {
+            opacity: 0.95;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .header-banner-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            text-align: center;
+            pointer-events: none;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            mix-blend-mode: normal !important;
+            isolation: isolate;
+            padding: 0 24px;
+        }
+
+        .header-banner-title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            position: relative;
+        }
+
+        .header-banner-title-text {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #ffffff !important;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1;
+            text-shadow: none !important;
+            opacity: 0;
+            animation: fadeInTitle 1.2s ease-out 0.5s forwards;
+            text-align: center;
+            filter: none !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            mix-blend-mode: normal !important;
+        }
+
+        .beta-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: #ffffff !important;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 6px 12px;
+            border-radius: 0;
+            opacity: 0;
+            animation: fadeInTitle 1.2s ease-out 0.5s forwards;
+            mix-blend-mode: normal !important;
+            white-space: nowrap;
+            position: relative;
+            margin-top: -24px;
+            align-self: flex-start;
+        }
+
+        @keyframes fadeInTitle {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-banner-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            color: #ffffff !important;
+            text-transform: uppercase;
+            margin-top: 24px;
+            opacity: 0;
+            animation: fadeInSubtitle 1.2s ease-out 0.8s forwards;
+            text-shadow: none !important;
+            filter: none !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background: none !important;
+            mix-blend-mode: normal !important;
+            position: relative;
+            padding: 0 24px;
+        }
+
+        .header-banner-subtitle::before,
+        .header-banner-subtitle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%);
+        }
+
+        .header-banner-subtitle::before {
+            left: 0;
+        }
+
+        .header-banner-subtitle::after {
+            right: 0;
+        }
+
+        @keyframes fadeInSubtitle {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-email-signup {
+            margin-top: 48px;
+            width: 100%;
+            max-width: 520px;
+            opacity: 0;
+            animation: fadeInSignup 1.2s ease-out 1s forwards;
+            pointer-events: auto;
+            position: relative;
+            padding-top: 32px;
+        }
+
+        .header-email-signup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes fadeInSignup {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .email-signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .email-signup-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8) !important;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+
+        .email-signup-input-group {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        .email-signup-input {
+            flex: 1;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+            text-align: center;
+            transition: all 0.2s ease;
+            min-width: 0;
+        }
+
+        .email-signup-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.05em;
+            text-align: center;
+        }
+
+        .email-signup-input:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.85);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+        }
+
+        .email-signup-button {
+            padding: 14px 32px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #ffffff !important;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .email-signup-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .email-signup-button:active {
+            transform: translateY(0);
+        }
+
+        .email-signup-success {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8) !important;
+            letter-spacing: 0.05em;
+            text-align: center;
+            margin-top: 8px;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .email-signup-success.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.15) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.06) 20%,
+                rgba(255, 255, 255, 0.12) 50%,
+                rgba(255, 255, 255, 0.06) 80%,
+                transparent 100%);
+            animation: shimmer 4s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.015) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.01) 0%, transparent 60%);
+            pointer-events: none;
+            animation: pulseGlow 10s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+
+        .header-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .header h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text);
+            letter-spacing: 0.05em;
+            line-height: 1;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, 
+                #ffffff 0%, 
+                rgba(255, 255, 255, 0.98) 25%,
+                rgba(255, 255, 255, 0.95) 50%,
+                rgba(255, 255, 255, 0.92) 75%,
+                rgba(255, 255, 255, 0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            display: inline-block;
+            filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.2)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.7)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.95), 0 1px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 100%);
+            transform: scaleX(0);
+            animation: expandLine 1.2s ease-out 0.8s forwards;
+        }
+
+        @keyframes expandLine {
+            to { transform: scaleX(1); }
+        }
+
+        .header p {
+            font-size: 1.375rem;
+            color: rgba(255, 255, 255, 0.92);
+            font-weight: 300;
+            line-height: 1.7;
+            max-width: 750px;
+            margin-top: 32px;
+            letter-spacing: -0.01em;
+            position: relative;
+            padding-left: 24px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.9), 0 1px 8px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header p::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.4) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                transparent 100%);
+        }
+
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+
+        .panel {
+            background: var(--bg);
+            padding: 32px;
+            border-radius: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+                0 4px 16px rgba(0, 0, 0, 0.8);
+        }
+
+        .panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.06) 50%,
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .panel.visible::before {
+            opacity: 1;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .panel::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .panel.visible::after {
+            opacity: 1;
+        }
+
+        .panel:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        .panel:hover::before {
+            opacity: 1;
+        }
+
+        .panel-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.375rem;
+            font-weight: 600;
+            margin-bottom: 32px;
+            color: var(--text);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .panel-title-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: normal;
+            color: var(--text-secondary);
+        }
+
+        .panel-title-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--text);
+            cursor: pointer;
+        }
+
+        .panel.disabled {
+            opacity: 0.6;
+            border-color: var(--border);
+        }
+
+        .panel.disabled .panel-title {
+            color: var(--text-secondary);
+        }
+
+        .panel.disabled .form-input,
+        .panel.disabled .form-label,
+        .panel.disabled select {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: var(--bg);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        select.form-input {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2398999d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .affordability-banner {
+            background: var(--bg);
+            color: var(--text);
+            padding: 40px 48px;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 0;
+            position: relative;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.8), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+
+        .affordability-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 100%);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        .affordability-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            opacity: 1;
+            animation: pulseGlow 10s ease-in-out infinite;
+        }
+
+        .affordability-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .affordability-banner.negative::before {
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.15) 50%,
+                transparent 100%);
+        }
+
+        .affordability-content {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            flex: 1;
+        }
+
+        .affordability-text h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text);
+            letter-spacing: 0.05em;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .affordability-text p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .affordability-amount {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.05em;
+            text-align: right;
+            min-width: 180px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+            justify-items: stretch;
+        }
+
+        .summary-card {
+            background: var(--bg);
+            padding: 36px 28px;
+            border-radius: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: center;
+            width: 100%;
+            position: relative;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+                0 4px 16px rgba(0, 0, 0, 0.8);
+        }
+
+        .summary-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.08) 50%,
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .summary-card.visible::before {
+            opacity: 1;
+        }
+
+        .summary-card:nth-child(1) { animation-delay: 0.1s; animation-fill-mode: both; }
+        .summary-card:nth-child(2) { animation-delay: 0.15s; animation-fill-mode: both; }
+        .summary-card:nth-child(3) { animation-delay: 0.2s; animation-fill-mode: both; }
+        .summary-card:nth-child(4) { animation-delay: 0.25s; animation-fill-mode: both; }
+
+        .summary-card:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-light);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        .summary-card:hover::before {
+            opacity: 1;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        .summary-card-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .summary-card-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.05em;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .summary-card-value.positive {
+            color: var(--text);
+        }
+
+        .summary-card-value.negative {
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .mixing-board-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 24px;
+            padding: 32px;
+            background: var(--bg);
+            border-radius: 0;
+            justify-items: center;
+            position: relative;
+            border: 1px solid var(--border);
+            box-shadow: 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+                0 4px 16px rgba(0, 0, 0, 0.8);
+        }
+
+        .mixing-board-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .budget-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 24px 20px;
+            background: var(--bg);
+            border-radius: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 320px;
+            position: relative;
+            width: 100%;
+            max-width: 160px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+                0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .budget-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.06) 50%,
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .budget-item.visible::before {
+            opacity: 1;
+        }
+
+        .budget-item:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-light);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+        }
+
+        .budget-item:hover::before {
+            opacity: 1;
+            animation: shimmer 2.5s ease-in-out infinite;
+        }
+
+        .budget-item-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-align: center;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .budget-item-input {
+            width: 100%;
+            text-align: center;
+            font-size: 0.85rem;
+            padding: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .budget-slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            flex: 1;
+            justify-content: center;
+            position: relative;
+            cursor: ns-resize;
+        }
+
+        .fader-track {
+            width: 24px;
+            height: 200px;
+            background: linear-gradient(180deg, #050505 0%, #000000 100%);
+            border: 2px solid var(--border);
+            border-radius: 0;
+            position: relative;
+            margin: 0 auto;
+            cursor: ns-resize;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .fader-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 80%, rgba(255, 255, 255, 0.4) 100%);
+            border-radius: 0;
+            transition: height 0.1s ease;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .fader-handle {
+            position: absolute;
+            top: -8px;
+            left: -6px;
+            right: -6px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--border);
+            border-radius: 0;
+            cursor: ns-resize;
+            transition: all 0.1s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .fader-handle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .budget-slider {
+            width: 100%;
+            max-width: 140px;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(90deg, #050505 0%, #000000 100%);
+            outline: none;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+            display: none; /* Hide the horizontal slider, using vertical fader as main control */
+        }
+
+        .budget-amount-display {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 1rem;
+            text-align: center;
+            min-width: 80px;
+            padding: 4px 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            cursor: text;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .budget-amount-display:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-light);
+        }
+
+        .budget-amount-display.editing {
+            background: var(--card);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+
+        .fader-track.income-fader-track {
+            width: 24px;
+            height: 200px;
+            background: linear-gradient(180deg, #050505 0%, #000000 100%);
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            margin: 0 auto;
+            cursor: ns-resize;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .fader-level.income-fader-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 80%, rgba(255, 255, 255, 0.4) 100%);
+            border-radius: 0;
+            transition: height 0.1s ease;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .fader-handle.income-fader-handle {
+            position: absolute;
+            top: -8px;
+            left: -6px;
+            right: -6px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--border);
+            border-radius: 3px;
+            cursor: ns-resize;
+            transition: all 0.1s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .fader-handle.income-fader-handle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .budget-item.income-item .budget-amount-display.editing {
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .budget-slider.income-slider {
+            width: 100%;
+            max-width: 140px;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(90deg, #050505 0%, #000000 100%);
+            outline: none;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+            display: none; /* Hide the horizontal slider, using vertical fader as main control */
+        }
+
+        .budget-amount-display.income-amount-display {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 1rem;
+            text-align: center;
+            min-width: 80px;
+            padding: 4px 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            cursor: text;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .budget-amount-display.income-amount-display:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-light);
+        }
+
+        .budget-amount-display.income-amount-display.editing {
+            background: var(--card);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 24px 16px;
+            }
+
+            .header {
+                padding: 48px 32px;
+                margin-bottom: 32px;
+                border-radius: 0;
+                min-height: 360px;
+            }
+
+            .header-banner-title-wrapper {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .header-banner-title-text {
+                font-size: 3.5rem;
+                letter-spacing: 0.1em;
+            }
+
+            .beta-tag {
+                font-size: 0.625rem;
+                padding: 4px 10px;
+                margin-top: -16px;
+                letter-spacing: 0.1em;
+            }
+
+            .header-banner-subtitle {
+                font-size: 0.75rem;
+                letter-spacing: 0.25em;
+            }
+
+            .header-banner-title {
+                max-width: 100%;
+                padding: 0 16px;
+            }
+
+            .header-banner-subtitle {
+                padding: 0 16px;
+            }
+
+            .header-banner-subtitle::before,
+            .header-banner-subtitle::after {
+                width: 24px;
+            }
+
+            .header-email-signup {
+                margin-top: 32px;
+                max-width: 100%;
+                padding: 24px 16px 0;
+            }
+
+            .header-email-signup::before {
+                width: 60px;
+            }
+
+            .email-signup-input-group {
+                flex-direction: column;
+            }
+
+            .email-signup-button {
+                width: 100%;
+            }
+
+            .email-signup-text {
+                font-size: 0.6875rem;
+            }
+
+            .header h1 {
+                font-size: 2.75rem;
+                margin-bottom: 20px;
+            }
+
+            .header h1::after {
+                bottom: -6px;
+                height: 1.5px;
+            }
+
+            .header p {
+                font-size: 1.125rem;
+                margin-top: 24px;
+                padding-left: 20px;
+            }
+
+            .header p::before {
+                width: 1.5px;
+            }
+
+
+            .affordability-banner {
+                padding: 28px 24px;
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .affordability-amount {
+                min-width: auto;
+                text-align: center;
+            }
+
+            .mixing-board-container {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .budget-item {
+                min-height: 300px;
+                padding: 24px 18px;
+                gap: 14px;
+                max-width: 140px;
+            }
+
+            .budget-item-label {
+                font-size: 0.8rem;
+                min-height: 32px;
+            }
+
+            .fader-track {
+                height: 160px;
+                width: 20px;
+            }
+
+            .budget-amount-display {
+                font-size: 0.9rem;
+                padding: 3px 6px;
+            }
+
+
+            .fader-track.income-fader-track {
+                height: 160px;
+                width: 20px;
+            }
+
+            .budget-amount-display.income-amount-display {
+                font-size: 0.9rem;
+                padding: 3px 6px;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                margin-bottom: 32px;
+            }
+
+            .summary-card {
+                padding: 28px 20px;
+                max-width: none;
+            }
+
+            .summary-card-label {
+                font-size: 0.75rem;
+                margin-bottom: 14px;
+            }
+
+            .summary-card-value {
+                font-size: 1.875rem;
+            }
+        }
+
+        .budget-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 32px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .budget-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            border-color: var(--border-light);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .budget-slider::-moz-range-thumb {
+            width: 32px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .budget-slider::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            border-color: var(--border-light);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .budget-slider::-webkit-slider-runnable-track {
+            height: 8px;
+            background: linear-gradient(90deg, #050505 0%, #000000 100%);
+            border: 1px solid var(--border);
+            border-radius: 0;
+        }
+
+        .budget-slider::-moz-range-track {
+            height: 8px;
+            background: linear-gradient(90deg, #050505 0%, #000000 100%);
+            border: 1px solid var(--border);
+            border-radius: 0;
+        }
+
+        .budget-slider.income-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 32px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .budget-slider.income-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            border-color: var(--border-light);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .budget-slider.income-slider::-moz-range-thumb {
+            width: 32px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .budget-slider.income-slider::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            border-color: var(--border-light);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .budget-slider.income-slider::-webkit-slider-runnable-track {
+            height: 8px;
+            background: linear-gradient(90deg, #050505 0%, #000000 100%);
+            border: 1px solid var(--border);
+            border-radius: 0;
+        }
+
+        .budget-slider.income-slider::-moz-range-track {
+            height: 8px;
+            background: linear-gradient(90deg, #050505 0%, #000000 100%);
+            border: 1px solid var(--border);
+            border-radius: 0;
+        }
+
+
+        .btn {
+            padding: 10px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-light);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-danger {
+            background: var(--bg-secondary);
+            border-color: var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            border-radius: 0;
+        }
+
+        .btn-danger:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-light);
+        }
+
+        .chart-container {
+            background: var(--bg);
+            padding: 36px;
+            margin-bottom: 48px;
+            border-radius: 0;
+            position: relative;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.85), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+
+        .chart-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            opacity: 0.25;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.08) 50%,
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .chart-container.visible::before {
+            opacity: 1;
+            animation: shimmer 3.5s ease-in-out infinite;
+        }
+
+        .chart-container:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-light);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .chart-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.375rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .chart-description {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg);
+            border: 1px solid var(--border);
+        }
+
+        thead {
+            background: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text);
+            font-size: 0.875rem;
+        }
+
+        tr:hover {
+            background: linear-gradient(90deg, #0a0a0a 0%, #050505 100%);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: var(--bg-secondary);
+            color: var(--text);
+            border-radius: 0;
+        }
+
+        .badge-success {
+            border-color: var(--border-light);
+        }
+
+        .badge-danger {
+            border-color: var(--border);
+            opacity: 0.6;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 30px 0;
+        }
+
+        .treemap-container {
+            width: 100%;
+            height: 600px;
+            margin-top: 20px;
+            position: relative;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 8px;
+        }
+
+        .treemap-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .treemap-rect {
+            stroke: var(--border);
+            stroke-width: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .treemap-rect:hover {
+            opacity: 0.9;
+            stroke: rgba(255, 255, 255, 0.8);
+            stroke-width: 2px;
+            filter: brightness(1.1);
+        }
+
+        .treemap-text tspan {
+            fill: var(--text);
+        }
+
+        .treemap-text {
+            pointer-events: none;
+            font-family: 'JetBrains Mono', monospace;
+            fill: var(--text);
+        }
+
+        .treemap-label {
+            font-size: 12px;
+            font-weight: 600;
+            dominant-baseline: top;
+            text-anchor: start;
+            letter-spacing: 0.05em;
+        }
+
+        .treemap-amount {
+            font-size: 16px;
+            font-weight: 700;
+            dominant-baseline: middle;
+            text-anchor: start;
+            letter-spacing: 0.02em;
+        }
+
+        .treemap-percentage {
+            font-size: 10px;
+            font-weight: 500;
+            opacity: 0.8;
+            dominant-baseline: bottom;
+            text-anchor: start;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .treemap-tooltip {
+            position: absolute;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 16px 20px;
+            pointer-events: none;
+            font-size: 0.875rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .treemap-tooltip.show {
+            opacity: 1;
+        }
+
+        .treemap-tooltip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .treemap-tooltip-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 4px 0;
+        }
+
+        .treemap-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .treemap-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+        }
+
+        .treemap-legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        /* Tooltip Styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: help;
+            transition: all 0.2s ease;
+        }
+
+        .tooltip-trigger:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            border-color: var(--border-light);
+            color: var(--text);
+        }
+
+        .tooltip-content {
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.8125rem;
+            color: var(--text);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--bg-secondary);
+        }
+
+        .tooltip:hover .tooltip-content {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Instructions Panel */
+        .instructions-panel {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 24px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+                0 4px 16px rgba(0, 0, 0, 0.8);
+        }
+
+        .instructions-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .instructions-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.06) 50%,
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .instructions-panel.visible::before {
+            opacity: 1;
+        }
+
+        .instructions-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .instructions-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .instructions-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 6px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .instructions-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-light);
+            color: var(--text);
+        }
+
+        .instructions-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .instructions-content.expanded {
+            max-height: 1000px;
+            opacity: 1;
+        }
+
+        .instruction-item {
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            position: relative;
+        }
+
+        .instruction-item-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .instruction-item-title::before {
+            content: '→';
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .instruction-item-text {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Legend/Key */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            margin-bottom: 24px;
+            box-shadow: 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+                0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 0;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+        }
+
+        .legend-color.income {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .legend-color.budget {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Form Helper Text */
+        .form-helper {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        /* AI Analysis Section */
+        .ai-analysis-panel {
+            margin-top: 48px;
+            margin-bottom: 48px;
+            opacity: 0.85;
+            position: relative;
+        }
+
+
+        .ai-analysis-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ai-analysis-title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .ai-analysis-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ai-analysis-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--text) !important;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .coming-soon-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.5) !important;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 0;
+            white-space: nowrap;
+        }
+
+        .ai-rerun-button {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: #ffffff !important;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 8px 16px;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .ai-rerun-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .ai-rerun-button:active {
+            transform: translateY(0);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-rerun-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-rerun-loading {
+            display: none;
+        }
+
+        .ai-rerun-button.loading .ai-rerun-text {
+            display: none;
+        }
+
+        .ai-rerun-button.loading .ai-rerun-loading {
+            display: inline-block;
+        }
+
+        .ai-analysis-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .ai-grade-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 0;
+        }
+
+        .ai-grade-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .ai-grade-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .ai-grade-letter {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--text) !important;
+            line-height: 1;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .ai-grade-meter {
+            flex: 1;
+            max-width: 300px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ai-grade-bar {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.6) 100%);
+            transition: width 0.5s ease;
+        }
+
+        .ai-grade-score {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text) !important;
+            letter-spacing: 0.05em;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .ai-insights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .ai-insight-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            transition: all 0.2s ease;
+        }
+
+        .ai-insight-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--border-light);
+        }
+
+        .ai-insight-icon {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text) !important;
+            line-height: 1;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .ai-insight-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .ai-insight-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--text) !important;
+            text-transform: uppercase;
+        }
+
+        .ai-insight-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.02em;
+        }
+
+        .ai-analysis-footer {
+            margin-top: 8px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .ai-analysis-note {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.05em;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .ai-analysis-panel {
+                margin-top: 32px;
+                margin-bottom: 32px;
+            }
+
+            .ai-analysis-title {
+                font-size: 1.25rem;
+            }
+
+            .ai-analysis-actions {
+                flex-direction: column;
+                width: 100%;
+                align-items: stretch;
+            }
+
+            .ai-rerun-button {
+                width: 100%;
+            }
+
+            .ai-grade-display {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .ai-grade-letter {
+                font-size: 3rem;
+            }
+
+            .ai-grade-meter {
+                max-width: 100%;
+            }
+
+            .ai-insights {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-insight-item {
+                padding: 16px;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 96px;
+            padding: 64px 48px;
+            background: var(--bg);
+            border-radius: 0;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.9), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+
+        .footer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.08) 20%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.08) 80%,
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .footer.visible::before {
+            opacity: 1;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        .footer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            animation: pulseGlow 12s ease-in-out infinite;
+        }
+
+        .footer.visible::after {
+            opacity: 1;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-brand {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #ffffff !important;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: none !important;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: none !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            mix-blend-mode: normal !important;
+            z-index: 1;
+        }
+
+        .footer.visible .footer-brand {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.2s;
+        }
+
+
+        .footer-tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            color: #ffffff !important;
+            text-transform: uppercase;
+            margin-top: 12px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
+            text-shadow: none !important;
+            filter: none !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background: none !important;
+            mix-blend-mode: normal !important;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer.visible .footer-tagline {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .footer-dev-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.4) !important;
+            margin-top: 32px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer.visible .footer-dev-tag {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        @media (max-width: 768px) {
+            .footer {
+                padding: 48px 32px;
+                margin-top: 64px;
+                border-radius: 0;
+            }
+
+            .footer-brand {
+                font-size: 1.5rem;
+            }
+
+            .footer-tagline {
+                font-size: 0.6875rem;
+                letter-spacing: 0.15em;
+            }
+
+            .footer-dev-tag {
+                font-size: 0.625rem;
+                margin-top: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <!-- Banner Image -->
+            <div class="header-banner-media">
+                <img 
+                    class="header-banner-image" 
+                    id="headerBannerImage"
+                    src="blackbox.png" 
+                    alt="Geometric banner background"
+                />
+            </div>
+            
+            <!-- Minimal overlay for subtle depth -->
+            <div class="header-overlay"></div>
+            
+            <!-- Banner Title -->
+            <div class="header-banner-title">
+                <div class="header-banner-title-wrapper">
+                    <h1 class="header-banner-title-text">BLACK BOX</h1>
+                    <span class="beta-tag">BETA</span>
+                </div>
+                <div class="header-banner-subtitle">LIFESTYLE AFFORDABILITY CALCULATOR</div>
+                
+                <!-- Email Signup -->
+                <div class="header-email-signup">
+                    <div class="email-signup-form">
+                        <div class="email-signup-text">Get more tools & calculators delivered to your inbox</div>
+                        <div class="email-signup-input-group">
+                            <input 
+                                type="email" 
+                                class="email-signup-input" 
+                                id="emailSignupInput"
+                                placeholder="Enter your email"
+                            />
+                            <button class="email-signup-button" id="emailSignupButton">Sign Up</button>
+                        </div>
+                        <div class="email-signup-success" id="emailSignupSuccess"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions Panel -->
+        <div class="instructions-panel">
+            <div class="instructions-header">
+                <div class="instructions-title">
+                    <span>Quick Guide</span>
+                    <div class="tooltip">
+                        <div class="tooltip-trigger">?</div>
+                        <div class="tooltip-content">Click to expand or collapse instructions</div>
+                    </div>
+                </div>
+                <button class="instructions-toggle" onclick="toggleInstructions()" id="instructionsToggle">Show Instructions</button>
+            </div>
+            <div class="instructions-content" id="instructionsContent">
+                <div class="instruction-item">
+                    <div class="instruction-item-title">Income Control</div>
+                    <div class="instruction-item-text">Drag the vertical slider or click the amount to edit. Maximum income is $50,000/month.</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-item-title">Budget Items</div>
+                    <div class="instruction-item-text">Each slider controls a spending category. Drag the handle or click the amount to edit. Maximum per item is $5,000/month.</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-item-title">Adding Items</div>
+                    <div class="instruction-item-text">Click "Add Budget Item" to create new spending categories. Click the × button to remove items.</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-item-title">Major Purchases</div>
+                    <div class="instruction-item-text">Toggle Dream Car and Dream House to include/exclude them. Adjust purchase year to see how timing affects your savings.</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-item-title">Charts & Data</div>
+                    <div class="instruction-item-text">Scroll down to see savings projections, spending breakdowns, and yearly financial summaries. All updates in real-time.</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-item-title">Affordability</div>
+                    <div class="instruction-item-text">The banner at the top shows if you can afford your lifestyle. Negative savings are indicated by a darker appearance over 5 years.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="affordabilityBanner" class="affordability-banner">
+            <div class="affordability-content">
+                <div class="affordability-text">
+                    <h2 id="affordabilityTitle">You Can Afford This Lifestyle</h2>
+                    <p id="affordabilityDesc">Your projected savings remain positive over 5 years</p>
+                </div>
+            </div>
+            <div class="affordability-amount" id="finalSavings">$0</div>
+        </div>
+
+        <!-- Combined Income and Budget Panel -->
+        <div class="panel" style="margin-bottom: 40px;">
+            <div class="panel-title" style="margin-bottom: 24px;">
+                <span>Income & Monthly Spending</span>
+                <div class="tooltip">
+                    <div class="tooltip-trigger">?</div>
+                    <div class="tooltip-content">Drag sliders or click amounts to edit values</div>
+                </div>
+            </div>
+            <div class="legend" style="margin-bottom: 24px;">
+                <div class="legend-item">
+                    <div class="legend-color income"></div>
+                    <span>Income (Max: $50,000/month)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color budget"></div>
+                    <span>Spending (Max: $5,000/item/month)</span>
+                </div>
+            </div>
+            <div id="budgetItems" class="mixing-board-container">
+                <!-- Income and budget items will be added here -->
+            </div>
+            <button class="btn btn-secondary" onclick="addBudgetItem()" style="width: 100%; margin-top: 24px;">
+                + Add Budget Item
+            </button>
+            <input type="number" id="monthlyIncome" class="form-input" value="9593.42" step="0.01" oninput="updateIncomeFromInput(this.value)" style="display: none;">
+        </div>
+
+        <div class="main-layout">
+            <!-- Car Purchase Panel -->
+            <div class="panel" id="carPanel">
+                <div class="panel-title">
+                    <span>Dream Car</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="tooltip">
+                            <div class="tooltip-trigger">?</div>
+                            <div class="tooltip-content">Calculate loan payments over your selected term and purchase year</div>
+                        </div>
+                        <div class="panel-title-checkbox">
+                            <input type="checkbox" id="carEnabled" checked onchange="toggleCar()">
+                            <label for="carEnabled">Include</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Car Price</label>
+                    <input type="number" id="carPrice" class="form-input" value="40000" step="100" oninput="calculate()">
+                    <div class="form-helper">Total purchase price including taxes and fees</div>
+                </div>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">Interest Rate (%)</label>
+                        <input type="number" id="carInterestRate" class="form-input" value="6" step="0.1" oninput="calculate()">
+                        <div class="form-helper">Annual percentage rate</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loan Term (months)</label>
+                        <input type="number" id="carLoanMonths" class="form-input" value="60" step="1" oninput="calculate()">
+                        <div class="form-helper">Payment duration</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Purchase Year</label>
+                    <select id="carPurchaseYear" class="form-input" onchange="calculate()">
+                        <option value="0" selected>Year 0 (Before savings start)</option>
+                        <option value="1">Year 1</option>
+                        <option value="2">Year 2</option>
+                        <option value="3">Year 3</option>
+                        <option value="4">Year 4</option>
+                        <option value="5">Year 5</option>
+                    </select>
+                    <div class="form-helper">When you'll make the purchase</div>
+                </div>
+            </div>
+
+            <!-- House Purchase Panel -->
+            <div class="panel" id="housePanel">
+                <div class="panel-title">
+                    <span>Dream House</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="tooltip">
+                            <div class="tooltip-trigger">?</div>
+                            <div class="tooltip-content">Down payment uses accumulated savings. Additional monthly bills (taxes, insurance) are separate from loan payment</div>
+                        </div>
+                        <div class="panel-title-checkbox">
+                            <input type="checkbox" id="houseEnabled" checked onchange="toggleHouse()">
+                            <label for="houseEnabled">Include</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">House Price</label>
+                    <input type="number" id="housePrice" class="form-input" value="400000" step="1000" oninput="calculate()">
+                    <div class="form-helper">Total purchase price including closing costs</div>
+                </div>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">Interest Rate (%)</label>
+                        <input type="number" id="houseInterestRate" class="form-input" value="6" step="0.1" oninput="calculate()">
+                        <div class="form-helper">Mortgage APR</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loan Term (years)</label>
+                        <input type="number" id="houseLoanYears" class="form-input" value="30" step="1" oninput="calculate()">
+                        <div class="form-helper">Typical 15, 20, or 30 years</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Purchase Year</label>
+                    <select id="housePurchaseYear" class="form-input" onchange="calculate()">
+                        <option value="0" selected>Year 0 (Before savings start)</option>
+                        <option value="1">Year 1</option>
+                        <option value="2">Year 2</option>
+                        <option value="3">Year 3</option>
+                        <option value="4">Year 4</option>
+                        <option value="5">Year 5</option>
+                    </select>
+                    <div class="form-helper">Down payment uses accumulated savings from previous years</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Additional Monthly Bills (Taxes, etc.)</label>
+                    <input type="number" id="houseAdditionalBills" class="form-input" value="2000" step="100" oninput="calculate()">
+                    <div class="form-helper">Property taxes, insurance, HOA, maintenance</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-card-label">Monthly Savings</div>
+                <div class="summary-card-value" id="monthlySavings">$0</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-label">5-Year Total Savings</div>
+                <div class="summary-card-value" id="totalSavings">$0</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-label">Monthly Car Payment</div>
+                <div class="summary-card-value" id="carPayment">$0</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-label">Monthly House Payment</div>
+                <div class="summary-card-value" id="housePayment">$0</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Savings Projection Over 5 Years</div>
+            <div class="chart-description">This line chart displays your cumulative savings projection over a 5-year period. The line shows how your savings accumulate (or deplete) month by month. Values above zero indicate positive savings, while values below zero indicate you're spending more than you earn. Hover over data points to see exact values.</div>
+            <div class="chart-wrapper">
+                <canvas id="savingsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Cumulative Spending by Category</div>
+            <div class="chart-description">This chart displays cumulative spending totals for each category at yearly intervals (Year 1 through Year 5). Each bar shows the total amount spent in that category up to that year. Categories are labeled with their cumulative spending amounts, helping you see which categories consume the most of your budget over time.</div>
+            <div class="chart-wrapper">
+                <canvas id="spendingChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">5-Year Total Spending by Category (Treemap)</div>
+            <div class="chart-description">This treemap visualization shows your total 5-year spending by category, where larger rectangles indicate higher spending. The size and color intensity of each box represents the proportion of your total spending. Click or hover over any box to see detailed category information and exact dollar amounts.</div>
+            <div class="treemap-container">
+                <svg class="treemap-svg" id="treemapSvg"></svg>
+                <div class="treemap-tooltip" id="treemapTooltip"></div>
+            </div>
+            <div class="treemap-legend" id="treemapLegend">
+                <!-- Legend will be generated here -->
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Yearly Financial Summary</div>
+            <div class="chart-description">This table provides a comprehensive year-by-year breakdown of your financial situation. It shows annual income, total spending, annual savings (or deficit), cumulative savings over time, and your financial status. Use this to identify trends and see which years may be challenging or favorable based on your planned major purchases.</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Annual Income</th>
+                        <th>Annual Spending</th>
+                        <th>Annual Savings</th>
+                        <th>Cumulative Savings</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="yearlyTable">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- AI Analysis Section -->
+        <div class="panel ai-analysis-panel">
+            <div class="ai-analysis-header">
+                <div class="ai-analysis-title-wrapper">
+                    <h2 class="ai-analysis-title">AI Financial Viability Analysis</h2>
+                    <div class="ai-analysis-actions">
+                        <span class="coming-soon-badge">COMING SOON</span>
+                        <button class="ai-rerun-button" id="aiRerunButton">
+                            <span class="ai-rerun-text">RERUN ANALYSIS</span>
+                            <span class="ai-rerun-loading" style="display: none;">ANALYZING...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="ai-analysis-preview">
+                <div class="ai-grade-section">
+                    <div class="ai-grade-label">Viability Grade</div>
+                    <div class="ai-grade-display">
+                        <span class="ai-grade-letter" id="aiGradeLetter">B+</span>
+                        <div class="ai-grade-meter">
+                            <div class="ai-grade-bar" style="width: 78%;"></div>
+                        </div>
+                        <span class="ai-grade-score">78/100</span>
+                    </div>
+                </div>
+                <div class="ai-insights">
+                    <div class="ai-insight-item">
+                        <div class="ai-insight-icon">✓</div>
+                        <div class="ai-insight-content">
+                            <div class="ai-insight-title">Savings Trajectory</div>
+                            <div class="ai-insight-text">Your projected savings show consistent growth across all 5 years, with positive cash flow maintained even after major purchases.</div>
+                        </div>
+                    </div>
+                    <div class="ai-insight-item">
+                        <div class="ai-insight-icon">⚠</div>
+                        <div class="ai-insight-content">
+                            <div class="ai-insight-title">Expense Ratio</div>
+                            <div class="ai-insight-text">Your spending-to-income ratio is at 72%, which is slightly above optimal. Consider reducing discretionary spending in categories like Entertainment or Dining.</div>
+                        </div>
+                    </div>
+                    <div class="ai-insight-item">
+                        <div class="ai-insight-icon">✓</div>
+                        <div class="ai-insight-content">
+                            <div class="ai-insight-title">Debt Management</div>
+                            <div class="ai-insight-text">Major purchases are well-timed and manageable. Your car and house payments represent sustainable portions of your income.</div>
+                        </div>
+                    </div>
+                    <div class="ai-insight-item">
+                        <div class="ai-insight-icon">→</div>
+                        <div class="ai-insight-content">
+                            <div class="ai-insight-title">Optimization Opportunity</div>
+                            <div class="ai-insight-text">Delaying the house purchase by 6 months could increase your cumulative savings by approximately $12,500 while maintaining your lifestyle goals.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-analysis-footer">
+                    <div class="ai-analysis-note">AI-powered financial analysis will provide personalized insights and actionable recommendations based on your complete financial profile.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let budgetItems = [];
+        let savingsChart = null;
+        let spendingChart = null;
+
+        // Default budget items
+        const defaultBudgetItems = [
+            { name: 'Bills & Utilities', amount: 808.63 },
+            { name: 'Dining & Drinks', amount: 798.88 },
+            { name: 'Groceries', amount: 452.76 },
+            { name: 'Auto & Transport', amount: 425.94 },
+            { name: 'Entertainment & Rec.', amount: 276.73 },
+            { name: 'Shopping', amount: 220.65 },
+            { name: 'Fees', amount: 216.93 },
+            { name: 'Travel & Vacation', amount: 201.08 },
+            { name: 'Health & Wellness', amount: 141.99 },
+            { name: 'Home & Garden', amount: 70.00 },
+            { name: 'Software & Tech', amount: 7.99 }
+        ];
+
+        function initBudgetItems() {
+            budgetItems = [...defaultBudgetItems];
+            renderBudgetItems();
+        }
+
+        function renderBudgetItems() {
+            const container = document.getElementById('budgetItems');
+            container.innerHTML = '';
+            
+            // First, render the income item
+            const incomeValue = parseFloat(document.getElementById('monthlyIncome').value) || 9593.42;
+            const incomeDiv = document.createElement('div');
+            incomeDiv.className = 'budget-item income-item';
+            const incomeMaxValue = 50000;
+            const incomeFaderHeight = (incomeValue / incomeMaxValue) * 100;
+            const incomeHandleTop = 200 - (incomeFaderHeight / 100 * 200) - 8;
+            
+            incomeDiv.innerHTML = `
+                <input type="text" class="form-input budget-item-input" value="Income"
+                       placeholder="Income"
+                       readonly
+                       style="font-size: 0.7rem; padding: 6px; text-align: center; cursor: default;">
+                <div class="budget-slider-container" id="slider-container-income" onmousedown="startIncomeFaderDrag(event)">
+                    <div class="fader-track income-fader-track" id="income-fader-track">
+                        <div class="fader-level income-fader-level" id="income-fader-level" style="height: ${incomeFaderHeight}%"></div>
+                        <div class="fader-handle income-fader-handle" id="income-fader-handle" style="top: ${incomeHandleTop}px"></div>
+                    </div>
+                    <input type="range" class="budget-slider income-slider"
+                           id="monthlyIncomeSlider"
+                           min="0"
+                           max="${incomeMaxValue}"
+                           step="100"
+                           value="${incomeValue}"
+                           oninput="updateIncomeSlider(this.value)">
+                </div>
+                <span class="budget-amount-display income-amount-display" id="incomeAmountDisplay" onclick="editIncomeAmount()">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+            `;
+            container.appendChild(incomeDiv);
+            setTimeout(() => updateIncomeFaderVisuals(), 0);
+            
+            // Then render budget items
+            budgetItems.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'budget-item';
+                
+                // Fixed max value of $5,000 per month
+                const maxValue = 5000;
+                const minValue = 0;
+                
+                const faderHeight = (item.amount / maxValue) * 100;
+                const handleTop = 200 - (faderHeight / 100 * 200) - 8; // Will be corrected after render by updateFaderVisuals
+
+                div.innerHTML = `
+                    <input type="text" class="form-input budget-item-input" value="${item.name}"
+                           placeholder="Budget item name"
+                           oninput="updateBudgetItem(${index}, 'name', this.value)"
+                           style="font-size: 0.7rem; padding: 6px; text-align: center;">
+                    <div class="budget-slider-container" id="slider-container-${index}" onmousedown="startFaderDrag(event, ${index})">
+                        <div class="fader-track" id="fader-track-${index}">
+                            <div class="fader-level" id="fader-level-${index}" style="height: ${faderHeight}%"></div>
+                            <div class="fader-handle" id="fader-handle-${index}" style="top: ${handleTop}px"></div>
+                        </div>
+                        <input type="range" class="budget-slider"
+                               min="${minValue}"
+                               max="${maxValue}"
+                               step="10"
+                               value="${item.amount}"
+                               oninput="updateBudgetSlider(${index}, this.value, this)">
+                    </div>
+                    <span class="budget-amount-display" id="budget-amount-${index}" onclick="editBudgetAmount(${index})">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    <button class="btn btn-danger" onclick="removeBudgetItem(${index})" style="font-size: 0.7rem; padding: 4px 8px;">×</button>
+                `;
+                container.appendChild(div);
+
+                // Update fader visuals after DOM insertion to get correct dimensions
+                setTimeout(() => updateFaderVisuals(index), 0);
+            });
+        }
+
+        function updateBudgetItem(index, field, value) {
+            budgetItems[index][field] = field === 'amount' ? value : value;
+            calculate();
+        }
+
+        function updateBudgetSlider(index, value, element) {
+            const maxValue = 5000;
+            budgetItems[index].amount = parseFloat(value) || 0;
+
+            updateFaderVisuals(index);
+            updateBudgetDisplay(index);
+            calculate();
+        }
+
+        function addBudgetItem() {
+            budgetItems.push({ name: 'New Item', amount: 0 });
+            renderBudgetItems();
+        }
+
+        function removeBudgetItem(index) {
+            budgetItems.splice(index, 1);
+            renderBudgetItems();
+            calculate();
+        }
+
+        function updateIncomeSlider(value) {
+            const incomeValue = parseFloat(value) || 0;
+            const maxValue = 50000;
+            document.getElementById('monthlyIncome').value = incomeValue;
+            const displayElement = document.getElementById('incomeAmountDisplay');
+            if (displayElement) {
+                displayElement.textContent = '$' + incomeValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+            updateIncomeFaderVisuals();
+            calculate();
+        }
+
+        function updateIncomeFaderVisuals() {
+            const incomeValue = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const maxValue = 50000;
+            const faderHeight = (incomeValue / maxValue) * 100;
+            const track = document.getElementById('income-fader-track');
+            const trackHeight = track ? track.offsetHeight : 200;
+            const handleTop = trackHeight - (faderHeight / 100 * trackHeight) - 8;
+
+            const faderLevel = document.getElementById('income-fader-level');
+            const faderHandle = document.getElementById('income-fader-handle');
+
+            if (faderLevel) {
+                faderLevel.style.height = faderHeight + '%';
+            }
+            if (faderHandle) {
+                faderHandle.style.top = handleTop + 'px';
+            }
+        }
+
+        function editIncomeAmount() {
+            const displayElement = document.getElementById('incomeAmountDisplay');
+            const hiddenInput = document.getElementById('monthlyIncome');
+            const slider = document.getElementById('monthlyIncomeSlider');
+            
+            if (!displayElement || displayElement.classList.contains('editing')) return;
+            
+            const currentValue = parseFloat(hiddenInput.value) || 0;
+            
+            // Replace display with input field
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = 'incomeAmountDisplay';
+            input.value = currentValue;
+            input.className = 'income-amount-display editing';
+            input.style.width = displayElement.offsetWidth + 'px';
+            input.onblur = function() {
+                finishEditingIncome(this.value, hiddenInput, slider);
+            };
+            input.onkeypress = function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            };
+            input.onfocus = function() {
+                this.select();
+            };
+            
+            displayElement.parentNode.replaceChild(input, displayElement);
+            input.focus();
+            input.select();
+        }
+
+        function finishEditingIncome(value, hiddenInput, slider) {
+            const numValue = parseFloat(value) || 0;
+            const maxValue = 50000;
+            const clampedValue = Math.max(0, Math.min(maxValue, numValue));
+            
+            hiddenInput.value = clampedValue;
+            slider.value = clampedValue;
+            updateIncomeFaderVisuals();
+            
+            // Find the input that's currently being edited and replace it
+            const editingInput = document.getElementById('incomeAmountDisplay');
+            if (editingInput) {
+                const displayElement = document.createElement('span');
+                displayElement.id = 'incomeAmountDisplay';
+                displayElement.className = 'income-amount-display';
+                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                displayElement.onclick = editIncomeAmount;
+                editingInput.parentNode.replaceChild(displayElement, editingInput);
+            }
+            
+            calculate();
+        }
+
+        function updateIncomeFromInput(value) {
+            const incomeValue = parseFloat(value) || 0;
+            const maxValue = 50000;
+            const clampedValue = Math.max(0, Math.min(maxValue, incomeValue));
+            
+            document.getElementById('monthlyIncomeSlider').value = clampedValue;
+            const displayElement = document.getElementById('incomeAmountDisplay');
+            if (displayElement) {
+                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+            updateIncomeFaderVisuals();
+            calculate();
+        }
+
+        function editBudgetAmount(index) {
+            const displayElement = document.getElementById(`budget-amount-${index}`);
+            const budgetItem = displayElement.closest('.budget-item');
+            const slider = budgetItem ? budgetItem.querySelector('.budget-slider') : null;
+            
+            if (!displayElement || displayElement.classList.contains('editing')) return;
+            
+            const currentValue = budgetItems[index].amount || 0;
+            
+            // Replace display with input field
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = `budget-amount-${index}`;
+            input.value = currentValue;
+            input.className = 'budget-amount-display editing';
+            input.style.width = displayElement.offsetWidth + 'px';
+            input.step = '0.01';
+            input.onblur = function() {
+                finishEditingBudget(index, this.value, slider);
+            };
+            input.onkeypress = function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            };
+            input.onfocus = function() {
+                this.select();
+            };
+            
+            displayElement.parentNode.replaceChild(input, displayElement);
+            input.focus();
+            input.select();
+        }
+
+        function finishEditingBudget(index, value, slider) {
+            const maxValue = 5000;
+            const numValue = parseFloat(value) || 0;
+            const clampedValue = Math.max(0, Math.min(maxValue, numValue));
+            
+            budgetItems[index].amount = clampedValue;
+            if (slider) {
+                slider.value = clampedValue;
+            }
+            
+            // Update fader level
+            const faderLevel = document.getElementById(`fader-level-${index}`);
+            if (faderLevel) {
+                const faderHeight = (clampedValue / maxValue) * 100;
+                faderLevel.style.height = faderHeight + '%';
+            }
+            
+            // Find the input that's currently being edited and replace it
+            const editingInput = document.getElementById(`budget-amount-${index}`);
+            if (editingInput) {
+                const displayElement = document.createElement('span');
+                displayElement.id = `budget-amount-${index}`;
+                displayElement.className = 'budget-amount-display';
+                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                displayElement.onclick = function() { editBudgetAmount(index); };
+                editingInput.parentNode.replaceChild(displayElement, editingInput);
+            }
+            
+            calculate();
+        }
+
+        // Fader drag functionality
+        let isDragging = false;
+        let dragIndex = -1;
+        let dragStartY = 0;
+        let dragStartValue = 0;
+        
+        // Income fader drag functionality
+        let isIncomeDragging = false;
+        let incomeDragStartY = 0;
+        let incomeDragStartValue = 0;
+
+        function startIncomeFaderDrag(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            isIncomeDragging = true;
+            const currentValue = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            incomeDragStartY = event.clientY;
+            incomeDragStartValue = currentValue;
+            document.addEventListener('mousemove', dragIncomeFader);
+            document.addEventListener('mouseup', stopIncomeFaderDrag);
+        }
+
+        function dragIncomeFader(event) {
+            if (!isIncomeDragging) return;
+
+            const track = document.getElementById('income-fader-track');
+            const trackHeight = track ? track.offsetHeight : 200;
+            const deltaY = incomeDragStartY - event.clientY;
+            const deltaPercent = deltaY / trackHeight;
+
+            const maxValue = 50000;
+            let newValue = incomeDragStartValue + (deltaPercent * maxValue);
+            newValue = Math.max(0, Math.min(maxValue, Math.round(newValue / 100) * 100));
+
+            document.getElementById('monthlyIncome').value = newValue;
+            document.getElementById('monthlyIncomeSlider').value = newValue;
+            updateIncomeFaderVisuals();
+            
+            const displayElement = document.getElementById('incomeAmountDisplay');
+            if (displayElement && !displayElement.classList.contains('editing')) {
+                displayElement.textContent = '$' + newValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+            calculate();
+        }
+
+        function stopIncomeFaderDrag() {
+            isIncomeDragging = false;
+            document.removeEventListener('mousemove', dragIncomeFader);
+            document.removeEventListener('mouseup', stopIncomeFaderDrag);
+        }
+
+        function startFaderDrag(event, index) {
+            event.preventDefault();
+            isDragging = true;
+            dragIndex = index;
+            dragStartY = event.clientY;
+            dragStartValue = budgetItems[index].amount;
+            document.addEventListener('mousemove', dragFader);
+            document.addEventListener('mouseup', stopFaderDrag);
+        }
+
+        function dragFader(event) {
+            if (!isDragging || dragIndex === -1) return;
+
+            const track = document.getElementById(`fader-track-${dragIndex}`);
+            const trackHeight = track ? track.offsetHeight : 200;
+            const deltaY = dragStartY - event.clientY;
+            const deltaPercent = deltaY / trackHeight;
+
+            const maxValue = 5000;
+            let newValue = dragStartValue + (deltaPercent * maxValue);
+            newValue = Math.max(0, Math.min(maxValue, Math.round(newValue / 10) * 10));
+
+            budgetItems[dragIndex].amount = newValue;
+            updateFaderVisuals(dragIndex);
+            updateBudgetDisplay(dragIndex);
+            calculate();
+        }
+
+        function stopFaderDrag() {
+            isDragging = false;
+            dragIndex = -1;
+            document.removeEventListener('mousemove', dragFader);
+            document.removeEventListener('mouseup', stopFaderDrag);
+        }
+
+        function updateFaderVisuals(index) {
+            const maxValue = 5000;
+            const faderHeight = (budgetItems[index].amount / maxValue) * 100;
+            const track = document.getElementById(`fader-track-${index}`);
+            const trackHeight = track ? track.offsetHeight : 200;
+            const handleTop = trackHeight - (faderHeight / 100 * trackHeight) - 8;
+
+            const faderLevel = document.getElementById(`fader-level-${index}`);
+            const faderHandle = document.getElementById(`fader-handle-${index}`);
+
+            if (faderLevel) {
+                faderLevel.style.height = faderHeight + '%';
+            }
+            if (faderHandle) {
+                faderHandle.style.top = handleTop + 'px';
+            }
+        }
+
+        function updateBudgetDisplay(index) {
+            const displayElement = document.getElementById(`budget-amount-${index}`);
+            if (displayElement && !displayElement.classList.contains('editing')) {
+                displayElement.textContent = '$' + budgetItems[index].amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+        }
+
+        function toggleCar() {
+            const carEnabled = document.getElementById('carEnabled').checked;
+            const carPanel = document.getElementById('carPanel');
+            if (carEnabled) {
+                carPanel.classList.remove('disabled');
+            } else {
+                carPanel.classList.add('disabled');
+            }
+            calculate();
+        }
+
+        function toggleHouse() {
+            const houseEnabled = document.getElementById('houseEnabled').checked;
+            const housePanel = document.getElementById('housePanel');
+            if (houseEnabled) {
+                housePanel.classList.remove('disabled');
+            } else {
+                housePanel.classList.add('disabled');
+            }
+            calculate();
+        }
+
+        function calculateLoanPayment(principal, annualRate, months) {
+            const monthlyRate = annualRate / 12 / 100;
+            if (monthlyRate === 0) return principal / months;
+            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+        }
+
+        function calculate() {
+            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const monthlySpending = budgetItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const baseMonthlySavings = monthlyIncome - monthlySpending;
+
+            // Car loan
+            const carEnabled = document.getElementById('carEnabled').checked;
+            const carPrice = parseFloat(document.getElementById('carPrice').value) || 0;
+            const carInterestRate = parseFloat(document.getElementById('carInterestRate').value) || 0;
+            const carLoanMonths = parseInt(document.getElementById('carLoanMonths').value) || 60;
+            const carPurchaseYear = parseInt(document.getElementById('carPurchaseYear').value) || 0;
+            const carPurchaseMonth = carPurchaseYear * 12; // Convert year to month
+            const carMonthlyPayment = carEnabled && carPrice > 0 ? calculateLoanPayment(carPrice, carInterestRate, carLoanMonths) : 0;
+
+            // House loan
+            const houseEnabled = document.getElementById('houseEnabled').checked;
+            const housePrice = parseFloat(document.getElementById('housePrice').value) || 0;
+            const houseInterestRate = parseFloat(document.getElementById('houseInterestRate').value) || 0;
+            const houseLoanYears = parseInt(document.getElementById('houseLoanYears').value) || 30;
+            const houseLoanMonths = houseLoanYears * 12;
+            const housePurchaseYear = parseInt(document.getElementById('housePurchaseYear').value) || 0;
+            const housePurchaseMonth = housePurchaseYear * 12; // Convert year to month
+            const houseAdditionalBills = parseFloat(document.getElementById('houseAdditionalBills').value) || 0;
+
+            // Calculate Year 1 savings for house down payment if needed
+            let year1Savings = 0;
+            const annualReturnRate = 0.04;
+            const monthlyRate = annualReturnRate / 12;
+
+            if (houseEnabled && housePurchaseYear >= 1) {
+                // Calculate savings accumulated before house purchase (Year 0 to housePurchaseYear-1)
+                const monthsBeforeHouse = housePurchaseYear * 12;
+                for (let month = 1; month <= monthsBeforeHouse; month++) {
+                    let monthlySavingsThisMonth = baseMonthlySavings;
+                    if (carEnabled && month > carPurchaseMonth && month <= carPurchaseMonth + carLoanMonths) {
+                        monthlySavingsThisMonth -= carMonthlyPayment;
+                    }
+                    year1Savings += monthlySavingsThisMonth;
+                    year1Savings = year1Savings * (1 + monthlyRate);
+                }
+            }
+            // If house purchased at Year 0, no savings available yet for down payment
+            // If house purchased at Year 1+, use accumulated savings
+
+            const houseDownPayment = houseEnabled && housePurchaseYear === 0 ? 0 : (houseEnabled ? Math.min(year1Savings, housePrice) : 0);
+            const houseLoanAmount = Math.max(0, housePrice - houseDownPayment);
+            const houseMonthlyPayment = houseEnabled && houseLoanAmount > 0 ? calculateLoanPayment(houseLoanAmount, houseInterestRate, houseLoanMonths) : 0;
+
+            // Update displays
+            document.getElementById('carPayment').textContent = '$' + carMonthlyPayment.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('housePayment').textContent = '$' + houseMonthlyPayment.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+            // Calculate 5-year projection
+            const years = 5;
+            const months = years * 12;
+            let savingsBalance = 0;
+            const savingsData = [];
+            const labels = [];
+
+            for (let month = 0; month <= months; month++) {
+                if (month > 0) {
+                    let monthlySavingsThisMonth = baseMonthlySavings;
+
+                    // Subtract car loan payment
+                    if (carEnabled && month > carPurchaseMonth && month <= carPurchaseMonth + carLoanMonths) {
+                        monthlySavingsThisMonth -= carMonthlyPayment;
+                    }
+
+                    // Subtract house loan payment
+                    if (houseEnabled && month > housePurchaseMonth) {
+                        monthlySavingsThisMonth -= houseMonthlyPayment;
+                        monthlySavingsThisMonth -= houseAdditionalBills;
+                    }
+
+                    // Deduct down payments
+                    if (houseEnabled && month === housePurchaseMonth && houseDownPayment > 0) {
+                        savingsBalance -= houseDownPayment;
+                    }
+
+                    savingsBalance += monthlySavingsThisMonth;
+                    savingsBalance = savingsBalance * (1 + monthlyRate);
+                }
+                savingsData.push(savingsBalance);
+
+                if (month % 12 === 0 || month === months) {
+                    labels.push(`Year ${Math.floor(month / 12)}`);
+                } else if (month % 3 === 0) {
+                    labels.push('');
+                } else {
+                    labels.push('');
+                }
+            }
+
+            // Update affordability banner
+            const finalSavings = savingsBalance;
+            const banner = document.getElementById('affordabilityBanner');
+            const bannerTitle = document.getElementById('affordabilityTitle');
+            const bannerText = document.getElementById('affordabilityDesc');
+            const bannerAmount = document.getElementById('finalSavings');
+            const monthlySavingsAfterLoans = baseMonthlySavings - (carMonthlyPayment > 0 && months > carPurchaseMonth && months <= carPurchaseMonth + carLoanMonths ? carMonthlyPayment : 0) - (houseMonthlyPayment > 0 && months > housePurchaseMonth ? houseMonthlyPayment + houseAdditionalBills : 0);
+
+            if (finalSavings < 0 || monthlySavingsAfterLoans < 0) {
+                banner.className = 'affordability-banner negative';
+                bannerTitle.textContent = 'You Cannot Afford This Lifestyle';
+                bannerText.textContent = 'Your savings will go negative. Consider adjusting your purchases or budget.';
+            } else {
+                banner.className = 'affordability-banner';
+                bannerTitle.textContent = 'You Can Afford This Lifestyle';
+                bannerText.textContent = 'Your projected savings remain positive over 5 years';
+            }
+            bannerAmount.textContent = '$' + finalSavings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            bannerAmount.className = finalSavings < 0 ? 'affordability-amount' : 'affordability-amount';
+
+            document.getElementById('monthlySavings').textContent = '$' + monthlySavingsAfterLoans.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('monthlySavings').className = 'summary-card-value ' + (monthlySavingsAfterLoans >= 0 ? 'positive' : 'negative');
+            document.getElementById('totalSavings').textContent = '$' + finalSavings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('totalSavings').className = 'summary-card-value ' + (finalSavings >= 0 ? 'positive' : 'negative');
+
+            // Update charts
+            updateSavingsChart(labels, savingsData);
+            updateSpendingChart(labels, budgetItems, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseEnabled, months);
+            updateBentoBox(budgetItems, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseEnabled, months);
+            updateYearlyTable(monthlyIncome, baseMonthlySavings, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseDownPayment, houseEnabled, years, months, monthlyRate);
+        }
+
+        function updateSavingsChart(labels, data) {
+            const ctx = document.getElementById('savingsChart').getContext('2d');
+            
+            if (savingsChart) {
+                savingsChart.destroy();
+            }
+
+            const minValue = Math.min(...data);
+            const maxValue = Math.max(...data);
+            const isNegative = minValue < 0;
+
+            savingsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Cumulative Savings',
+                        data: data,
+                        borderColor: '#ffffff',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#ffffff',
+                                font: {
+                                    size: 12,
+                                    weight: 500
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { 
+                                display: true, 
+                                text: 'Time (Years)',
+                                color: '#ffffff',
+                                font: {
+                                    size: 12,
+                                    weight: 500
+                                }
+                            },
+                            grid: { 
+                                display: true,
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#b0b0b0',
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            title: { 
+                                display: true, 
+                                text: 'Savings ($)',
+                                color: '#ffffff',
+                                font: {
+                                    size: 12,
+                                    weight: 500
+                                }
+                            },
+                            grid: { 
+                                display: true,
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#b0b0b0',
+                                font: {
+                                    size: 11
+                                },
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonths, carEnabled, housePayment, houseMonth, houseBills, houseEnabled, totalMonths) {
+            const ctx = document.getElementById('spendingChart').getContext('2d');
+            
+            if (spendingChart) {
+                spendingChart.destroy();
+            }
+
+            // Year intervals: 12, 24, 36, 48, 60 months
+            const yearLabels = ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'];
+            const yearMonths = [12, 24, 36, 48, 60];
+            
+            // Generate unique colors for each category
+            const categoryColors = [
+                'rgba(255, 255, 255, 0.9)',
+                'rgba(230, 230, 230, 0.85)',
+                'rgba(200, 200, 200, 0.8)',
+                'rgba(170, 170, 170, 0.75)',
+                'rgba(140, 140, 140, 0.7)',
+                'rgba(110, 110, 110, 0.65)',
+                'rgba(255, 255, 255, 0.85)',
+                'rgba(220, 220, 220, 0.8)',
+                'rgba(190, 190, 190, 0.75)',
+                'rgba(160, 160, 160, 0.7)',
+                'rgba(130, 130, 130, 0.65)',
+                'rgba(100, 100, 100, 0.6)',
+                'rgba(80, 80, 80, 0.55)',
+                'rgba(60, 60, 60, 0.5)'
+            ];
+
+            const borderColors = ['#ffffff', '#e0e0e0', '#c0c0c0', '#a0a0a0', '#808080', '#606060', '#ffffff', '#d0d0d0', '#b0b0b0', '#909090', '#707070', '#505050', '#404040', '#303030'];
+
+            const datasets = [];
+
+            // Calculate cumulative spending for each category at year intervals
+            budgetItems.forEach((item, index) => {
+                const data = yearMonths.map(month => {
+                    return (parseFloat(item.amount) || 0) * month;
+                });
+                
+                datasets.push({
+                    label: item.name,
+                    data: data,
+                    backgroundColor: categoryColors[index % categoryColors.length],
+                    borderColor: borderColors[index % borderColors.length],
+                    borderWidth: 1
+                });
+            });
+
+            // Add car payment
+            if (carEnabled && carPayment > 0) {
+                const data = yearMonths.map(month => {
+                    let total = 0;
+                    for (let m = 1; m <= month; m++) {
+                        if (m > carMonth && m <= carMonth + carMonths) {
+                            total += carPayment;
+                        }
+                    }
+                    return total;
+                });
+                
+                datasets.push({
+                    label: 'Car Loan Payment',
+                    data: data,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#ffffff',
+                    borderWidth: 1.5
+                });
+            }
+
+            // Add house payment
+            if (houseEnabled && (housePayment > 0 || houseBills > 0)) {
+                const data = yearMonths.map(month => {
+                    let total = 0;
+                    for (let m = 1; m <= month; m++) {
+                        if (m > houseMonth) {
+                            total += housePayment;
+                            total += houseBills;
+                        }
+                    }
+                    return total;
+                });
+                
+                datasets.push({
+                    label: 'House Expenses',
+                    data: data,
+                    backgroundColor: 'rgba(230, 230, 230, 0.9)',
+                    borderColor: '#e0e0e0',
+                    borderWidth: 1.5
+                });
+            }
+
+            spendingChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: yearLabels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: { 
+                                color: '#ffffff',
+                                font: { size: 11, weight: 500 }, 
+                                boxWidth: 12,
+                                usePointStyle: true,
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            padding: 16,
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            titleFont: {
+                                size: 13,
+                                weight: 600
+                            },
+                            bodyFont: {
+                                size: 12,
+                                weight: 400
+                            },
+                            footerFont: {
+                                size: 11,
+                                weight: 500
+                            },
+                            footerColor: '#888888',
+                            cornerRadius: 0,
+                            displayColors: true,
+                            boxPadding: 8,
+                            usePointStyle: true,
+                            callbacks: {
+                                title: function(context) {
+                                    return yearLabels[context[0].dataIndex] || '';
+                                },
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    
+                                    return `${label}: $${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                },
+                                footer: function(tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(item => {
+                                        total += item.parsed.y;
+                                    });
+                                    return `Total Cumulative: $${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: false,
+                            title: { 
+                                display: true, 
+                                text: 'Year Interval',
+                                color: '#ffffff',
+                                font: {
+                                    family: 'JetBrains Mono',
+                                    size: 11,
+                                    weight: 500
+                                }
+                            },
+                            grid: { 
+                                display: true,
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#b0b0b0',
+                                font: {
+                                    family: 'JetBrains Mono',
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: false,
+                            beginAtZero: true,
+                            title: { 
+                                display: true, 
+                                text: 'Cumulative Spending ($)',
+                                color: '#ffffff',
+                                font: {
+                                    family: 'JetBrains Mono',
+                                    size: 11,
+                                    weight: 500
+                                }
+                            },
+                            grid: { 
+                                display: true,
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#b0b0b0',
+                                font: {
+                                    size: 11
+                                },
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBentoBox(budgetItems, carPayment, carMonth, carMonths, carEnabled, housePayment, houseMonth, houseBills, houseEnabled, months) {
+            const svg = d3.select('#treemapSvg');
+            const tooltip = d3.select('#treemapTooltip');
+            const legend = d3.select('#treemapLegend');
+            
+            // Clear existing content
+            svg.selectAll('*').remove();
+            legend.selectAll('*').remove();
+
+            // Calculate 5-year totals for each category
+            const categories = [];
+            const totalMonths = months;
+
+            // Add budget items
+            budgetItems.forEach(item => {
+                const monthlyAmount = parseFloat(item.amount) || 0;
+                const total5Year = monthlyAmount * totalMonths;
+                if (total5Year > 0) {
+                    categories.push({
+                        name: item.name,
+                        value: total5Year
+                    });
+                }
+            });
+
+            // Add car loan payments
+            if (carEnabled && carPayment > 0) {
+                let carTotal = 0;
+                for (let m = 1; m <= totalMonths; m++) {
+                    if (m > carMonth && m <= carMonth + carMonths) {
+                        carTotal += carPayment;
+                    }
+                }
+                if (carTotal > 0) {
+                    categories.push({
+                        name: 'Car Loan Payments',
+                        value: carTotal
+                    });
+                }
+            }
+
+            // Add house expenses
+            if (houseEnabled && (housePayment > 0 || houseBills > 0)) {
+                let houseTotal = 0;
+                for (let m = 1; m <= totalMonths; m++) {
+                    if (m > houseMonth) {
+                        houseTotal += housePayment;
+                        houseTotal += houseBills;
+                    }
+                }
+                if (houseTotal > 0) {
+                    categories.push({
+                        name: 'House Expenses',
+                        value: houseTotal
+                    });
+                }
+            }
+
+            if (categories.length === 0) return;
+
+            // Calculate total spending
+            const totalSpending = categories.reduce((sum, cat) => sum + cat.value, 0);
+
+            // Monochromatic white/gray color palette
+            const colors = [
+                '#ffffff', '#e5e5e5', '#cccccc', '#b3b3b3', '#999999', '#808080',
+                '#666666', '#4d4d4d', '#333333', '#f5f5f5', '#e0e0e0', '#c0c0c0',
+                '#a0a0a0', '#858585', '#707070', '#5a5a5a', '#454545', '#2f2f2f',
+                '#ffffff', '#d5d5d5', '#bababa', '#9f9f9f', '#848484', '#696969'
+            ];
+
+            // Assign colors to categories
+            categories.forEach((category, index) => {
+                category.color = colors[index % colors.length];
+                category.percentage = (category.value / totalSpending) * 100;
+            });
+
+            // Get container dimensions
+            const container = document.querySelector('.treemap-container');
+            const width = container.clientWidth - 16; // Account for padding
+            const height = container.clientHeight - 16; // Account for padding
+
+            // Create hierarchy for D3 treemap
+            const root = {
+                name: 'root',
+                children: categories.map(cat => ({
+                    name: cat.name,
+                    value: cat.value,
+                    color: cat.color,
+                    percentage: cat.percentage
+                }))
+            };
+
+            // Create treemap layout
+            const treemap = d3.treemap()
+                .size([width, height])
+                .padding(4)
+                .round(true);
+
+            const hierarchy = d3.hierarchy(root)
+                .sum(d => d.value)
+                .sort((a, b) => b.value - a.value);
+
+            treemap(hierarchy);
+
+            // Create tooltip function
+            const showTooltip = (event, d) => {
+                const [x, y] = d3.pointer(event, container);
+                tooltip
+                    .style('left', (x + 10) + 'px')
+                    .style('top', (y + 10) + 'px')
+                    .html(`
+                        <div class="treemap-tooltip-title">${d.data.name}</div>
+                        <div class="treemap-tooltip-amount">$${d.data.value.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+                        <div>${d.data.percentage.toFixed(1)}% of total spending</div>
+                    `)
+                    .classed('show', true);
+            };
+
+            const hideTooltip = () => {
+                tooltip.classed('show', false);
+            };
+
+            // Draw rectangles
+            const cells = svg.selectAll('g')
+                .data(hierarchy.leaves())
+                .enter()
+                .append('g')
+                .attr('transform', d => `translate(${d.x0},${d.y0})`);
+
+            cells.append('rect')
+                .attr('class', 'treemap-rect')
+                .attr('width', d => d.x1 - d.x0)
+                .attr('height', d => d.y1 - d.y0)
+                .attr('fill', d => d.data.color)
+                .on('mousemove', showTooltip)
+                .on('mouseout', hideTooltip);
+
+            // Helper function to wrap text
+            function wrapText(textElement, text, maxWidth, lineHeight) {
+                const words = text.split(/\s+/);
+                let line = '';
+                let lines = [];
+                let tspan = textElement.append('tspan')
+                    .attr('x', 12)
+                    .attr('dy', 0)
+                    .text('');
+
+                words.forEach((word, i) => {
+                    const testLine = line + (line ? ' ' : '') + word;
+                    const tspanNode = tspan.node();
+                    if (tspanNode) {
+                        tspanNode.textContent = testLine;
+                        const testWidth = tspanNode.getComputedTextLength();
+                        
+                        if (testWidth > maxWidth && i > 0) {
+                            tspan.text(line);
+                            line = word;
+                            tspan = textElement.append('tspan')
+                                .attr('x', 12)
+                                .attr('dy', lineHeight)
+                                .text(word);
+                        } else {
+                            line = testLine;
+                            tspan.text(line);
+                        }
+                    }
+                });
+            }
+
+            // Add text labels with wrapping
+            cells.each(function(d) {
+                const cell = d3.select(this);
+                const boxWidth = d.x1 - d.x0;
+                const boxHeight = d.y1 - d.y0;
+                const padding = 12;
+                const textAreaWidth = boxWidth - (padding * 2);
+                const minSize = 100; // Minimum size to show text
+
+                if (boxWidth >= minSize && boxHeight >= 50) {
+                    // Category name with wrapping
+                    const labelText = cell.append('text')
+                        .attr('class', 'treemap-text treemap-label')
+                        .attr('x', padding)
+                        .attr('y', padding)
+                        .attr('font-size', boxWidth < 150 ? '10px' : '12px');
+                    
+                    wrapText(labelText, d.data.name, textAreaWidth, 14);
+
+                    // Calculate total label height
+                    const labelLines = labelText.selectAll('tspan').size();
+                    const labelHeight = (labelLines * 14) + padding;
+                    
+                    // Amount (only if there's space)
+                    if (boxHeight >= labelHeight + 30) {
+                        cell.append('text')
+                            .attr('class', 'treemap-text treemap-amount')
+                            .attr('x', padding)
+                            .attr('y', labelHeight + 8)
+                            .attr('font-size', boxWidth < 150 ? '14px' : '16px')
+                            .text('$' + d.data.value.toLocaleString(undefined, {maximumFractionDigits: 0}));
+                    }
+
+                    // Percentage (only if there's space)
+                    if (boxHeight >= labelHeight + 50) {
+                        cell.append('text')
+                            .attr('class', 'treemap-text treemap-percentage')
+                            .attr('x', padding)
+                            .attr('y', labelHeight + 28)
+                            .text(d.data.percentage.toFixed(1) + '%');
+                    }
+                } else if (boxWidth >= 60 && boxHeight >= 30) {
+                    // Compact label for small boxes
+                    const compactText = cell.append('text')
+                        .attr('class', 'treemap-text treemap-label')
+                        .attr('x', boxWidth / 2)
+                        .attr('y', boxHeight / 2)
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'middle')
+                        .attr('font-size', '10px');
+                    
+                    // Try to fit category name
+                    const words = d.data.name.split(/\s+/);
+                    let displayText = '';
+                    for (let word of words) {
+                        const testText = displayText + (displayText ? ' ' : '') + word;
+                        compactText.text(testText);
+                        if (compactText.node().getComputedTextLength() > boxWidth - 20) {
+                            break;
+                        }
+                        displayText = testText;
+                    }
+                    if (displayText !== d.data.name) {
+                        compactText.text(displayText + '...');
+                    } else {
+                        compactText.text(displayText);
+                    }
+                }
+            });
+
+            // Create legend
+            categories.forEach((category, index) => {
+                const legendItem = legend.append('div')
+                    .attr('class', 'treemap-legend-item');
+
+                legendItem.append('div')
+                    .attr('class', 'treemap-legend-color')
+                    .style('background-color', category.color);
+
+                legendItem.append('span')
+                    .text(`${category.name}: $${category.value.toLocaleString(undefined, {maximumFractionDigits: 0})} (${category.percentage.toFixed(1)}%)`);
+            });
+        }
+
+        function updateYearlyTable(income, baseSavings, carPayment, carMonth, carMonths, carEnabled, housePayment, houseMonth, houseBills, houseDownPayment, houseEnabled, years, months, monthlyRate) {
+            const tableBody = document.getElementById('yearlyTable');
+            tableBody.innerHTML = '';
+            let savingsBalance = 0;
+
+            for (let year = 1; year <= years; year++) {
+                const startMonth = (year - 1) * 12;
+                const endMonth = year * 12;
+                let annualSavings = 0;
+
+                for (let month = startMonth + 1; month <= endMonth; month++) {
+                    let monthlySavingsThisMonth = baseSavings;
+
+                    if (carEnabled && month > carMonth && month <= carMonth + carMonths) {
+                        monthlySavingsThisMonth -= carPayment;
+                    }
+
+                    if (houseEnabled && month > houseMonth) {
+                        monthlySavingsThisMonth -= housePayment;
+                        monthlySavingsThisMonth -= houseBills;
+                    }
+
+                    if (houseEnabled && month === houseMonth && houseDownPayment > 0) {
+                        savingsBalance -= houseDownPayment;
+                    }
+
+                    annualSavings += monthlySavingsThisMonth;
+                    savingsBalance += monthlySavingsThisMonth;
+                    savingsBalance = savingsBalance * (1 + monthlyRate);
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>Year ${year}</strong></td>
+                    <td>$${(income * 12).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>$${(baseSavings * 12 - annualSavings + income * 12).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>$${annualSavings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td><strong>$${savingsBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
+                    <td><span class="badge ${savingsBalance >= 0 ? 'badge-success' : 'badge-danger'}">${savingsBalance >= 0 ? 'On Track' : 'Over Budget'}</span></td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        // Instructions toggle function
+        function toggleInstructions() {
+            const content = document.getElementById('instructionsContent');
+            const toggle = document.getElementById('instructionsToggle');
+            const isExpanded = content.classList.contains('expanded');
+            
+            if (isExpanded) {
+                content.classList.remove('expanded');
+                toggle.textContent = 'Show Instructions';
+            } else {
+                content.classList.add('expanded');
+                toggle.textContent = 'Hide Instructions';
+            }
+        }
+
+        // Initialize header banner image
+        function initHeaderBanner() {
+            const image = document.getElementById('headerBannerImage');
+            
+            if (image) {
+                if (image.complete && image.naturalWidth > 0) {
+                    image.classList.add('loaded');
+                } else {
+                    image.addEventListener('load', function() {
+                        image.classList.add('loaded');
+                    });
+                    image.addEventListener('error', function() {
+                        console.log('Banner image failed to load, using fallback background');
+                        image.style.display = 'none';
+                    });
+                }
+            }
+        }
+
+        // Scroll animation observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 50);
+                    scrollObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for scroll animations
+        function initScrollAnimations() {
+            const elementsToAnimate = document.querySelectorAll('.panel, .summary-card, .chart-container, .instructions-panel, .budget-item, .affordability-banner, .ai-analysis-panel, .footer');
+            elementsToAnimate.forEach((el, index) => {
+                el.classList.add('scroll-scale-in');
+                scrollObserver.observe(el);
+            });
+        }
+
+        // Initialize
+        initBudgetItems();
+        // Initialize income fader visuals
+        setTimeout(() => updateIncomeFaderVisuals(), 0);
+        // Initialize scroll animations
+        setTimeout(() => initScrollAnimations(), 100);
+        // Initialize header banner
+        initHeaderBanner();
+        calculate();
+
+        // Email signup handler
+        function initEmailSignup() {
+            const emailInput = document.getElementById('emailSignupInput');
+            const signupButton = document.getElementById('emailSignupButton');
+            const successMessage = document.getElementById('emailSignupSuccess');
+
+            function handleSignup() {
+                const email = emailInput.value.trim();
+                
+                // Basic email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email) {
+                    successMessage.textContent = 'Please enter your email address';
+                    successMessage.style.color = 'rgba(255, 255, 255, 0.6)';
+                    successMessage.classList.add('show');
+                    return;
+                }
+                
+                if (!emailRegex.test(email)) {
+                    successMessage.textContent = 'Please enter a valid email address';
+                    successMessage.style.color = 'rgba(255, 255, 255, 0.6)';
+                    successMessage.classList.add('show');
+                    return;
+                }
+
+                // Here you would typically send the email to your backend
+                // For now, just show success message
+                emailInput.value = '';
+                successMessage.textContent = 'Thank you! You\'ve been added to our list.';
+                successMessage.style.color = 'rgba(255, 255, 255, 0.9)';
+                successMessage.classList.add('show');
+
+                // Log the signup (you can replace this with actual API call)
+                console.log('Email signup:', email);
+            }
+
+            signupButton.addEventListener('click', handleSignup);
+            emailInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSignup();
+                }
+            });
+        }
+
+        // Initialize email signup
+        initEmailSignup();
+
+        // AI Analysis Rerun
+        function initAIAnalysis() {
+            const rerunButton = document.getElementById('aiRerunButton');
+            
+            if (!rerunButton) return;
+
+            rerunButton.addEventListener('click', function() {
+                // Disable button and show loading state
+                rerunButton.disabled = true;
+                rerunButton.classList.add('loading');
+
+                // Simulate AI analysis processing
+                setTimeout(() => {
+                    // Generate new analysis results
+                    runAIAnalysis();
+
+                    // Re-enable button and remove loading state
+                    rerunButton.disabled = false;
+                    rerunButton.classList.remove('loading');
+                }, 2000); // 2 second delay to simulate processing
+            });
+        }
+
+        function runAIAnalysis() {
+            // Get current financial data
+            const income = parseFloat(document.getElementById('monthlyIncome').value) || 9593.42;
+            const totalSpending = budgetItems.reduce((sum, item) => sum + item.amount, 0);
+            const baseSavings = income - totalSpending;
+            
+            // Calculate viability score based on financial metrics
+            const spendingRatio = totalSpending / income;
+            const savingsRatio = baseSavings / income;
+            
+            // Generate grade based on metrics
+            let grade = 'B+';
+            let score = 78;
+            let gradePercent = 78;
+            
+            if (spendingRatio < 0.6 && savingsRatio > 0.25) {
+                grade = 'A';
+                score = 92;
+                gradePercent = 92;
+            } else if (spendingRatio < 0.7 && savingsRatio > 0.15) {
+                grade = 'B+';
+                score = 78;
+                gradePercent = 78;
+            } else if (spendingRatio < 0.8 && savingsRatio > 0.1) {
+                grade = 'B';
+                score = 72;
+                gradePercent = 72;
+            } else if (spendingRatio < 0.85) {
+                grade = 'C+';
+                score = 65;
+                gradePercent = 65;
+            } else {
+                grade = 'C';
+                score = 58;
+                gradePercent = 58;
+            }
+
+            // Add some randomness for demo purposes (±5 points)
+            const variation = (Math.random() * 10) - 5;
+            score = Math.max(50, Math.min(100, Math.round(score + variation)));
+            gradePercent = score;
+
+            // Update grade display
+            document.getElementById('aiGradeLetter').textContent = grade;
+            document.querySelector('.ai-grade-score').textContent = `${score}/100`;
+            document.querySelector('.ai-grade-bar').style.width = `${gradePercent}%`;
+
+            // Update insights with dynamic text
+            const insights = [
+                {
+                    icon: savingsRatio > 0.15 ? '✓' : '⚠',
+                    title: 'Savings Trajectory',
+                    text: savingsRatio > 0.15 
+                        ? `Your savings rate of ${(savingsRatio * 100).toFixed(1)}% demonstrates strong financial discipline. Projected growth remains positive across all 5 years.`
+                        : `Your savings rate of ${(savingsRatio * 100).toFixed(1)}% is below the recommended 20%. Consider increasing savings to build a stronger financial buffer.`
+                },
+                {
+                    icon: spendingRatio < 0.75 ? '✓' : '⚠',
+                    title: 'Expense Ratio',
+                    text: spendingRatio < 0.75
+                        ? `Your spending-to-income ratio of ${(spendingRatio * 100).toFixed(1)}% is within a healthy range. This allows for both lifestyle maintenance and savings growth.`
+                        : `Your spending-to-income ratio of ${(spendingRatio * 100).toFixed(1)}% is elevated. Reducing discretionary spending by 10-15% could significantly improve your financial position.`
+                },
+                {
+                    icon: '✓',
+                    title: 'Budget Allocation',
+                    text: `Your budget is well-distributed across ${budgetItems.length} categories. The largest expenses are appropriate relative to your income level.`
+                },
+                {
+                    icon: '→',
+                    title: 'Optimization Recommendation',
+                    text: `Based on current projections, maintaining this lifestyle is ${score >= 70 ? 'viable' : 'challenging'}. ${score >= 70 ? 'Consider optimizing timing of major purchases to maximize savings growth.' : 'Consider reducing expenses or increasing income to improve long-term viability.'}`
+                }
+            ];
+
+            const insightItems = document.querySelectorAll('.ai-insight-item');
+            insightItems.forEach((item, index) => {
+                if (insights[index]) {
+                    item.querySelector('.ai-insight-icon').textContent = insights[index].icon;
+                    item.querySelector('.ai-insight-title').textContent = insights[index].title;
+                    item.querySelector('.ai-insight-text').textContent = insights[index].text;
+                }
+            });
+        }
+
+        // Initialize AI Analysis on page load
+        initAIAnalysis();
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">BLACK BOX</div>
+            <div class="footer-tagline">LIFESTYLE AFFORDABILITY CALCULATOR</div>
+            <div class="footer-dev-tag">Made with &lt;3 by aurablox</div>
+        </div>
+    </footer>
+</body>
+</html>
