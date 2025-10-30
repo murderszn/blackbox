@@ -11,20 +11,26 @@
     <style>
         :root {
             --bg: #000000;
-            --bg-secondary: #0a0a0a;
-            --bg-tertiary: #050505;
-            --card: #0a0a0a;
-            --card-hover: #0f0f0f;
-            --card-active: #141414;
+            --bg-secondary: #0d0d0d;
+            --bg-tertiary: #080808;
+            --card: #050505; /* deeper matte base */
+            --card-hover: #0a0a0a; /* subtle glossy lift */
+            --card-active: #0d0d0d;
             --text: #ffffff;
-            --text-secondary: #888888;
-            --text-tertiary: #555555;
-            --text-muted: #333333;
-            --border: #1a1a1a;
-            --border-light: #252525;
-            --border-focus: #404040;
+            --text-secondary: rgba(255, 255, 255, 0.75);
+            --text-tertiary: rgba(255, 255, 255, 0.55);
+            --text-muted: rgba(255, 255, 255, 0.35);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-light: rgba(255, 255, 255, 0.1);
+            --border-focus: rgba(255, 255, 255, 0.2);
             --accent: #ffffff;
             --accent-hover: rgba(255, 255, 255, 0.85);
+            --shadow-sm: rgba(0, 0, 0, 0.95);
+            --shadow-md: rgba(0, 0, 0, 0.85);
+            --shadow-lg: rgba(0, 0, 0, 0.75);
+            --gloss-sheen: rgba(255, 255, 255, 0.12);
+            --gloss-sheen-hover: rgba(255, 255, 255, 0.2);
+            --matte-overlay: rgba(255, 255, 255, 0.015);
         }
 
         @keyframes fadeIn {
@@ -147,10 +153,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: none;
             pointer-events: none;
             z-index: 0;
         }
@@ -283,7 +286,7 @@
 
         .header-banner-title-text {
             font-family: 'Exo 2', sans-serif;
-            font-size: 10rem;
+            font-size: clamp(3rem, 10vw, 8rem);
             font-weight: 900;
             letter-spacing: 0.08em;
             color: #ffffff !important;
@@ -428,7 +431,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 1px;
-            background: rgba(255, 255, 255, 0.3);
+            background: var(--border-light);
         }
 
         @keyframes fadeInSignup {
@@ -454,7 +457,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             font-weight: 400;
-            color: rgba(255, 255, 255, 0.8) !important;
+            color: var(--text-secondary) !important;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             text-align: center;
@@ -469,6 +472,14 @@
             align-items: stretch;
         }
 
+        .email-signup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            width: 100%;
+            align-items: stretch;
+        }
+
         .email-signup-input-group:first-of-type {
             margin-bottom: 0;
         }
@@ -476,53 +487,58 @@
         .email-signup-input {
             flex: 1;
             padding: 14px 18px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: var(--card);
+            border: 1px solid var(--border-light);
             border-radius: 0;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.875rem;
             font-weight: 400;
-            color: #ffffff;
+            color: var(--text);
             letter-spacing: 0.05em;
             text-align: center;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             min-width: 0;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .email-signup-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: var(--text-tertiary);
             letter-spacing: 0.05em;
             text-align: center;
         }
 
         .email-signup-input:focus {
             outline: none;
-            background: rgba(0, 0, 0, 0.85);
-            border-color: rgba(255, 255, 255, 0.6);
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+            background: var(--card);
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), inset 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .email-signup-button {
             padding: 14px 32px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: var(--card);
+            background-image: none;
+            border: 1px solid var(--border-light);
             border-radius: 0;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             font-weight: 500;
-            color: #ffffff !important;
+            color: var(--text) !important;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             white-space: nowrap;
             position: relative;
+            min-height: 48px;
         }
 
         .email-signup-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: var(--card-hover);
+            background-image: none;
+            border-color: var(--border-focus);
             transform: translateY(-1px);
+            box-shadow: 0 6px 20px var(--shadow-md), inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.02);
         }
 
         .email-signup-button:active {
@@ -558,9 +574,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.15) 100%);
+            background: transparent;
             z-index: 1;
             pointer-events: none;
             animation: overlayPulse 8s ease-in-out infinite;
@@ -581,14 +595,9 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.06) 20%,
-                rgba(255, 255, 255, 0.12) 50%,
-                rgba(255, 255, 255, 0.06) 80%,
-                transparent 100%);
-            animation: shimmer 4s ease-in-out infinite;
+            height: 0;
+            background: none;
+            animation: none;
             z-index: 2;
         }
 
@@ -699,14 +708,14 @@
         .main-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: clamp(24px, 3vw, 40px);
             margin-bottom: 40px;
         }
 
         @media (max-width: 1200px) {
             .main-layout {
                 grid-template-columns: 1fr;
-                gap: 30px;
+                gap: 24px;
             }
 
             .summary-grid {
@@ -715,8 +724,22 @@
             }
         }
 
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .mixing-board-container {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            .chart-container {
+                margin-bottom: 36px;
+            }
+        }
+
         .panel {
-            background: var(--bg);
+            background: var(--card);
+            background-image: none;
             padding: 32px;
             border-radius: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -724,8 +747,9 @@
             border: 1px solid var(--border);
             overflow: hidden;
             box-shadow: 
-                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-                0 4px 16px rgba(0, 0, 0, 0.8);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+                0 4px 20px var(--shadow-md),
+                inset 0 1px 2px rgba(255, 255, 255, 0.01);
         }
 
         .panel::after {
@@ -735,12 +759,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
-            background-size: 24px 24px;
+            background-image: none;
             pointer-events: none;
-            opacity: 0.3;
+            opacity: 0;
         }
 
         .panel::before {
@@ -781,10 +802,13 @@
         }
 
         .panel:hover {
-            background: var(--bg-secondary);
+            background: var(--card-hover);
             border-color: var(--border-light);
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            box-shadow: 
+                0 12px 40px var(--shadow-md), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.06);
         }
 
         .panel:hover::before {
@@ -870,22 +894,25 @@
             width: 100%;
             padding: 12px 16px;
             background: var(--bg-secondary);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-light);
             border-radius: 4px;
             font-size: 1rem;
             font-weight: 400;
             color: var(--text);
             font-family: 'JetBrains Mono', monospace;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             -webkit-appearance: none;
             appearance: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .form-input:focus {
             outline: none;
-            border-color: rgba(255, 255, 255, 0.4);
-            background: var(--bg);
-            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+            border-color: var(--border-focus);
+            background: var(--card);
+            box-shadow: 
+                0 0 0 3px rgba(255, 255, 255, 0.08),
+                inset 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .form-input::placeholder {
@@ -908,7 +935,7 @@
         }
 
         .affordability-banner {
-            background: var(--bg);
+            background: var(--card);
             color: var(--text);
             padding: 40px 48px;
             margin-bottom: 48px;
@@ -920,9 +947,9 @@
             border: 1px solid var(--border);
             overflow: hidden;
             box-shadow: 
-                0 16px 48px rgba(0, 0, 0, 0.8), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.04),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+                0 12px 40px var(--shadow-md), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.04);
         }
 
         .affordability-banner::before {
@@ -931,12 +958,9 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.1) 50%,
-                transparent 100%);
-            animation: shimmer 4s ease-in-out infinite;
+            height: 0;
+            background: none;
+            animation: none;
         }
 
         .affordability-banner::after {
@@ -994,7 +1018,7 @@
 
         .affordability-amount {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
             font-weight: 700;
             color: var(--text);
             letter-spacing: 0.05em;
@@ -1012,7 +1036,9 @@
         }
 
         .summary-card {
-            background: var(--bg);
+            background: var(--card);
+            background-image:
+                linear-gradient(180deg, var(--gloss-sheen) 0%, rgba(255, 255, 255, 0.02) 60%, transparent 100%);
             padding: 36px 28px;
             border-radius: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1022,8 +1048,9 @@
             border: 1px solid var(--border);
             overflow: hidden;
             box-shadow: 
-                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-                0 4px 16px rgba(0, 0, 0, 0.8);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+                0 6px 24px var(--shadow-md),
+                inset 0 2px 4px rgba(255, 255, 255, 0.01);
         }
 
         .summary-card::after {
@@ -1033,12 +1060,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: none;
             pointer-events: none;
-            opacity: 0.3;
+            opacity: 0;
         }
 
         .summary-card::before {
@@ -1066,10 +1090,13 @@
         .summary-card:nth-child(4) { animation-delay: 0.25s; animation-fill-mode: both; }
 
         .summary-card:hover {
-            background: var(--bg-secondary);
+            background: var(--card-hover);
             border-color: var(--border-light);
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            box-shadow: 
+                0 12px 40px var(--shadow-md), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.06);
         }
 
         .summary-card:hover::before {
@@ -1089,7 +1116,7 @@
 
         .summary-card-value {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 2.25rem;
+            font-size: clamp(1.5rem, 2.5vw, 2.25rem);
             font-weight: 700;
             color: var(--text);
             letter-spacing: 0.05em;
@@ -1267,7 +1294,7 @@
         .fader-track {
             width: 24px;
             height: 150px;
-            background: linear-gradient(180deg, #050505 0%, #000000 100%);
+            background: #000000;
             border: 2px solid var(--border);
             border-radius: 0;
             position: relative;
@@ -1281,7 +1308,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 80%, rgba(255, 255, 255, 0.4) 100%);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 0;
             transition: height 0.1s ease;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -1312,11 +1339,41 @@
 
         @media (max-width: 768px) {
             .fader-handle {
-                height: 24px;
-                top: -12px;
+                height: 20px;
+                top: -10px;
                 left: -3px;
                 right: -3px;
-                min-height: 44px;
+                min-height: 40px;
+                border-width: 1.5px;
+            }
+
+            .fader-handle.income-fader-handle {
+                height: 20px;
+                top: -10px;
+                left: -3px;
+                right: -3px;
+                min-height: 40px;
+                border-width: 1.5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .fader-handle {
+                height: 18px;
+                top: -9px;
+                left: -2px;
+                right: -2px;
+                min-height: 36px;
+                border-width: 1px;
+            }
+
+            .fader-handle.income-fader-handle {
+                height: 18px;
+                top: -9px;
+                left: -2px;
+                right: -2px;
+                min-height: 36px;
+                border-width: 1px;
             }
         }
 
@@ -1363,7 +1420,7 @@
         .fader-track.income-fader-track {
             width: 24px;
             height: 150px;
-            background: linear-gradient(180deg, #050505 0%, #000000 100%);
+            background: #000000;
             border: 2px solid var(--border);
             border-radius: 4px;
             position: relative;
@@ -1377,7 +1434,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 80%, rgba(255, 255, 255, 0.4) 100%);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 0;
             transition: height 0.1s ease;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -1509,6 +1566,11 @@
             .email-signup-input-group {
                 flex-direction: column;
             }
+            .email-signup-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
 
             .email-signup-button {
                 width: 100%;
@@ -1552,30 +1614,30 @@
             }
 
             .mixing-board-container {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 20px;
-                padding: 20px;
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 16px;
+                padding: 16px;
             }
 
             .budget-item {
-                min-height: 320px;
-                padding: 16px 12px;
-                gap: 10px;
+                min-height: 280px;
+                padding: 12px 10px;
+                gap: 8px;
                 max-width: 140px;
             }
 
             .budget-item-input {
-                padding: 6px;
-                font-size: 0.75rem;
+                padding: 4px 6px;
+                font-size: 0.7rem;
                 margin-bottom: 0;
                 order: 1;
                 width: 100%;
             }
 
             .budget-toggle-btn {
-                margin-bottom: 8px;
-                padding: 4px 10px;
-                font-size: 0.65rem;
+                margin-bottom: 6px;
+                padding: 3px 8px;
+                font-size: 0.6rem;
                 order: 2;
                 width: auto;
                 align-self: center;
@@ -1584,7 +1646,10 @@
             .budget-amount-display {
                 order: 3;
                 margin-top: 0;
-                margin-bottom: 12px;
+                margin-bottom: 8px;
+                font-size: 0.85rem;
+                padding: 4px 6px;
+                min-width: 70px;
             }
 
             .budget-slider-container {
@@ -1592,28 +1657,31 @@
                 width: 100%;
                 order: 4;
                 margin-top: 0;
+                padding: 4px 0;
             }
 
             .budget-item-label {
-                font-size: 0.8rem;
-                min-height: 32px;
+                font-size: 0.7rem;
+                min-height: 28px;
+                text-align: center;
             }
 
             .fader-track {
-                height: 120px;
-                width: 20px;
+                height: 100px;
+                width: 18px;
+                border-width: 1.5px;
             }
 
-
-
             .fader-track.income-fader-track {
-                height: 120px;
-                width: 20px;
+                height: 100px;
+                width: 18px;
+                border-width: 1.5px;
             }
 
             .budget-amount-display.income-amount-display {
-                font-size: 0.9rem;
-                padding: 3px 6px;
+                font-size: 0.85rem;
+                padding: 4px 6px;
+                min-width: 70px;
             }
 
             .summary-grid {
@@ -1634,6 +1702,66 @@
 
             .summary-card-value {
                 font-size: 1.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .budget-item {
+                min-height: 260px;
+                padding: 10px 8px;
+                gap: 6px;
+                max-width: 130px;
+            }
+
+            .budget-item-input {
+                padding: 3px 5px;
+                font-size: 0.65rem;
+            }
+
+            .budget-toggle-btn {
+                margin-bottom: 4px;
+                padding: 2px 6px;
+                font-size: 0.55rem;
+            }
+
+            .budget-amount-display {
+                font-size: 0.8rem;
+                padding: 3px 5px;
+                min-width: 60px;
+                margin-bottom: 6px;
+            }
+
+            .budget-item-label {
+                font-size: 0.65rem;
+                min-height: 24px;
+            }
+
+            .fader-track {
+                height: 90px;
+                width: 16px;
+                border-width: 1px;
+            }
+
+            .fader-track.income-fader-track {
+                height: 90px;
+                width: 16px;
+                border-width: 1px;
+            }
+
+            .budget-amount-display.income-amount-display {
+                font-size: 0.8rem;
+                padding: 3px 5px;
+                min-width: 60px;
+            }
+
+            .budget-slider-container {
+                padding: 2px 0;
+            }
+
+            .mixing-board-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 12px;
+                padding: 12px;
             }
         }
 
@@ -1729,14 +1857,14 @@
 
         .budget-slider.income-slider::-webkit-slider-runnable-track {
             height: 8px;
-            background: linear-gradient(90deg, #050505 0%, #000000 100%);
+            background: #000000;
             border: 1px solid var(--border);
             border-radius: 0;
         }
 
         .budget-slider.income-slider::-moz-range-track {
             height: 8px;
-            background: linear-gradient(90deg, #050505 0%, #000000 100%);
+            background: #000000;
             border: 1px solid var(--border);
             border-radius: 0;
         }
@@ -1744,15 +1872,16 @@
 
         .btn {
             padding: 10px 20px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
+            background: var(--card);
+            background-image: none;
+            border: 1px solid var(--border-light);
             border-radius: 0;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             font-weight: 500;
             color: var(--text);
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             letter-spacing: 0.08em;
             text-transform: uppercase;
             position: relative;
@@ -1763,6 +1892,9 @@
             touch-action: manipulation;
             min-height: 44px;
             min-width: 44px;
+            box-shadow: 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+                0 2px 8px var(--shadow-sm);
         }
 
         .btn::before {
@@ -1772,16 +1904,23 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.15) 50%,
+                transparent 100%);
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.25s ease;
         }
 
         .btn:hover {
-            background: var(--bg-tertiary);
-            border-color: var(--border-light);
+            background: var(--card-hover);
+            background-image: none;
+            border-color: var(--border-focus);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+            box-shadow: 
+                0 6px 20px var(--shadow-md),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+                inset 0 1px 2px rgba(255, 255, 255, 0.02);
         }
 
         .btn:hover::before {
@@ -1790,6 +1929,9 @@
 
         .btn:active {
             transform: translateY(0);
+            box-shadow: 
+                0 2px 8px var(--shadow-sm),
+                inset 0 1px 2px rgba(255, 255, 255, 0.01);
         }
 
         .btn-danger {
@@ -1809,17 +1951,18 @@
         }
 
         .chart-container {
-            background: var(--bg);
-            padding: 36px;
+            background: var(--card);
+            background-image: none;
+            padding: clamp(24px, 3vw, 36px);
             margin-bottom: 48px;
             border-radius: 0;
             position: relative;
             border: 1px solid var(--border);
             overflow: hidden;
             box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.85), 
+                0 8px 32px var(--shadow-md), 
                 inset 0 1px 0 rgba(255, 255, 255, 0.04),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03);
         }
 
         .chart-container::after {
@@ -1829,12 +1972,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
-            background-size: 28px 28px;
+            background-image: none;
             pointer-events: none;
-            opacity: 0.25;
+            opacity: 0;
         }
 
         .chart-container::before {
@@ -1858,9 +1998,12 @@
         }
 
         .chart-container:hover {
-            background: var(--bg-secondary);
+            background: var(--card-hover);
             border-color: var(--border-light);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            box-shadow: 
+                0 12px 48px var(--shadow-md), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.04);
             transform: translateY(-2px);
         }
 
@@ -2892,15 +3035,13 @@
                 <div class="header-email-signup">
                     <div class="email-signup-form">
                         <div class="email-signup-text">Get more tools & calculators delivered to your inbox</div>
-                        <div class="email-signup-input-group">
+                        <div class="email-signup-input-group email-signup-grid">
                             <input 
                                 type="text" 
                                 class="email-signup-input" 
                                 id="nameSignupInput"
                                 placeholder="Your name"
                             />
-                        </div>
-                        <div class="email-signup-input-group">
                             <input 
                                 type="email" 
                                 class="email-signup-input" 
@@ -3280,7 +3421,7 @@
                            oninput="updateIncomeSlider(this.value)"
                            ${!incomeEnabled ? 'disabled' : ''}>
                 </div>
-                <span class="budget-amount-display income-amount-display" id="incomeAmountDisplay" onclick="${incomeEnabled ? 'editIncomeAmount()' : ''}" style="${!incomeEnabled ? 'opacity: 0.4; cursor: default;' : ''}">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <span class="budget-amount-display income-amount-display" id="incomeAmountDisplay" onclick="${incomeEnabled ? 'editIncomeAmount()' : ''}" style="${!incomeEnabled ? 'opacity: 0.4; cursor: default;' : ''}">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
             `;
             container.appendChild(incomeDiv);
             if (incomeEnabled) {
@@ -3321,7 +3462,7 @@
                                oninput="updateBudgetSlider(${index}, this.value, this)"
                                ${!isEnabled ? 'disabled' : ''}>
                     </div>
-                    <span class="budget-amount-display" id="budget-amount-${index}" onclick="${isEnabled ? `editBudgetAmount(${index})` : ''}" style="${!isEnabled ? 'opacity: 0.4; cursor: default;' : ''}">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    <span class="budget-amount-display" id="budget-amount-${index}" onclick="${isEnabled ? `editBudgetAmount(${index})` : ''}" style="${!isEnabled ? 'opacity: 0.4; cursor: default;' : ''}">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
                 `;
                 container.appendChild(div);
 
@@ -3371,7 +3512,7 @@
             document.getElementById('monthlyIncome').value = incomeValue;
             const displayElement = document.getElementById('incomeAmountDisplay');
             if (displayElement) {
-                displayElement.textContent = '$' + incomeValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                displayElement.textContent = '$' + incomeValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
             }
             updateIncomeFaderVisuals();
             calculate();
@@ -3444,7 +3585,7 @@
                 const displayElement = document.createElement('span');
                 displayElement.id = 'incomeAmountDisplay';
                 displayElement.className = 'income-amount-display';
-                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
                 displayElement.onclick = editIncomeAmount;
                 editingInput.parentNode.replaceChild(displayElement, editingInput);
             }
@@ -3460,7 +3601,7 @@
             document.getElementById('monthlyIncomeSlider').value = clampedValue;
             const displayElement = document.getElementById('incomeAmountDisplay');
             if (displayElement) {
-                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
             }
             updateIncomeFaderVisuals();
             calculate();
@@ -3482,7 +3623,7 @@
             input.value = currentValue;
             input.className = 'budget-amount-display editing';
             input.style.width = displayElement.offsetWidth + 'px';
-            input.step = '0.01';
+            input.step = '1';
             input.onblur = function() {
                 finishEditingBudget(index, this.value, slider);
             };
@@ -3523,7 +3664,7 @@
                 const displayElement = document.createElement('span');
                 displayElement.id = `budget-amount-${index}`;
                 displayElement.className = 'budget-amount-display';
-                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
                 displayElement.onclick = function() { editBudgetAmount(index); };
                 editingInput.parentNode.replaceChild(displayElement, editingInput);
             }
@@ -3576,7 +3717,7 @@
             
             const displayElement = document.getElementById('incomeAmountDisplay');
             if (displayElement && !displayElement.classList.contains('editing')) {
-                displayElement.textContent = '$' + newValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                displayElement.textContent = '$' + newValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
             }
             calculate();
         }
@@ -3652,7 +3793,7 @@
         function updateBudgetDisplay(index) {
             const displayElement = document.getElementById(`budget-amount-${index}`);
             if (displayElement && !displayElement.classList.contains('editing')) {
-                displayElement.textContent = '$' + budgetItems[index].amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                displayElement.textContent = '$' + budgetItems[index].amount.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
             }
         }
 
@@ -4474,10 +4615,27 @@
 
         // Observe elements for scroll animations
         function initScrollAnimations() {
+            // Base sections animate with scale-in
             const elementsToAnimate = document.querySelectorAll('.panel, .summary-card, .chart-container, .instructions-panel, .budget-item, .affordability-banner, .ai-analysis-panel, .footer');
-            elementsToAnimate.forEach((el, index) => {
+            elementsToAnimate.forEach((el) => {
                 el.classList.add('scroll-scale-in');
                 scrollObserver.observe(el);
+            });
+
+            // AI section: staged fade-in for inner parts to enforce flow
+            const aiStages = [
+                '.ai-analysis-header',
+                '.ai-grade-section',
+                '.ai-insights',
+                '.ai-analysis-footer'
+            ];
+            aiStages.forEach((selector, stageIndex) => {
+                document.querySelectorAll(selector).forEach((el) => {
+                    el.classList.add('scroll-fade-in');
+                    // Stagger stage reveal via transition delay
+                    el.style.transitionDelay = (stageIndex * 120) + 'ms';
+                    scrollObserver.observe(el);
+                });
             });
         }
 
