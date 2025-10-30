@@ -19,8 +19,23 @@ export default async function handler(req, res) {
         const financialData = req.body;
 
         // Validate input
-        if (!financialData || !financialData.income || !financialData.budgetItems) {
-            return res.status(400).json({ error: 'Financial data is required' });
+        if (!financialData || financialData.income === undefined || financialData.income === null || !Array.isArray(financialData.budgetItems) || financialData.budgetItems.length === 0) {
+            console.error('Invalid financial data received:', {
+                hasData: !!financialData,
+                income: financialData?.income,
+                incomeType: typeof financialData?.income,
+                hasBudgetItems: !!financialData?.budgetItems,
+                budgetItemsType: typeof financialData?.budgetItems,
+                budgetItemsLength: financialData?.budgetItems?.length,
+                fullData: JSON.stringify(financialData, null, 2)
+            });
+            return res.status(400).json({
+                error: 'Financial data is required',
+                details: {
+                    hasIncome: financialData?.income !== undefined && financialData?.income !== null,
+                    hasBudgetItems: Array.isArray(financialData?.budgetItems) && financialData?.budgetItems?.length > 0
+                }
+            });
         }
 
         // Get Gemini API key from environment

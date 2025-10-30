@@ -5142,8 +5142,8 @@
 
                     // Prepare financial data for API (filter disabled items, include incomeEnabled)
                     const financialData = {
-                        incomeEnabled: typeof incomeEnabled !== 'undefined' ? incomeEnabled : true,
-                        income: (typeof incomeEnabled !== 'undefined' && !incomeEnabled) ? 0 : income,
+                        incomeEnabled: incomeEnabled !== undefined ? incomeEnabled : true,
+                        income: incomeEnabled === false ? 0 : income,
                         budgetItems: budgetItems
                             .filter(item => item.enabled !== false)
                             .map(item => ({ name: item.name, amount: item.amount })),
@@ -5159,6 +5159,8 @@
 
                     // Call AI analysis API
                     const apiUrl = '/api/ai-analysis';
+                    console.log('Sending financial data to API:', financialData);
+
                     const response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: {
