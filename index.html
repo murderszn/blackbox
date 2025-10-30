@@ -60,6 +60,15 @@
             }
         }
 
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -190,21 +199,48 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            min-width: 100%;
-            min-height: 100%;
+            min-width: 110%;
+            min-height: 110%;
             width: auto;
             height: auto;
-            transform: translate(-50%, -50%) scale(1.05);
+            transform: translate(-50%, -50%) scale(1.1);
             object-fit: cover;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out, transform 1.5s ease-out;
+            transition: opacity 1.5s ease-in-out;
             filter: brightness(1.0) contrast(1.0);
             z-index: 0;
+            animation: bannerZoom 20s ease-in-out infinite alternate;
         }
 
         .header-banner-image.loaded {
             opacity: 0.95;
-            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes bannerZoom {
+            0% {
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+            100% {
+                transform: translate(-48%, -52%) scale(1.15);
+            }
+        }
+
+        @keyframes bannerMove {
+            0% {
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+            25% {
+                transform: translate(-48%, -52%) scale(1.08);
+            }
+            50% {
+                transform: translate(-52%, -48%) scale(1.1);
+            }
+            75% {
+                transform: translate(-50%, -50%) scale(1.08);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.05);
+            }
         }
 
         .header-banner-title {
@@ -216,14 +252,24 @@
             text-align: center;
             pointer-events: none;
             width: 100%;
-            max-width: 800px;
+            max-width: 1000px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             mix-blend-mode: normal !important;
             isolation: isolate;
-            padding: 0 24px;
+            padding: 0 32px;
+            animation: titleFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% {
+                transform: translate(-50%, -50%);
+            }
+            50% {
+                transform: translate(-50%, -52%);
+            }
         }
 
         .header-banner-title-wrapper {
@@ -237,16 +283,19 @@
 
         .header-banner-title-text {
             font-family: 'Exo 2', sans-serif;
-            font-size: 8rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
+            font-size: 10rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
             color: #ffffff !important;
             text-transform: uppercase;
             margin: 0;
-            line-height: 1;
-            text-shadow: none !important;
+            line-height: 0.95;
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.1),
+                0 0 40px rgba(255, 255, 255, 0.05),
+                0 2px 4px rgba(0, 0, 0, 0.3) !important;
             opacity: 0;
-            animation: fadeInTitle 1.2s ease-out 0.5s forwards;
+            animation: fadeInTitle 1.4s ease-out 0.5s forwards;
             text-align: center;
             filter: none !important;
             -webkit-text-fill-color: #ffffff !important;
@@ -254,75 +303,99 @@
             -webkit-background-clip: unset !important;
             background-clip: unset !important;
             mix-blend-mode: normal !important;
+            transform: scale(1);
+            transition: transform 0.3s ease;
+        }
+
+        .header-banner-title-text:hover {
+            transform: scale(1.02);
         }
 
         .beta-tag {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
             color: #ffffff !important;
             text-transform: uppercase;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            padding: 8px 16px;
             border-radius: 0;
             opacity: 0;
-            animation: fadeInTitle 1.2s ease-out 0.5s forwards;
+            animation: fadeInTitle 1.4s ease-out 0.5s forwards;
             mix-blend-mode: normal !important;
             white-space: nowrap;
             position: relative;
-            margin-top: -24px;
+            margin-top: -28px;
             align-self: flex-start;
+            box-shadow: 
+                0 0 12px rgba(255, 255, 255, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         @keyframes fadeInTitle {
             from {
                 opacity: 0;
-                transform: translateY(-15px);
+                transform: translateY(-20px) scale(0.98);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .header-banner-subtitle {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            font-weight: 400;
-            letter-spacing: 0.3em;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.35em;
             color: #ffffff !important;
             text-transform: uppercase;
-            margin-top: 24px;
+            margin-top: 36px;
             opacity: 0;
-            animation: fadeInSubtitle 1.2s ease-out 0.8s forwards;
-            text-shadow: none !important;
+            animation: fadeInSubtitle 1.4s ease-out 0.8s forwards;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.2) !important;
             filter: none !important;
             -webkit-text-fill-color: #ffffff !important;
             background: none !important;
             mix-blend-mode: normal !important;
             position: relative;
-            padding: 0 24px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            flex-wrap: wrap;
+            width: 100%;
         }
 
-        .header-banner-subtitle::before,
-        .header-banner-subtitle::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 40px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-50%);
+        .subtitle-main {
+            position: relative;
+            flex: 0 1 auto;
+            text-align: center;
         }
 
-        .header-banner-subtitle::before {
-            left: 0;
+        .subtitle-accent {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.6) !important;
+            text-transform: uppercase;
+            position: relative;
+            padding: 0 0;
+            flex: 0 0 auto;
         }
 
-        .header-banner-subtitle::after {
-            right: 0;
+        .subtitle-divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.35);
+            flex: 0 0 auto;
         }
 
         @keyframes fadeInSubtitle {
@@ -396,6 +469,10 @@
             align-items: stretch;
         }
 
+        .email-signup-input-group:first-of-type {
+            margin-bottom: 0;
+        }
+
         .email-signup-input {
             flex: 1;
             padding: 14px 18px;
@@ -452,6 +529,12 @@
             transform: translateY(0);
         }
 
+        .email-signup-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .email-signup-success {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
@@ -480,6 +563,16 @@
                 radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.15) 100%);
             z-index: 1;
             pointer-events: none;
+            animation: overlayPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes overlayPulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.95;
+            }
         }
 
         .header::before {
@@ -732,8 +825,9 @@
         }
 
         .panel.disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             border-color: var(--border);
+            background: var(--bg-tertiary);
         }
 
         .panel.disabled .panel-title {
@@ -743,8 +837,18 @@
         .panel.disabled .form-input,
         .panel.disabled .form-label,
         .panel.disabled select {
-            opacity: 0.5;
+            opacity: 0.4;
             pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .panel.disabled .panel-title-checkbox {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .panel.disabled .panel-title-checkbox input[type="checkbox"] {
+            cursor: not-allowed;
         }
 
         .form-group {
@@ -1108,11 +1212,47 @@
             color: var(--text);
         }
 
+        .budget-toggle-btn {
+            margin: 0;
+            margin-bottom: 8px;
+            width: auto;
+            min-width: 32px;
+            z-index: 10;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .budget-toggle-btn.enabled {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .budget-toggle-btn.enabled:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .budget-toggle-btn.disabled {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .budget-toggle-btn.disabled:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .budget-item.disabled {
+            opacity: 0.6;
+        }
+
         .budget-slider-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             width: 100%;
             flex: 1;
             justify-content: center;
@@ -1121,11 +1261,12 @@
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             touch-action: none;
+            margin: 8px 0;
         }
 
         .fader-track {
             width: 24px;
-            height: 200px;
+            height: 150px;
             background: linear-gradient(180deg, #050505 0%, #000000 100%);
             border: 2px solid var(--border);
             border-radius: 0;
@@ -1149,8 +1290,8 @@
         .fader-handle {
             position: absolute;
             top: -8px;
-            left: -6px;
-            right: -6px;
+            left: -2px;
+            right: -2px;
             height: 16px;
             background: rgba(255, 255, 255, 0.95);
             border: 2px solid var(--border);
@@ -1173,8 +1314,8 @@
             .fader-handle {
                 height: 24px;
                 top: -12px;
-                left: -8px;
-                right: -8px;
+                left: -3px;
+                right: -3px;
                 min-height: 44px;
             }
         }
@@ -1221,7 +1362,7 @@
 
         .fader-track.income-fader-track {
             width: 24px;
-            height: 200px;
+            height: 150px;
             background: linear-gradient(180deg, #050505 0%, #000000 100%);
             border: 2px solid var(--border);
             border-radius: 4px;
@@ -1245,8 +1386,8 @@
         .fader-handle.income-fader-handle {
             position: absolute;
             top: -8px;
-            left: -6px;
-            right: -6px;
+            left: -2px;
+            right: -2px;
             height: 16px;
             background: rgba(255, 255, 255, 0.95);
             border: 2px solid var(--border);
@@ -1323,34 +1464,36 @@
             }
 
             .header-banner-title-text {
-                font-size: 3.5rem;
-                letter-spacing: 0.1em;
+                font-size: 4rem;
+                font-weight: 900;
+                letter-spacing: 0.08em;
             }
 
             .beta-tag {
-                font-size: 0.625rem;
-                padding: 4px 10px;
-                margin-top: -16px;
-                letter-spacing: 0.1em;
+                font-size: 0.6875rem;
+                font-weight: 700;
+                padding: 6px 12px;
+                margin-top: -20px;
+                letter-spacing: 0.15em;
+                border-width: 1.5px;
             }
 
             .header-banner-subtitle {
-                font-size: 0.75rem;
+                font-size: 0.875rem;
+                font-weight: 600;
                 letter-spacing: 0.25em;
+                gap: 12px;
+                flex-direction: column;
+            }
+
+            .subtitle-accent {
+                font-size: 0.6875rem;
+                padding: 0 10px;
             }
 
             .header-banner-title {
                 max-width: 100%;
                 padding: 0 16px;
-            }
-
-            .header-banner-subtitle {
-                padding: 0 16px;
-            }
-
-            .header-banner-subtitle::before,
-            .header-banner-subtitle::after {
-                width: 24px;
             }
 
             .header-email-signup {
@@ -1415,10 +1558,40 @@
             }
 
             .budget-item {
-                min-height: 300px;
-                padding: 24px 18px;
-                gap: 14px;
+                min-height: 320px;
+                padding: 16px 12px;
+                gap: 10px;
                 max-width: 140px;
+            }
+
+            .budget-item-input {
+                padding: 6px;
+                font-size: 0.75rem;
+                margin-bottom: 0;
+                order: 1;
+                width: 100%;
+            }
+
+            .budget-toggle-btn {
+                margin-bottom: 8px;
+                padding: 4px 10px;
+                font-size: 0.65rem;
+                order: 2;
+                width: auto;
+                align-self: center;
+            }
+
+            .budget-amount-display {
+                order: 3;
+                margin-top: 0;
+                margin-bottom: 12px;
+            }
+
+            .budget-slider-container {
+                margin: 0;
+                width: 100%;
+                order: 4;
+                margin-top: 0;
             }
 
             .budget-item-label {
@@ -1427,18 +1600,14 @@
             }
 
             .fader-track {
-                height: 160px;
+                height: 120px;
                 width: 20px;
             }
 
-            .budget-amount-display {
-                font-size: 0.9rem;
-                padding: 3px 6px;
-            }
 
 
             .fader-track.income-fader-track {
-                height: 160px;
+                height: 120px;
                 width: 20px;
             }
 
@@ -1835,27 +2004,34 @@
         .treemap-label {
             font-size: 12px;
             font-weight: 600;
-            dominant-baseline: top;
+            dominant-baseline: hanging;
             text-anchor: start;
             letter-spacing: 0.05em;
+            line-height: 1.4;
+        }
+
+        .treemap-label tspan {
+            dominant-baseline: hanging;
         }
 
         .treemap-amount {
             font-size: 16px;
             font-weight: 700;
-            dominant-baseline: middle;
+            dominant-baseline: hanging;
             text-anchor: start;
             letter-spacing: 0.02em;
+            line-height: 1.3;
         }
 
         .treemap-percentage {
             font-size: 10px;
             font-weight: 500;
-            opacity: 0.8;
-            dominant-baseline: bottom;
+            opacity: 0.75;
+            dominant-baseline: hanging;
             text-anchor: start;
             letter-spacing: 0.05em;
             text-transform: uppercase;
+            line-height: 1.3;
         }
 
         .treemap-tooltip {
@@ -2203,11 +2379,11 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.6875rem;
             font-weight: 600;
-            letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.5) !important;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.7) !important;
             text-transform: uppercase;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 6px 14px;
             border-radius: 0;
             white-space: nowrap;
@@ -2245,6 +2421,67 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .ai-rerun-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .ai-rerun-button.disabled:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: none;
+        }
+
+        .ai-rerun-button.disabled::after {
+            content: ' (Sign up required)';
+            font-size: 0.6em;
+            opacity: 0.7;
+            letter-spacing: 0.1em;
+        }
+
+        .signup-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 24px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .signup-notice-icon {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .signup-notice-content {
+            flex: 1;
+        }
+
+        .signup-notice-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .signup-notice-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
         }
 
         .ai-rerun-loading {
@@ -2644,12 +2881,25 @@
                     <h1 class="header-banner-title-text">BLACK BOX</h1>
                     <span class="beta-tag">BETA</span>
                 </div>
-                <div class="header-banner-subtitle">LIFESTYLE AFFORDABILITY CALCULATOR</div>
+                <div class="header-banner-subtitle">
+                    <div class="subtitle-divider"></div>
+                    <span class="subtitle-main">LIFESTYLE AFFORDABILITY CALCULATOR</span>
+                    <div class="subtitle-divider"></div>
+                    <span class="subtitle-accent">EST. 2025</span>
+                </div>
                 
                 <!-- Email Signup -->
                 <div class="header-email-signup">
                     <div class="email-signup-form">
                         <div class="email-signup-text">Get more tools & calculators delivered to your inbox</div>
+                        <div class="email-signup-input-group">
+                            <input 
+                                type="text" 
+                                class="email-signup-input" 
+                                id="nameSignupInput"
+                                placeholder="Your name"
+                            />
+                        </div>
                         <div class="email-signup-input-group">
                             <input 
                                 type="email" 
@@ -2675,7 +2925,7 @@
                         <div class="tooltip-content">Click to expand or collapse instructions</div>
                     </div>
                 </div>
-                <button class="instructions-toggle" onclick="toggleInstructions()" id="instructionsToggle">Show Instructions</button>
+                <button class="instructions-toggle" onclick="toggleInstructions()" id="instructionsToggle" aria-expanded="false" aria-controls="instructionsContent">Show Instructions</button>
             </div>
             <div class="instructions-content" id="instructionsContent">
                 <div class="instruction-item">
@@ -2754,7 +3004,7 @@
                             <div class="tooltip-content">Calculate loan payments over your selected term and purchase year</div>
                         </div>
                         <div class="panel-title-checkbox">
-                            <input type="checkbox" id="carEnabled" checked onchange="toggleCar()">
+                            <input type="checkbox" id="carEnabled" checked onchange="toggleCar()" aria-label="Include Dream Car in calculations">
                             <label for="carEnabled">Include</label>
                         </div>
                     </div>
@@ -2800,7 +3050,7 @@
                             <div class="tooltip-content">Down payment uses accumulated savings. Additional monthly bills (taxes, insurance) are separate from loan payment</div>
                         </div>
                         <div class="panel-title-checkbox">
-                            <input type="checkbox" id="houseEnabled" checked onchange="toggleHouse()">
+                            <input type="checkbox" id="houseEnabled" checked onchange="toggleHouse()" aria-label="Include Dream House in calculations">
                             <label for="houseEnabled">Include</label>
                         </div>
                     </div>
@@ -2914,7 +3164,7 @@
                 <div class="ai-analysis-title-wrapper">
                     <h2 class="ai-analysis-title">AI Financial Viability Analysis</h2>
                     <div class="ai-analysis-actions">
-                        <span class="coming-soon-badge">COMING SOON</span>
+                        <span class="coming-soon-badge">BETA</span>
                         <button class="ai-rerun-button" id="aiRerunButton">
                             <span class="ai-rerun-text">RERUN ANALYSIS</span>
                             <span class="ai-rerun-loading" style="display: none;">ANALYZING...</span>
@@ -2974,20 +3224,21 @@
         let budgetItems = [];
         let savingsChart = null;
         let spendingChart = null;
+        let incomeEnabled = true;
 
         // Default budget items
         const defaultBudgetItems = [
-            { name: 'Bills & Utilities', amount: 808.63 },
-            { name: 'Dining & Drinks', amount: 798.88 },
-            { name: 'Groceries', amount: 452.76 },
-            { name: 'Auto & Transport', amount: 425.94 },
-            { name: 'Entertainment & Rec.', amount: 276.73 },
-            { name: 'Shopping', amount: 220.65 },
-            { name: 'Fees', amount: 216.93 },
-            { name: 'Travel & Vacation', amount: 201.08 },
-            { name: 'Health & Wellness', amount: 141.99 },
-            { name: 'Home & Garden', amount: 70.00 },
-            { name: 'Software & Tech', amount: 7.99 }
+            { name: 'Bills & Utilities', amount: 808.63, enabled: true },
+            { name: 'Dining & Drinks', amount: 798.88, enabled: true },
+            { name: 'Groceries', amount: 452.76, enabled: true },
+            { name: 'Auto & Transport', amount: 425.94, enabled: true },
+            { name: 'Entertainment & Rec.', amount: 276.73, enabled: true },
+            { name: 'Shopping', amount: 220.65, enabled: true },
+            { name: 'Fees', amount: 216.93, enabled: true },
+            { name: 'Travel & Vacation', amount: 201.08, enabled: true },
+            { name: 'Health & Wellness', amount: 141.99, enabled: true },
+            { name: 'Home & Garden', amount: 70.00, enabled: true },
+            { name: 'Software & Tech', amount: 7.99, enabled: true }
         ];
 
         function initBudgetItems() {
@@ -3002,17 +3253,20 @@
             // First, render the income item
             const incomeValue = parseFloat(document.getElementById('monthlyIncome').value) || 9593.42;
             const incomeDiv = document.createElement('div');
-            incomeDiv.className = 'budget-item income-item';
+            incomeDiv.className = 'budget-item income-item' + (incomeEnabled === false ? ' disabled' : '');
             const incomeMaxValue = 50000;
             const incomeFaderHeight = (incomeValue / incomeMaxValue) * 100;
-            const incomeHandleTop = 200 - (incomeFaderHeight / 100 * 200) - 8;
+            const incomeHandleTop = 150 - (incomeFaderHeight / 100 * 150) - 8;
+            const incomeToggleIcon = incomeEnabled ? '✓' : '✗';
             
             incomeDiv.innerHTML = `
                 <input type="text" class="form-input budget-item-input" value="Income"
                        placeholder="Income"
                        readonly
-                       style="font-size: 0.7rem; padding: 6px; text-align: center; cursor: default;">
-                <div class="budget-slider-container" id="slider-container-income" onmousedown="startIncomeFaderDrag(event)" ontouchstart="startIncomeFaderDrag(event)">
+                       style="font-size: 0.7rem; padding: 6px; text-align: center; cursor: default;"
+                       ${!incomeEnabled ? 'disabled' : ''}>
+                <button class="btn budget-toggle-btn ${incomeEnabled ? 'enabled' : 'disabled'}" onclick="toggleIncome()" style="font-size: 0.7rem; padding: 4px 8px;" title="${incomeEnabled ? 'Disable' : 'Enable'} income">${incomeToggleIcon}</button>
+                <div class="budget-slider-container" id="slider-container-income" onmousedown="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}" ontouchstart="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}" style="${!incomeEnabled ? 'opacity: 0.4; pointer-events: none;' : ''}">
                     <div class="fader-track income-fader-track" id="income-fader-track">
                         <div class="fader-level income-fader-level" id="income-fader-level" style="height: ${incomeFaderHeight}%"></div>
                         <div class="fader-handle income-fader-handle" id="income-fader-handle" style="top: ${incomeHandleTop}px"></div>
@@ -3023,31 +3277,38 @@
                            max="${incomeMaxValue}"
                            step="100"
                            value="${incomeValue}"
-                           oninput="updateIncomeSlider(this.value)">
+                           oninput="updateIncomeSlider(this.value)"
+                           ${!incomeEnabled ? 'disabled' : ''}>
                 </div>
-                <span class="budget-amount-display income-amount-display" id="incomeAmountDisplay" onclick="editIncomeAmount()">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <span class="budget-amount-display income-amount-display" id="incomeAmountDisplay" onclick="${incomeEnabled ? 'editIncomeAmount()' : ''}" style="${!incomeEnabled ? 'opacity: 0.4; cursor: default;' : ''}">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
             `;
             container.appendChild(incomeDiv);
-            setTimeout(() => updateIncomeFaderVisuals(), 0);
+            if (incomeEnabled) {
+                setTimeout(() => updateIncomeFaderVisuals(), 0);
+            }
             
             // Then render budget items
             budgetItems.forEach((item, index) => {
                 const div = document.createElement('div');
-                div.className = 'budget-item';
+                div.className = 'budget-item' + (item.enabled === false ? ' disabled' : '');
                 
                 // Fixed max value of $5,000 per month
                 const maxValue = 5000;
                 const minValue = 0;
                 
                 const faderHeight = (item.amount / maxValue) * 100;
-                const handleTop = 200 - (faderHeight / 100 * 200) - 8; // Will be corrected after render by updateFaderVisuals
+                const handleTop = 150 - (faderHeight / 100 * 150) - 8; // Will be corrected after render by updateFaderVisuals
+                const isEnabled = item.enabled !== false;
+                const toggleIcon = isEnabled ? '✓' : '✗';
 
                 div.innerHTML = `
                     <input type="text" class="form-input budget-item-input" value="${item.name}"
                            placeholder="Budget item name"
                            oninput="updateBudgetItem(${index}, 'name', this.value)"
-                           style="font-size: 0.7rem; padding: 6px; text-align: center;">
-                    <div class="budget-slider-container" id="slider-container-${index}" onmousedown="startFaderDrag(event, ${index})" ontouchstart="startFaderDrag(event, ${index})">
+                           style="font-size: 0.7rem; padding: 6px; text-align: center;"
+                           ${!isEnabled ? 'disabled' : ''}>
+                    <button class="btn budget-toggle-btn ${isEnabled ? 'enabled' : 'disabled'}" onclick="toggleBudgetItem(${index})" style="font-size: 0.7rem; padding: 4px 8px;" title="${isEnabled ? 'Disable' : 'Enable'} item">${toggleIcon}</button>
+                    <div class="budget-slider-container" id="slider-container-${index}" onmousedown="${isEnabled ? `startFaderDrag(event, ${index})` : ''}" ontouchstart="${isEnabled ? `startFaderDrag(event, ${index})` : ''}" style="${!isEnabled ? 'opacity: 0.4; pointer-events: none;' : ''}">
                         <div class="fader-track" id="fader-track-${index}">
                             <div class="fader-level" id="fader-level-${index}" style="height: ${faderHeight}%"></div>
                             <div class="fader-handle" id="fader-handle-${index}" style="top: ${handleTop}px"></div>
@@ -3057,15 +3318,17 @@
                                max="${maxValue}"
                                step="10"
                                value="${item.amount}"
-                               oninput="updateBudgetSlider(${index}, this.value, this)">
+                               oninput="updateBudgetSlider(${index}, this.value, this)"
+                               ${!isEnabled ? 'disabled' : ''}>
                     </div>
-                    <span class="budget-amount-display" id="budget-amount-${index}" onclick="editBudgetAmount(${index})">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    <button class="btn btn-danger" onclick="removeBudgetItem(${index})" style="font-size: 0.7rem; padding: 4px 8px;">×</button>
+                    <span class="budget-amount-display" id="budget-amount-${index}" onclick="${isEnabled ? `editBudgetAmount(${index})` : ''}" style="${!isEnabled ? 'opacity: 0.4; cursor: default;' : ''}">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                 `;
                 container.appendChild(div);
 
                 // Update fader visuals after DOM insertion to get correct dimensions
-                setTimeout(() => updateFaderVisuals(index), 0);
+                if (isEnabled) {
+                    setTimeout(() => updateFaderVisuals(index), 0);
+                }
             });
         }
 
@@ -3084,14 +3347,22 @@
         }
 
         function addBudgetItem() {
-            budgetItems.push({ name: 'New Item', amount: 0 });
+            budgetItems.push({ name: 'New Item', amount: 0, enabled: true });
             renderBudgetItems();
         }
 
-        function removeBudgetItem(index) {
-            budgetItems.splice(index, 1);
+        function toggleIncome() {
+            incomeEnabled = !incomeEnabled;
             renderBudgetItems();
             calculate();
+        }
+
+        function toggleBudgetItem(index) {
+            if (budgetItems[index]) {
+                budgetItems[index].enabled = budgetItems[index].enabled === false ? true : false;
+                renderBudgetItems();
+                calculate();
+            }
         }
 
         function updateIncomeSlider(value) {
@@ -3111,7 +3382,7 @@
             const maxValue = 50000;
             const faderHeight = (incomeValue / maxValue) * 100;
             const track = document.getElementById('income-fader-track');
-            const trackHeight = track ? track.offsetHeight : 200;
+            const trackHeight = track ? track.offsetHeight : 150;
             const handleTop = trackHeight - (faderHeight / 100 * trackHeight) - 8;
 
             const faderLevel = document.getElementById('income-fader-level');
@@ -3290,7 +3561,7 @@
             event.preventDefault();
 
             const track = document.getElementById('income-fader-track');
-            const trackHeight = track ? track.offsetHeight : 200;
+            const trackHeight = track ? track.offsetHeight : 150;
             const clientY = event.touches ? event.touches[0].clientY : event.clientY;
             const deltaY = incomeDragStartY - clientY;
             const deltaPercent = deltaY / trackHeight;
@@ -3336,7 +3607,7 @@
             event.preventDefault();
 
             const track = document.getElementById(`fader-track-${dragIndex}`);
-            const trackHeight = track ? track.offsetHeight : 200;
+            const trackHeight = track ? track.offsetHeight : 150;
             const clientY = event.touches ? event.touches[0].clientY : event.clientY;
             const deltaY = dragStartY - clientY;
             const deltaPercent = deltaY / trackHeight;
@@ -3364,7 +3635,7 @@
             const maxValue = 5000;
             const faderHeight = (budgetItems[index].amount / maxValue) * 100;
             const track = document.getElementById(`fader-track-${index}`);
-            const trackHeight = track ? track.offsetHeight : 200;
+            const trackHeight = track ? track.offsetHeight : 150;
             const handleTop = trackHeight - (faderHeight / 100 * trackHeight) - 8;
 
             const faderLevel = document.getElementById(`fader-level-${index}`);
@@ -3414,8 +3685,11 @@
         }
 
         function calculate() {
-            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-            const monthlySpending = budgetItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const monthlyIncome = incomeEnabled ? (parseFloat(document.getElementById('monthlyIncome').value) || 0) : 0;
+            const monthlySpending = budgetItems.reduce((sum, item) => {
+                if (item.enabled === false) return sum;
+                return sum + (parseFloat(item.amount) || 0);
+            }, 0);
             const baseMonthlySavings = monthlyIncome - monthlySpending;
 
             // Car loan
@@ -3912,12 +4186,12 @@
             // Calculate total spending
             const totalSpending = categories.reduce((sum, cat) => sum + cat.value, 0);
 
-            // Monochromatic white/gray color palette
+            // Darker gray color palette for better white label visibility
             const colors = [
-                '#ffffff', '#e5e5e5', '#cccccc', '#b3b3b3', '#999999', '#808080',
-                '#666666', '#4d4d4d', '#333333', '#f5f5f5', '#e0e0e0', '#c0c0c0',
-                '#a0a0a0', '#858585', '#707070', '#5a5a5a', '#454545', '#2f2f2f',
-                '#ffffff', '#d5d5d5', '#bababa', '#9f9f9f', '#848484', '#696969'
+                '#2a2a2a', '#353535', '#404040', '#4a4a4a', '#555555', '#606060',
+                '#6b6b6b', '#757575', '#808080', '#252525', '#303030', '#3a3a3a',
+                '#454545', '#505050', '#5a5a5a', '#656565', '#707070', '#7a7a7a',
+                '#2f2f2f', '#383838', '#424242', '#4d4d4d', '#585858', '#636363'
             ];
 
             // Assign colors to categories
@@ -3988,13 +4262,13 @@
                 .on('mouseout', hideTooltip);
 
             // Helper function to wrap text
-            function wrapText(textElement, text, maxWidth, lineHeight) {
+            function wrapText(textElement, text, maxWidth, lineHeight, xPosition) {
                 const words = text.split(/\s+/);
                 let line = '';
-                let lines = [];
                 let tspan = textElement.append('tspan')
-                    .attr('x', 12)
-                    .attr('dy', 0)
+                    .attr('x', xPosition)
+                    .attr('dy', '0')
+                    .attr('dominant-baseline', 'hanging')
                     .text('');
 
                 words.forEach((word, i) => {
@@ -4008,8 +4282,9 @@
                             tspan.text(line);
                             line = word;
                             tspan = textElement.append('tspan')
-                                .attr('x', 12)
+                                .attr('x', xPosition)
                                 .attr('dy', lineHeight)
+                                .attr('dominant-baseline', 'hanging')
                                 .text(word);
                         } else {
                             line = testLine;
@@ -4024,69 +4299,66 @@
                 const cell = d3.select(this);
                 const boxWidth = d.x1 - d.x0;
                 const boxHeight = d.y1 - d.y0;
-                const padding = 12;
-                const textAreaWidth = boxWidth - (padding * 2);
-                const minSize = 100; // Minimum size to show text
+                
+                // Higher minimum size thresholds for better readability
+                const minWidth = 140; // Minimum width to show labels
+                const minHeight = 70; // Minimum height to show labels
+                const minArea = 12000; // Minimum area (width * height)
+                
+                // Calculate area
+                const area = boxWidth * boxHeight;
+                
+                // Only show labels if box meets all size requirements
+                if (boxWidth >= minWidth && boxHeight >= minHeight && area >= minArea) {
+                    const padding = 16;
+                    const textAreaWidth = boxWidth - (padding * 2);
+                    const lineHeight = 18;
+                    const labelFontSize = boxWidth < 200 ? '11px' : '12px';
+                    const amountFontSize = boxWidth < 200 ? '15px' : '17px';
+                    const percentageFontSize = boxWidth < 200 ? '9px' : '10px';
 
-                if (boxWidth >= minSize && boxHeight >= 50) {
-                    // Category name with wrapping
+                    // Category name with wrapping - centered vertically in available space
                     const labelText = cell.append('text')
                         .attr('class', 'treemap-text treemap-label')
                         .attr('x', padding)
                         .attr('y', padding)
-                        .attr('font-size', boxWidth < 150 ? '10px' : '12px');
+                        .attr('dominant-baseline', 'hanging')
+                        .attr('font-size', labelFontSize);
                     
-                    wrapText(labelText, d.data.name, textAreaWidth, 14);
+                    wrapText(labelText, d.data.name, textAreaWidth, lineHeight, padding);
 
-                    // Calculate total label height
+                    // Calculate total label height accurately
                     const labelLines = labelText.selectAll('tspan').size();
-                    const labelHeight = (labelLines * 14) + padding;
+                    const labelHeight = padding + (labelLines * lineHeight);
                     
-                    // Amount (only if there's space)
-                    if (boxHeight >= labelHeight + 30) {
+                    // Amount - show if there's enough space
+                    if (boxHeight >= labelHeight + 36) {
                         cell.append('text')
                             .attr('class', 'treemap-text treemap-amount')
                             .attr('x', padding)
                             .attr('y', labelHeight + 8)
-                            .attr('font-size', boxWidth < 150 ? '14px' : '16px')
+                            .attr('dominant-baseline', 'hanging')
+                            .attr('font-size', amountFontSize)
                             .text('$' + d.data.value.toLocaleString(undefined, {maximumFractionDigits: 0}));
-                    }
-
-                    // Percentage (only if there's space)
-                    if (boxHeight >= labelHeight + 50) {
-                        cell.append('text')
-                            .attr('class', 'treemap-text treemap-percentage')
-                            .attr('x', padding)
-                            .attr('y', labelHeight + 28)
-                            .text(d.data.percentage.toFixed(1) + '%');
-                    }
-                } else if (boxWidth >= 60 && boxHeight >= 30) {
-                    // Compact label for small boxes
-                    const compactText = cell.append('text')
-                        .attr('class', 'treemap-text treemap-label')
-                        .attr('x', boxWidth / 2)
-                        .attr('y', boxHeight / 2)
-                        .attr('text-anchor', 'middle')
-                        .attr('dominant-baseline', 'middle')
-                        .attr('font-size', '10px');
-                    
-                    // Try to fit category name
-                    const words = d.data.name.split(/\s+/);
-                    let displayText = '';
-                    for (let word of words) {
-                        const testText = displayText + (displayText ? ' ' : '') + word;
-                        compactText.text(testText);
-                        if (compactText.node().getComputedTextLength() > boxWidth - 20) {
-                            break;
+                        
+                        // Percentage - show if there's enough space below amount
+                        if (boxHeight >= labelHeight + 60) {
+                            cell.append('text')
+                                .attr('class', 'treemap-text treemap-percentage')
+                                .attr('x', padding)
+                                .attr('y', labelHeight + 32)
+                                .attr('dominant-baseline', 'hanging')
+                                .attr('font-size', percentageFontSize)
+                                .text(d.data.percentage.toFixed(1) + '%');
                         }
-                        displayText = testText;
-                    }
-                    if (displayText !== d.data.name) {
-                        compactText.text(displayText + '...');
-                    } else {
-                        compactText.text(displayText);
+                    } else if (boxHeight >= labelHeight + 20) {
+                        // If not enough space for amount, try to show just the category name centered better
+                        const availableHeight = boxHeight - padding;
+                        const labelCenterY = padding + (availableHeight / 2) - ((labelLines * lineHeight) / 2);
+                        labelText.attr('y', Math.max(padding, labelCenterY));
                     }
                 }
+                // Boxes below minimum size threshold don't show any labels
             });
 
             // Create legend
@@ -4156,9 +4428,11 @@
             if (isExpanded) {
                 content.classList.remove('expanded');
                 toggle.textContent = 'Show Instructions';
+                toggle.setAttribute('aria-expanded', 'false');
             } else {
                 content.classList.add('expanded');
                 toggle.textContent = 'Hide Instructions';
+                toggle.setAttribute('aria-expanded', 'true');
             }
         }
 
@@ -4252,15 +4526,24 @@
 
         // Email signup handler
         function initEmailSignup() {
+            const nameInput = document.getElementById('nameSignupInput');
             const emailInput = document.getElementById('emailSignupInput');
             const signupButton = document.getElementById('emailSignupButton');
             const successMessage = document.getElementById('emailSignupSuccess');
 
-            function handleSignup() {
+            async function handleSignup() {
+                const name = nameInput.value.trim();
                 const email = emailInput.value.trim();
                 
-                // Basic email validation
+                // Basic validation
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!name) {
+                    successMessage.textContent = 'Please enter your name';
+                    successMessage.style.color = 'rgba(255, 255, 255, 0.6)';
+                    successMessage.classList.add('show');
+                    return;
+                }
+                
                 if (!email) {
                     successMessage.textContent = 'Please enter your email address';
                     successMessage.style.color = 'rgba(255, 255, 255, 0.6)';
@@ -4275,21 +4558,72 @@
                     return;
                 }
 
-                // Here you would typically send the email to your backend
-                // For now, just show success message
-                emailInput.value = '';
-                successMessage.textContent = 'Thank you! You\'ve been added to our list.';
-                successMessage.style.color = 'rgba(255, 255, 255, 0.9)';
-                successMessage.classList.add('show');
+                // Disable button and show loading state
+                signupButton.disabled = true;
+                signupButton.textContent = 'SIGNING UP...';
 
-                // Log the signup (you can replace this with actual API call)
-                console.log('Email signup:', email);
+                try {
+                    // Send to webhook
+                    const response = await fetch('/api/signup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            email: email
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Success - mark user as signed up
+                        localStorage.setItem('emailSignupComplete', 'true');
+                        
+                        nameInput.value = '';
+                        emailInput.value = '';
+                        successMessage.textContent = 'Thank you! You\'ve been added to our list.';
+                        successMessage.style.color = 'rgba(255, 255, 255, 0.9)';
+                        successMessage.classList.add('show');
+                        
+                        // Enable AI analysis button
+                        const aiRerunButton = document.getElementById('aiRerunButton');
+                        if (aiRerunButton) {
+                            aiRerunButton.classList.remove('disabled');
+                        }
+                        
+                        // Remove signup notice from AI panel if it exists
+                        const aiPanel = document.querySelector('.ai-analysis-panel');
+                        if (aiPanel) {
+                            const signupNotice = aiPanel.querySelector('.signup-notice');
+                            if (signupNotice) {
+                                signupNotice.style.animation = 'fadeOut 0.3s ease-out';
+                                setTimeout(() => signupNotice.remove(), 300);
+                            }
+                        }
+                    } else {
+                        throw new Error('Signup failed');
+                    }
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    successMessage.textContent = 'Something went wrong. Please try again.';
+                    successMessage.style.color = 'rgba(255, 255, 255, 0.6)';
+                    successMessage.classList.add('show');
+                } finally {
+                    // Re-enable button
+                    signupButton.disabled = false;
+                    signupButton.textContent = 'SIGN UP';
+                }
             }
 
             signupButton.addEventListener('click', handleSignup);
             emailInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     handleSignup();
+                }
+            });
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    emailInput.focus();
                 }
             });
         }
@@ -4303,71 +4637,195 @@
             
             if (!rerunButton) return;
 
-            rerunButton.addEventListener('click', function() {
+            // Check if user has signed up on page load
+            const hasSignedUp = localStorage.getItem('emailSignupComplete') === 'true';
+            if (!hasSignedUp) {
+                rerunButton.classList.add('disabled');
+            }
+
+            rerunButton.addEventListener('click', async function() {
+                // Check if user has signed up
+                const hasSignedUp = localStorage.getItem('emailSignupComplete') === 'true';
+                
+                if (!hasSignedUp) {
+                    // Show friendly notification in AI panel
+                    const aiPanel = document.querySelector('.ai-analysis-panel');
+                    const existingNotice = aiPanel.querySelector('.signup-notice');
+                    
+                    if (existingNotice) {
+                        existingNotice.remove();
+                    }
+                    
+                    const signupNotice = document.createElement('div');
+                    signupNotice.className = 'signup-notice';
+                    signupNotice.innerHTML = `
+                        <div class="signup-notice-icon">⚠</div>
+                        <div class="signup-notice-content">
+                            <div class="signup-notice-title">Email Signup Required</div>
+                            <div class="signup-notice-text">Please sign up with your email at the top of the page to access AI Analysis. This helps us provide you with updates and improvements.</div>
+                        </div>
+                    `;
+                    
+                    // Insert notice at the top of the AI panel content
+                    const aiHeader = aiPanel.querySelector('.ai-analysis-header');
+                    if (aiHeader && aiHeader.nextSibling) {
+                        aiPanel.insertBefore(signupNotice, aiHeader.nextSibling);
+                    } else {
+                        aiPanel.insertBefore(signupNotice, aiPanel.firstChild);
+                    }
+                    
+                    // Scroll to email signup form
+                    const emailSignupForm = document.querySelector('.header-email-signup');
+                    if (emailSignupForm) {
+                        emailSignupForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Highlight the email form briefly
+                        emailSignupForm.style.transition = 'box-shadow 0.3s ease';
+                        emailSignupForm.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.3)';
+                        setTimeout(() => {
+                            emailSignupForm.style.boxShadow = '';
+                        }, 2000);
+                        // Focus on name input after a brief delay
+                        setTimeout(() => {
+                            const nameInput = document.getElementById('nameSignupInput');
+                            if (nameInput) {
+                                nameInput.focus();
+                            }
+                        }, 800);
+                    }
+                    return;
+                }
+
                 // Disable button and show loading state
                 rerunButton.disabled = true;
                 rerunButton.classList.add('loading');
 
-                // Simulate AI analysis processing
-                setTimeout(() => {
-                    // Generate new analysis results
-                    runAIAnalysis();
+                try {
+                    // Collect all financial data
+                    const income = parseFloat(document.getElementById('monthlyIncome').value) || 9593.42;
+                    const finalSavings = parseFloat(document.getElementById('finalSavings').textContent.replace(/[^0-9.-]/g, '')) || 0;
+                    const monthlySavings = parseFloat(document.getElementById('monthlySavings').textContent.replace(/[^0-9.-]/g, '')) || 0;
+                    const carEnabled = document.getElementById('carEnabled')?.checked || false;
+                    const houseEnabled = document.getElementById('houseEnabled')?.checked || false;
+                    const carPayment = parseFloat(document.getElementById('carPayment').textContent.replace(/[^0-9.-]/g, '')) || 0;
+                    const housePayment = parseFloat(document.getElementById('housePayment').textContent.replace(/[^0-9.-]/g, '')) || 0;
+                    
+                    // Get car and house details
+                    const carLoanMonthsEl = document.getElementById('carLoanMonths');
+                    const carLoanMonths = carEnabled && carLoanMonthsEl ? parseInt(carLoanMonthsEl.value) || 60 : 0;
+                    const houseAdditionalBillsEl = document.getElementById('houseAdditionalBills');
+                    const houseBills = houseEnabled && houseAdditionalBillsEl ? parseFloat(houseAdditionalBillsEl.value) || 0 : 0;
 
+                    // Prepare financial data for API (filter disabled items, include incomeEnabled)
+                    const financialData = {
+                        incomeEnabled: typeof incomeEnabled !== 'undefined' ? incomeEnabled : true,
+                        income: (typeof incomeEnabled !== 'undefined' && !incomeEnabled) ? 0 : income,
+                        budgetItems: budgetItems
+                            .filter(item => item.enabled !== false)
+                            .map(item => ({ name: item.name, amount: item.amount })),
+                        finalSavings: finalSavings,
+                        monthlySavings: monthlySavings,
+                        carEnabled: carEnabled,
+                        carPayment: carPayment,
+                        carLoanMonths: carLoanMonths,
+                        houseEnabled: houseEnabled,
+                        housePayment: housePayment,
+                        houseBills: houseBills
+                    };
+
+                    // Call AI analysis API
+                    const apiUrl = '/api/ai-analysis';
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(financialData)
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('AI Analysis API error:', response.status, errorText);
+                        
+                        // Check if it's a 405 Method Not Allowed - likely wrong server
+                        if (response.status === 405 && window.location.port !== '8888') {
+                            alert('⚠️ API Error: Please use the Vercel dev server on port 8888.\n\nRun: npx vercel dev --listen 8888\nThen access: http://localhost:8888\n\nThe current server (port ' + window.location.port + ') does not support serverless functions.');
+                            throw new Error('Please use Vercel dev server on port 8888');
+                        }
+                        
+                        throw new Error(`AI analysis failed: ${response.status} ${errorText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    // Update UI with AI results
+                    if (result.success) {
+                        updateAIDisplay(result.grade, result.score, result.insights);
+                    } else {
+                        throw new Error(result.error || 'Unknown error');
+                    }
+
+                } catch (error) {
+                    console.error('AI Analysis error:', error);
+                    // Fallback to local analysis if API fails
+                    runAIAnalysis();
+                } finally {
                     // Re-enable button and remove loading state
                     rerunButton.disabled = false;
                     rerunButton.classList.remove('loading');
-                }, 2000); // 2 second delay to simulate processing
+                }
+            });
+        }
+
+        function updateAIDisplay(grade, score, insights) {
+            // Update grade display
+            document.getElementById('aiGradeLetter').textContent = grade;
+            document.querySelector('.ai-grade-score').textContent = `${score}/100`;
+            document.querySelector('.ai-grade-bar').style.width = `${score}%`;
+
+            // Update insights
+            const insightItems = document.querySelectorAll('.ai-insight-item');
+            insightItems.forEach((item, index) => {
+                if (insights && insights[index]) {
+                    const insight = insights[index];
+                    item.querySelector('.ai-insight-icon').textContent = insight.icon || '✓';
+                    item.querySelector('.ai-insight-title').textContent = insight.title || 'Analysis';
+                    item.querySelector('.ai-insight-text').textContent = insight.text || 'No insight available.';
+                }
             });
         }
 
         function runAIAnalysis() {
-            // Get current financial data
+            // Fallback local analysis (for demo/error cases)
             const income = parseFloat(document.getElementById('monthlyIncome').value) || 9593.42;
-            const totalSpending = budgetItems.reduce((sum, item) => sum + item.amount, 0);
+            const totalSpending = budgetItems.reduce((sum, item) => {
+                if (item.enabled === false) return sum;
+                return sum + item.amount;
+            }, 0);
             const baseSavings = income - totalSpending;
             
-            // Calculate viability score based on financial metrics
             const spendingRatio = totalSpending / income;
             const savingsRatio = baseSavings / income;
             
-            // Generate grade based on metrics
             let grade = 'B+';
             let score = 78;
-            let gradePercent = 78;
             
             if (spendingRatio < 0.6 && savingsRatio > 0.25) {
                 grade = 'A';
                 score = 92;
-                gradePercent = 92;
             } else if (spendingRatio < 0.7 && savingsRatio > 0.15) {
                 grade = 'B+';
                 score = 78;
-                gradePercent = 78;
             } else if (spendingRatio < 0.8 && savingsRatio > 0.1) {
                 grade = 'B';
                 score = 72;
-                gradePercent = 72;
             } else if (spendingRatio < 0.85) {
                 grade = 'C+';
                 score = 65;
-                gradePercent = 65;
             } else {
                 grade = 'C';
                 score = 58;
-                gradePercent = 58;
             }
 
-            // Add some randomness for demo purposes (±5 points)
-            const variation = (Math.random() * 10) - 5;
-            score = Math.max(50, Math.min(100, Math.round(score + variation)));
-            gradePercent = score;
-
-            // Update grade display
-            document.getElementById('aiGradeLetter').textContent = grade;
-            document.querySelector('.ai-grade-score').textContent = `${score}/100`;
-            document.querySelector('.ai-grade-bar').style.width = `${gradePercent}%`;
-
-            // Update insights with dynamic text
             const insights = [
                 {
                     icon: savingsRatio > 0.15 ? '✓' : '⚠',
@@ -4395,14 +4853,7 @@
                 }
             ];
 
-            const insightItems = document.querySelectorAll('.ai-insight-item');
-            insightItems.forEach((item, index) => {
-                if (insights[index]) {
-                    item.querySelector('.ai-insight-icon').textContent = insights[index].icon;
-                    item.querySelector('.ai-insight-title').textContent = insights[index].title;
-                    item.querySelector('.ai-insight-text').textContent = insights[index].text;
-                }
-            });
+            updateAIDisplay(grade, score, insights);
         }
 
         // Initialize AI Analysis on page load
@@ -4418,4 +4869,5 @@
         </div>
     </footer>
 </body>
+</html>
 </html>
