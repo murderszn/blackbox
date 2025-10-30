@@ -349,6 +349,64 @@
             }
         }
 
+        .header-banner-countdown {
+            margin-top: 24px;
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: fadeInCountdown 1.6s ease-out 1.0s forwards;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .countdown-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1;
+            text-shadow:
+                0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .countdown-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 4px;
+            line-height: 1;
+        }
+
+        @keyframes fadeInCountdown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .header-banner-subtitle {
             font-family: 'JetBrains Mono', monospace;
             font-size: 1rem;
@@ -356,10 +414,10 @@
             letter-spacing: 0.35em;
             color: #ffffff !important;
             text-transform: uppercase;
-            margin-top: 36px;
+            margin-top: 24px;
             opacity: 0;
-            animation: fadeInSubtitle 1.4s ease-out 0.8s forwards;
-            text-shadow: 
+            animation: fadeInSubtitle 1.4s ease-out 1.2s forwards;
+            text-shadow:
                 0 0 10px rgba(255, 255, 255, 0.1),
                 0 1px 2px rgba(0, 0, 0, 0.2) !important;
             filter: none !important;
@@ -3264,7 +3322,27 @@
                     <div class="subtitle-divider"></div>
                     <span class="subtitle-accent">EST. 2025</span>
                 </div>
-                
+
+                <!-- Countdown Timer -->
+                <div class="header-banner-countdown" id="countdownTimer">
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="days">00</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="hours">00</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="minutes">00</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="seconds">00</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+
                 <!-- Email Signup -->
                 <div class="header-email-signup">
                     <div class="email-signup-form">
@@ -4847,7 +4925,7 @@
         // Initialize header banner image
         function initHeaderBanner() {
             const image = document.getElementById('headerBannerImage');
-            
+
             if (image) {
                 if (image.complete && image.naturalWidth > 0) {
                     image.classList.add('loaded');
@@ -4860,6 +4938,45 @@
                     });
                 }
             }
+        }
+
+        // Initialize countdown timer
+        function initCountdownTimer() {
+            const countdownTimer = document.getElementById('countdownTimer');
+            if (!countdownTimer) return;
+
+            // Set target date to one month from now
+            const now = new Date();
+            const targetDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days from now
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate.getTime() - now;
+
+                if (distance > 0) {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                    document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                    document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                    document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                } else {
+                    // Countdown finished
+                    document.getElementById('days').textContent = '00';
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                }
+            }
+
+            // Update immediately
+            updateCountdown();
+
+            // Update every second
+            setInterval(updateCountdown, 1000);
         }
 
         // Scroll animation observer
@@ -4935,6 +5052,8 @@
         setTimeout(() => updateIncomeFaderVisuals(), 0);
         // Initialize scroll animations
         setTimeout(() => initScrollAnimations(), 100);
+        // Initialize countdown timer
+        initCountdownTimer();
         // Initialize header banner
         initHeaderBanner();
         // Add window resize listener for charts
