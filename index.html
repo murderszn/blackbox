@@ -4962,9 +4962,8 @@
             const countdownTimer = document.getElementById('countdownTimer');
             if (!countdownTimer) return;
 
-            // Set target date to one month from now
-            const now = new Date();
-            const targetDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days from now
+            // Set target date to January 1st, 2026
+            const targetDate = new Date('2026-01-01T00:00:00');
 
             function updateCountdown() {
                 const now = new Date().getTime();
