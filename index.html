@@ -1223,18 +1223,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px 10px;
-            background: var(--bg);
-            border-radius: 0;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--bg) 0%, rgba(255, 255, 255, 0.01) 50%, var(--bg) 100%);
+            border-radius: 6px;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             height: 240px;
             position: relative;
             width: 100%;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             overflow: hidden;
             box-shadow:
                 inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-                0 2px 8px rgba(0, 0, 0, 0.6);
+                0 4px 12px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.01);
         }
 
         .budget-item::before {
@@ -1257,10 +1258,13 @@
         }
 
         .budget-item:hover {
-            background: var(--bg-secondary);
-            border-color: var(--border-light);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(255, 255, 255, 0.02) 50%, var(--bg-secondary) 100%);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+                0 8px 20px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.02);
         }
 
         .budget-item:hover::before {
@@ -1286,11 +1290,27 @@
         .budget-item-input {
             width: 100%;
             text-align: center;
-            font-size: 0.85rem;
-            padding: 8px;
-            border: 1px solid var(--border);
-            background: var(--bg);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
             color: var(--text);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .budget-item-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+        }
+
+        .budget-item-input:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .budget-toggle-btn {
@@ -1334,11 +1354,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-around;
+            justify-content: space-evenly;
             height: 100%;
             width: 100%;
             text-align: center;
-            padding: 8px 0;
+            padding: 12px 0;
         }
 
         .budget-item-top {
@@ -1357,27 +1377,38 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding-top: 8px;
+            padding: 8px 0;
         }
 
         .budget-item-amount-row {
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 4px 0;
         }
 
         .budget-item-amount-row .budget-amount-display,
         .budget-item-amount-row .income-amount-display {
             font-size: 1.5rem;
             font-weight: 700;
-            padding: 10px 14px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        .budget-item-amount-row .budget-amount-display:hover,
+        .budget-item-amount-row .income-amount-display:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.08);
         }
 
         .budget-item-slider-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-top: 4px;
+            padding: 8px 0;
             width: 100%;
         }
 
@@ -1391,31 +1422,46 @@
 
         /* Sliding toggle switch - monochrome black/white */
         .toggle-switch {
-            width: 44px;
-            height: 24px;
+            width: 48px;
+            height: 26px;
             border-radius: 9999px;
             position: relative;
             cursor: pointer;
-            background: #0b0b0b; /* off: black */
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6), 0 0 0 0 rgba(255,255,255,0);
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                inset 0 1px 2px rgba(0,0,0,0.8),
+                0 1px 3px rgba(0,0,0,0.3);
             flex-shrink: 0;
         }
 
         .toggle-switch:hover {
-            border-color: rgba(255, 255, 255, 0.28);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow:
+                inset 0 1px 2px rgba(0,0,0,0.8),
+                0 2px 6px rgba(0,0,0,0.4);
         }
 
         .toggle-switch:focus-visible {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18);
+            box-shadow:
+                inset 0 1px 2px rgba(0,0,0,0.8),
+                0 1px 3px rgba(0,0,0,0.3),
+                0 0 0 3px rgba(255, 255, 255, 0.12);
         }
 
         .toggle-switch.enabled {
-            background: #ffffff; /* on: white */
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow:
+                inset 0 1px 2px rgba(0,0,0,0.1),
+                0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.enabled:hover {
+            background: #ffffff;
             border-color: rgba(255, 255, 255, 0.6);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.08), 0 0 0 0 rgba(255,255,255,0);
         }
 
         .toggle-thumb {
@@ -3303,23 +3349,6 @@
             transform: translateY(0);
         }
 
-        .footer-date {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6875rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            color: rgba(255, 255, 255, 0.4) !important;
-            margin-top: 16px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s;
-            position: relative;
-        }
-
-        .footer.visible .footer-date {
-            opacity: 1;
-            transform: translateY(0);
-        }
 
         .footer-links {
             display: flex;
@@ -3327,7 +3356,7 @@
             margin-top: 16px;
             opacity: 0;
             transform: translateY(10px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.0s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.0s;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s;
         }
 
         .footer.visible .footer-links {
@@ -3469,10 +3498,6 @@
                 margin-top: 24px;
             }
 
-            .footer-date {
-                font-size: 0.625rem;
-                margin-top: 16px;
-            }
 
             .footer-links {
                 margin-top: 16px;
@@ -3496,9 +3521,103 @@
                 padding: 20px;
             }
         }
+
+        /* Promo Marquee Styles */
+        .promo-marquee {
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow:
+                0 1px 3px rgba(0, 0, 0, 0.9),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .promo-marquee::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.02) 50%,
+                transparent 100%);
+            animation: shimmer 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .marquee-content {
+            display: flex;
+            white-space: nowrap;
+            animation: scroll 45s linear infinite;
+            font-family: 'JetBrains Mono', 'Orbitron', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 40px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .marquee-content span {
+            margin-right: 80px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .marquee-content span::before {
+            content: '◆';
+            margin-right: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 8px;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        @keyframes shimmer {
+            0%, 100% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(0%);
+            }
+        }
+
+        .promo-marquee:hover .marquee-content {
+            animation-play-state: paused;
+            color: rgba(255, 255, 255, 1);
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+        }
+
+        .promo-marquee:hover::before {
+            animation-duration: 1.5s;
+        }
     </style>
 </head>
 <body>
+    <!-- Promo Marquee Bar -->
+    <div class="promo-marquee">
+        <div class="marquee-content">
+            <span>Black Box Finance: The first finance app from Aurablox • iOS & Android launching 1/1/26 • Early feedback program active • Secure lifestyle budgeting • Advanced analytics • Privacy-first design • Get notified for launch</span>
+            <span>Black Box Finance: The first finance app from Aurablox • iOS & Android launching 1/1/26 • Early feedback program active • Secure lifestyle budgeting • Advanced analytics • Privacy-first design • Get notified for launch</span>
+        </div>
+    </div>
+
     <div class="app-container">
         <div class="header">
             <!-- Banner Image -->
@@ -5665,8 +5784,7 @@
         <div class="footer-content">
             <div class="footer-brand">BLACK BOX</div>
             <div class="footer-tagline">LIFESTYLE AFFORDABILITY CALCULATOR</div>
-            <div class="footer-dev-tag">Made with &lt;3 by aurablox</div>
-            <div class="footer-date">© 2025</div>
+            <div class="footer-dev-tag">Made with &lt;3 by aurablox © 2025</div>
             <div class="footer-links">
                 <a href="#" onclick="showPrivacyPolicy()" class="footer-link">Privacy Policy</a>
             </div>
