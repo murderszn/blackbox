@@ -251,7 +251,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 100;
+            z-index: 200;
             text-align: center;
             pointer-events: none;
             width: 100%;
@@ -263,7 +263,6 @@
             mix-blend-mode: normal !important;
             isolation: isolate;
             padding: 0 32px;
-            animation: titleFloat 6s ease-in-out infinite;
         }
 
         @keyframes titleFloat {
@@ -286,19 +285,18 @@
 
         .header-banner-title-text {
             font-family: 'Exo 2', sans-serif;
-            font-size: clamp(3rem, 10vw, 8rem);
+            font-size: clamp(4rem, 12vw, 10rem);
             font-weight: 900;
             letter-spacing: 0.08em;
             color: #ffffff !important;
             text-transform: uppercase;
             margin: 0;
             line-height: 0.95;
-            text-shadow: 
-                0 0 20px rgba(255, 255, 255, 0.1),
-                0 0 40px rgba(255, 255, 255, 0.05),
-                0 2px 4px rgba(0, 0, 0, 0.3) !important;
-            opacity: 0;
-            animation: fadeInTitle 1.4s ease-out 0.5s forwards;
+            text-shadow:
+                0 0 20px rgba(255, 255, 255, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.5) !important;
+            opacity: 1;
             text-align: center;
             filter: none !important;
             -webkit-text-fill-color: #ffffff !important;
@@ -308,6 +306,8 @@
             mix-blend-mode: normal !important;
             transform: scale(1);
             transition: transform 0.3s ease;
+            z-index: 200;
+            position: relative;
         }
 
         .header-banner-title-text:hover {
@@ -514,31 +514,30 @@
             box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), inset 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
+        .btn,
         .email-signup-button {
-            padding: 14px 32px;
             background: var(--card);
             background-image: none;
             border: 1px solid var(--border-light);
             border-radius: 0;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
             font-weight: 500;
-            color: var(--text) !important;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+            color: var(--text);
             cursor: pointer;
-            transition: all 0.25s ease;
-            white-space: nowrap;
+            text-transform: uppercase;
             position: relative;
-            min-height: 48px;
+            box-shadow: 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+                0 2px 8px var(--shadow-sm);
         }
 
-        .email-signup-button:hover {
-            background: var(--card-hover);
-            background-image: none;
-            border-color: var(--border-focus);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px var(--shadow-md), inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.02);
+        .email-signup-button {
+            padding: 14px 32px;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+            min-height: 48px;
         }
 
         .email-signup-button:active {
@@ -601,11 +600,6 @@
             z-index: 2;
         }
 
-        @keyframes shimmer {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
         .header::after {
             content: '';
             position: absolute;
@@ -620,11 +614,6 @@
             pointer-events: none;
             animation: pulseGlow 10s ease-in-out infinite;
             z-index: 1;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
         }
 
 
@@ -674,10 +663,6 @@
             animation: expandLine 1.2s ease-out 0.8s forwards;
         }
 
-        @keyframes expandLine {
-            to { transform: scaleX(1); }
-        }
-
         .header p {
             font-size: 1.375rem;
             color: rgba(255, 255, 255, 0.92);
@@ -712,6 +697,29 @@
             margin-bottom: 40px;
         }
 
+        .panel,
+        .chart-container,
+        .instructions-panel,
+        .summary-card {
+            border: 1px solid var(--border);
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel,
+        .chart-container {
+            background: var(--card);
+            background-image: none;
+        }
+
+        .u-mb-24 { margin-bottom: 24px; }
+        .u-mb-40 { margin-bottom: 40px; }
+        .u-mt-24 { margin-top: 24px; }
+        .u-w-100 { width: 100%; }
+        .u-hidden { display: none !important; }
+        .u-flex-gap-12 { display: flex; align-items: center; gap: 12px; }
+
         @media (max-width: 1200px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -738,14 +746,8 @@
         }
 
         .panel {
-            background: var(--card);
-            background-image: none;
             padding: 32px;
-            border-radius: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            border: 1px solid var(--border);
-            overflow: hidden;
             box-shadow: 
                 inset 0 0 0 1px rgba(255, 255, 255, 0.03),
                 0 4px 20px var(--shadow-md),
@@ -880,7 +882,7 @@
         }
 
         .form-label {
-            display: block;
+            display: none; /* Horizontal fader is the primary control */
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             font-weight: 500;
@@ -1040,13 +1042,9 @@
             background-image:
                 linear-gradient(180deg, var(--gloss-sheen) 0%, rgba(255, 255, 255, 0.02) 60%, transparent 100%);
             padding: 36px 28px;
-            border-radius: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             text-align: center;
             width: 100%;
-            position: relative;
-            border: 1px solid var(--border);
-            overflow: hidden;
             box-shadow: 
                 inset 0 0 0 1px rgba(255, 255, 255, 0.04),
                 0 6px 24px var(--shadow-md),
@@ -1135,15 +1133,14 @@
 
         .mixing-board-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 24px;
-            padding: 32px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 16px;
             background: var(--bg);
             border-radius: 0;
-            justify-items: center;
             position: relative;
             border: 1px solid var(--border);
-            box-shadow: 
+            box-shadow:
                 inset 0 0 0 1px rgba(255, 255, 255, 0.02),
                 0 4px 16px rgba(0, 0, 0, 0.8);
         }
@@ -1167,18 +1164,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            padding: 24px 20px;
+            padding: 8px 10px;
             background: var(--bg);
             border-radius: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            min-height: 320px;
+            height: 240px;
             position: relative;
             width: 100%;
-            max-width: 160px;
             border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: 
+            box-shadow:
                 inset 0 0 0 1px rgba(255, 255, 255, 0.02),
                 0 2px 8px rgba(0, 0, 0, 0.6);
         }
@@ -1275,6 +1270,123 @@
             opacity: 0.6;
         }
 
+        /* Budget card layout */
+        .budget-item-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        .budget-item-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .budget-item-name {
+            text-align: center;
+        }
+
+        .budget-item-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding-top: 8px;
+        }
+
+        .budget-item-amount-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .budget-item-amount-row .budget-amount-display,
+        .budget-item-amount-row .income-amount-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 10px 14px;
+        }
+
+        .budget-item-slider-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 4px;
+            width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            .budget-item-amount-row .budget-amount-display,
+            .budget-item-amount-row .income-amount-display {
+                font-size: 1.3rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Sliding toggle switch - monochrome black/white */
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            background: #0b0b0b; /* off: black */
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6), 0 0 0 0 rgba(255,255,255,0);
+            flex-shrink: 0;
+        }
+
+        .toggle-switch:hover {
+            border-color: rgba(255, 255, 255, 0.28);
+        }
+
+        .toggle-switch:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18);
+        }
+
+        .toggle-switch.enabled {
+            background: #ffffff; /* on: white */
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.08), 0 0 0 0 rgba(255,255,255,0);
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffffff; /* off thumb: white on black track */
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.55);
+            transition: left 0.2s ease, transform 0.18s ease;
+        }
+
+        .toggle-switch:hover .toggle-thumb { transform: translateY(-0.5px); }
+
+        .toggle-switch.enabled .toggle-thumb {
+            left: 23px;
+            background: #0b0b0b; /* on thumb: black on white track */
+            border-color: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.45);
+        }
+
+        @media (max-width: 480px) {
+            .toggle-switch { width: 40px; height: 22px; }
+            .toggle-thumb { width: 16px; height: 16px; top: 3px; left: 3px; }
+            .toggle-switch.enabled .toggle-thumb { left: 21px; }
+        }
+
         .budget-slider-container {
             display: flex;
             flex-direction: column;
@@ -1284,46 +1396,82 @@
             flex: 1;
             justify-content: center;
             position: relative;
-            cursor: ns-resize;
+            cursor: ew-resize;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             touch-action: none;
             margin: 8px 0;
         }
 
+        .budget-name-input {
+            font-size: 0.75rem;
+            padding: 6px 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .budget-name-input--readonly {
+            cursor: default;
+        }
+
+        .budget-toggle-compact {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+        }
+
+        .budget-slider-container.is-disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .budget-amount-display.is-disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        /* Consolidate budget-slider-container mobile overrides */
+        @media (max-width: 768px) {
+        }
+
+        @media (max-width: 480px) {
+            .budget-slider-container {
+                padding: 4px 0;
+            }
+        }
+
         .fader-track {
-            width: 24px;
-            height: 150px;
+            width: 120px;
+            height: 20px;
             background: #000000;
             border: 2px solid var(--border);
             border-radius: 0;
             position: relative;
             margin: 0 auto;
-            cursor: ns-resize;
+            cursor: ew-resize;
             box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
         }
 
         .fader-level {
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
-            right: 0;
+            bottom: 0;
             background: rgba(255, 255, 255, 0.9);
             border-radius: 0;
-            transition: height 0.1s ease;
+            transition: width 0.1s ease;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .fader-handle {
             position: absolute;
-            top: -8px;
-            left: -2px;
-            right: -2px;
-            height: 16px;
+            top: -2px;
+            left: -8px;
+            width: 16px;
+            height: calc(100% + 4px);
             background: rgba(255, 255, 255, 0.95);
             border: 2px solid var(--border);
             border-radius: 0;
-            cursor: ns-resize;
+            cursor: ew-resize;
             transition: all 0.1s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             -webkit-tap-highlight-color: transparent;
@@ -1337,23 +1485,159 @@
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
         }
 
+        /* Consolidated 768px media query */
         @media (max-width: 768px) {
-            .fader-handle {
-                height: 20px;
-                top: -10px;
-                left: -3px;
-                right: -3px;
-                min-height: 40px;
+            /* Fader handle adjustments */
+            .fader-handle,
+            .fader-handle.income-fader-handle {
+                width: 14px;
+                height: calc(100% + 6px);
+                top: -3px;
+                left: -7px;
                 border-width: 1.5px;
             }
 
-            .fader-handle.income-fader-handle {
-                height: 20px;
-                top: -10px;
-                left: -3px;
-                right: -3px;
-                min-height: 40px;
+            /* App container and header adjustments */
+            .app-container {
+                padding: 24px 16px;
+            }
+
+            .header {
+                padding: 0;
+                margin-bottom: 32px;
+                border-radius: 0;
+                min-height: 420px;
+                margin-left: -16px;
+                margin-right: -16px;
+                width: calc(100% + 32px);
+            }
+
+            .header-banner-title-wrapper {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .header-banner-title-text {
+                font-size: 5.5rem;
+                font-weight: 900;
+                letter-spacing: 0.08em;
+                opacity: 1 !important;
+            }
+
+            .beta-tag {
+                font-size: 0.6875rem;
+                font-weight: 700;
+                padding: 6px 12px;
+                margin-top: -20px;
+                letter-spacing: 0.15em;
                 border-width: 1.5px;
+            }
+
+            .header-banner-subtitle {
+                font-size: 0.875rem;
+                font-weight: 600;
+                letter-spacing: 0.25em;
+                gap: 12px;
+                flex-direction: column;
+            }
+
+            .subtitle-accent {
+                font-size: 0.6875rem;
+                padding: 0 10px;
+            }
+
+            .header-banner-title {
+                max-width: 100%;
+                padding: 0 16px;
+            }
+
+            .header-email-signup {
+                margin-top: 32px;
+                max-width: 100%;
+                padding: 24px 16px 0;
+            }
+
+            .header-email-signup::before {
+                width: 60px;
+            }
+
+            .email-signup-input-group {
+                flex-direction: column;
+            }
+            .email-signup-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .email-signup-button {
+                width: 100%;
+            }
+
+            .email-signup-text {
+                font-size: 0.6875rem;
+            }
+
+            /* AI Analysis panel */
+            .ai-analysis-panel {
+                margin-top: 32px;
+                margin-bottom: 32px;
+            }
+
+            .ai-analysis-title {
+                font-size: 1.25rem;
+            }
+
+            .ai-analysis-actions {
+                flex-direction: column;
+                width: 100%;
+                align-items: stretch;
+            }
+
+            .ai-rerun-button {
+                width: 100%;
+            }
+
+            .ai-grade-display {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .ai-grade-letter {
+                font-size: 3rem;
+            }
+
+            .ai-grade-meter {
+                max-width: 100%;
+            }
+
+            .ai-insights {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-insight-item {
+                padding: 16px;
+            }
+
+            /* Footer */
+            .footer {
+                padding: 48px 32px;
+                margin-top: 64px;
+                border-radius: 0;
+            }
+
+            .footer-brand {
+                font-size: 1.5rem;
+            }
+
+            .footer-tagline {
+                font-size: 0.6875rem;
+                letter-spacing: 0.15em;
+            }
+
+            .footer-dev-tag {
+                font-size: 0.625rem;
+                margin-top: 24px;
             }
         }
 
@@ -1375,11 +1659,22 @@
                 min-height: 36px;
                 border-width: 1px;
             }
+
+            .header-banner-title-text {
+                font-size: 4.5rem;
+                font-weight: 900;
+                letter-spacing: 0.06em;
+                opacity: 1 !important;
+            }
+
+            .header {
+                min-height: 300px;
+            }
         }
 
         .budget-slider {
             width: 100%;
-            max-width: 140px;
+            max-width: 260px;
             height: 8px;
             -webkit-appearance: none;
             appearance: none;
@@ -1387,7 +1682,7 @@
             outline: none;
             transition: all 0.3s ease;
             margin: 0 auto;
-            display: none; /* Hide the horizontal slider, using vertical fader as main control */
+            display: none; /* Horizontal fader is the primary control */
             -webkit-tap-highlight-color: transparent;
             touch-action: none;
         }
@@ -1418,45 +1713,12 @@
 
 
         .fader-track.income-fader-track {
-            width: 24px;
-            height: 150px;
-            background: #000000;
-            border: 2px solid var(--border);
             border-radius: 4px;
-            position: relative;
-            margin: 0 auto;
-            cursor: ns-resize;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
         }
 
-        .fader-level.income-fader-level {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 0;
-            transition: height 0.1s ease;
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
 
         .fader-handle.income-fader-handle {
-            position: absolute;
-            top: -8px;
-            left: -2px;
-            right: -2px;
-            height: 16px;
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid var(--border);
             border-radius: 3px;
-            cursor: ns-resize;
-            transition: all 0.1s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .fader-handle.income-fader-handle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
         }
 
         .budget-item.income-item .budget-amount-display.editing {
@@ -1465,7 +1727,7 @@
 
         .budget-slider.income-slider {
             width: 100%;
-            max-width: 140px;
+            max-width: 260px;
             height: 8px;
             -webkit-appearance: none;
             appearance: none;
@@ -1473,7 +1735,7 @@
             outline: none;
             transition: all 0.3s ease;
             margin: 0 auto;
-            display: none; /* Hide the horizontal slider, using vertical fader as main control */
+            display: block;
         }
 
         .budget-amount-display.income-amount-display {
@@ -1509,7 +1771,7 @@
                 padding: 0;
                 margin-bottom: 32px;
                 border-radius: 0;
-                min-height: 360px;
+                min-height: 420px;
                 margin-left: -16px;
                 margin-right: -16px;
                 width: calc(100% + 32px);
@@ -1521,9 +1783,10 @@
             }
 
             .header-banner-title-text {
-                font-size: 4rem;
+                font-size: 5.5rem;
                 font-weight: 900;
                 letter-spacing: 0.08em;
+                opacity: 1 !important;
             }
 
             .beta-tag {
@@ -1615,15 +1878,13 @@
 
             .mixing-board-container {
                 grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-                gap: 16px;
-                padding: 16px;
+                gap: 10px;
+                padding: 12px;
             }
 
             .budget-item {
-                min-height: 280px;
-                padding: 12px 10px;
-                gap: 8px;
-                max-width: 140px;
+                height: 220px;
+                padding: 6px 8px;
             }
 
             .budget-item-input {
@@ -1652,13 +1913,6 @@
                 min-width: 70px;
             }
 
-            .budget-slider-container {
-                margin: 0;
-                width: 100%;
-                order: 4;
-                margin-top: 0;
-                padding: 4px 0;
-            }
 
             .budget-item-label {
                 font-size: 0.7rem;
@@ -1666,21 +1920,16 @@
                 text-align: center;
             }
 
-            .fader-track {
-                height: 100px;
-                width: 18px;
-                border-width: 1.5px;
-            }
-
+            .fader-track,
             .fader-track.income-fader-track {
-                height: 100px;
-                width: 18px;
+                height: 18px;
+                width: 160px;
                 border-width: 1.5px;
             }
 
             .budget-amount-display.income-amount-display {
-                font-size: 0.85rem;
-                padding: 4px 6px;
+                font-size: 1.4rem;
+                padding: 8px 12px;
                 min-width: 70px;
             }
 
@@ -1707,10 +1956,8 @@
 
         @media (max-width: 480px) {
             .budget-item {
-                min-height: 260px;
-                padding: 10px 8px;
-                gap: 6px;
-                max-width: 130px;
+                height: 200px;
+                padding: 4px 6px;
             }
 
             .budget-item-input {
@@ -1725,8 +1972,8 @@
             }
 
             .budget-amount-display {
-                font-size: 0.8rem;
-                padding: 3px 5px;
+                font-size: 1.3rem;
+                padding: 7px 10px;
                 min-width: 60px;
                 margin-bottom: 6px;
             }
@@ -1736,32 +1983,49 @@
                 min-height: 24px;
             }
 
-            .fader-track {
-                height: 90px;
-                width: 16px;
-                border-width: 1px;
+            .budget-slider-container {
+                padding: 4px 0;
+                /* Redesigned sliders for mobile usability */
             }
 
-            .fader-track.income-fader-track {
-                height: 90px;
-                width: 16px;
-                border-width: 1px;
-            }
-
+            .budget-amount-display,
             .budget-amount-display.income-amount-display {
-                font-size: 0.8rem;
-                padding: 3px 5px;
+                font-size: 1.3rem;
+                padding: 7px 10px;
                 min-width: 60px;
             }
 
-            .budget-slider-container {
-                padding: 2px 0;
+            .fader-track,
+            .fader-track.income-fader-track {
+                width: 160px;
+                height: 28px;
+                border-width: 2px;
+                border-radius: 2px;
+                background: linear-gradient(90deg, #0a0a0a 0%, #000000 100%);
+                box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 6px rgba(255, 255, 255, 0.1);
+            }
+
+            .fader-handle,
+            .fader-handle.income-fader-handle {
+                width: 20px;
+                height: calc(100% + 6px);
+                border-radius: 1px;
+                background: rgba(255, 255, 255, 0.95);
+                border: 2px solid rgba(255, 255, 255, 0.8);
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+            }
+
+            .fader-level,
+            .fader-level.income-fader-level {
+                background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+                border-radius: 1px 0 0 1px;
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 4px rgba(255, 255, 255, 0.2);
             }
 
             .mixing-board-container {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 12px;
-                padding: 12px;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 8px;
+                padding: 10px;
             }
         }
 
@@ -1872,19 +2136,9 @@
 
         .btn {
             padding: 10px 20px;
-            background: var(--card);
-            background-image: none;
-            border: 1px solid var(--border-light);
-            border-radius: 0;
-            font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text);
-            cursor: pointer;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             letter-spacing: 0.08em;
-            text-transform: uppercase;
-            position: relative;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -1892,9 +2146,6 @@
             touch-action: manipulation;
             min-height: 44px;
             min-width: 44px;
-            box-shadow: 
-                inset 0 0 0 1px rgba(255, 255, 255, 0.03),
-                0 2px 8px var(--shadow-sm);
         }
 
         .btn::before {
@@ -1912,7 +2163,8 @@
             transition: opacity 0.25s ease;
         }
 
-        .btn:hover {
+        .btn:hover,
+        .email-signup-button:hover {
             background: var(--card-hover);
             background-image: none;
             border-color: var(--border-focus);
@@ -1951,14 +2203,8 @@
         }
 
         .chart-container {
-            background: var(--card);
-            background-image: none;
             padding: clamp(24px, 3vw, 36px);
             margin-bottom: 48px;
-            border-radius: 0;
-            position: relative;
-            border: 1px solid var(--border);
-            overflow: hidden;
             box-shadow: 
                 0 8px 32px var(--shadow-md), 
                 inset 0 1px 0 rgba(255, 255, 255, 0.04),
@@ -2295,12 +2541,8 @@
         /* Instructions Panel */
         .instructions-panel {
             background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 0;
             padding: 24px;
             margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
             box-shadow: 
                 inset 0 0 0 1px rgba(255, 255, 255, 0.02),
                 0 4px 16px rgba(0, 0, 0, 0.8);
@@ -2698,6 +2940,7 @@
             height: 100%;
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.6) 100%);
             transition: width 0.5s ease;
+            width: 78%;
         }
 
         .ai-grade-score {
@@ -3036,8 +3279,7 @@
                     <div class="email-signup-form">
                         <div class="email-signup-text">Get more tools & calculators delivered to your inbox</div>
                         <div class="email-signup-input-group email-signup-grid">
-                            <input 
-                                type="text" 
+                            <input
                                 class="email-signup-input" 
                                 id="nameSignupInput"
                                 placeholder="Your name"
@@ -3068,32 +3310,7 @@
                 </div>
                 <button class="instructions-toggle" onclick="toggleInstructions()" id="instructionsToggle" aria-expanded="false" aria-controls="instructionsContent">Show Instructions</button>
             </div>
-            <div class="instructions-content" id="instructionsContent">
-                <div class="instruction-item">
-                    <div class="instruction-item-title">Income Control</div>
-                    <div class="instruction-item-text">Drag the vertical slider or click the amount to edit. Maximum income is $50,000/month.</div>
-                </div>
-                <div class="instruction-item">
-                    <div class="instruction-item-title">Budget Items</div>
-                    <div class="instruction-item-text">Each slider controls a spending category. Drag the handle or click the amount to edit. Maximum per item is $5,000/month.</div>
-                </div>
-                <div class="instruction-item">
-                    <div class="instruction-item-title">Adding Items</div>
-                    <div class="instruction-item-text">Click "Add Budget Item" to create new spending categories. Click the × button to remove items.</div>
-                </div>
-                <div class="instruction-item">
-                    <div class="instruction-item-title">Major Purchases</div>
-                    <div class="instruction-item-text">Toggle Dream Car and Dream House to include/exclude them. Adjust purchase year to see how timing affects your savings.</div>
-                </div>
-                <div class="instruction-item">
-                    <div class="instruction-item-title">Charts & Data</div>
-                    <div class="instruction-item-text">Scroll down to see savings projections, spending breakdowns, and yearly financial summaries. All updates in real-time.</div>
-                </div>
-                <div class="instruction-item">
-                    <div class="instruction-item-title">Affordability</div>
-                    <div class="instruction-item-text">The banner at the top shows if you can afford your lifestyle. Negative savings are indicated by a darker appearance over 5 years.</div>
-                </div>
-            </div>
+            <div class="instructions-content" id="instructionsContent" data-auto-render="instructions"></div>
         </div>
 
         <div id="affordabilityBanner" class="affordability-banner">
@@ -3107,15 +3324,15 @@
         </div>
 
         <!-- Combined Income and Budget Panel -->
-        <div class="panel" style="margin-bottom: 40px;">
-            <div class="panel-title" style="margin-bottom: 24px;">
+        <div class="panel u-mb-40">
+            <div class="panel-title u-mb-24">
                 <span>Income & Monthly Spending</span>
                 <div class="tooltip">
                     <div class="tooltip-trigger">?</div>
                     <div class="tooltip-content">Drag sliders or click amounts to edit values</div>
                 </div>
             </div>
-            <div class="legend" style="margin-bottom: 24px;">
+            <div class="legend u-mb-24">
                 <div class="legend-item">
                     <div class="legend-color income"></div>
                     <span>Income (Max: $50,000/month)</span>
@@ -3128,10 +3345,10 @@
             <div id="budgetItems" class="mixing-board-container">
                 <!-- Income and budget items will be added here -->
             </div>
-            <button class="btn btn-secondary" onclick="addBudgetItem()" style="width: 100%; margin-top: 24px;">
+            <button class="btn btn-secondary u-w-100 u-mt-24" onclick="addBudgetItem()">
                 + Add Budget Item
             </button>
-            <input type="number" id="monthlyIncome" class="form-input" value="9593.42" step="0.01" oninput="updateIncomeFromInput(this.value)" style="display: none;">
+            <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593.42" step="0.01" oninput="updateIncomeFromInput(this.value)">
         </div>
 
         <div class="main-layout">
@@ -3139,7 +3356,7 @@
             <div class="panel" id="carPanel">
                 <div class="panel-title">
                     <span>Dream Car</span>
-                    <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="u-flex-gap-12">
                         <div class="tooltip">
                             <div class="tooltip-trigger">?</div>
                             <div class="tooltip-content">Calculate loan payments over your selected term and purchase year</div>
@@ -3169,14 +3386,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Purchase Year</label>
-                    <select id="carPurchaseYear" class="form-input" onchange="calculate()">
-                        <option value="0" selected>Year 0 (Before savings start)</option>
-                        <option value="1">Year 1</option>
-                        <option value="2">Year 2</option>
-                        <option value="3">Year 3</option>
-                        <option value="4">Year 4</option>
-                        <option value="5">Year 5</option>
-                    </select>
+                    <select id="carPurchaseYear" class="form-input" data-year-options data-default="0" onchange="calculate()"></select>
                     <div class="form-helper">When you'll make the purchase</div>
                 </div>
             </div>
@@ -3185,7 +3395,7 @@
             <div class="panel" id="housePanel">
                 <div class="panel-title">
                     <span>Dream House</span>
-                    <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="u-flex-gap-12">
                         <div class="tooltip">
                             <div class="tooltip-trigger">?</div>
                             <div class="tooltip-content">Down payment uses accumulated savings. Additional monthly bills (taxes, insurance) are separate from loan payment</div>
@@ -3215,14 +3425,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Purchase Year</label>
-                    <select id="housePurchaseYear" class="form-input" onchange="calculate()">
-                        <option value="0" selected>Year 0 (Before savings start)</option>
-                        <option value="1">Year 1</option>
-                        <option value="2">Year 2</option>
-                        <option value="3">Year 3</option>
-                        <option value="4">Year 4</option>
-                        <option value="5">Year 5</option>
-                    </select>
+                    <select id="housePurchaseYear" class="form-input" data-year-options data-default="0" onchange="calculate()"></select>
                     <div class="form-helper">Down payment uses accumulated savings from previous years</div>
                 </div>
                 <div class="form-group">
@@ -3233,24 +3436,7 @@
             </div>
         </div>
 
-        <div class="summary-grid">
-            <div class="summary-card">
-                <div class="summary-card-label">Monthly Savings</div>
-                <div class="summary-card-value" id="monthlySavings">$0</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-card-label">5-Year Total Savings</div>
-                <div class="summary-card-value" id="totalSavings">$0</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-card-label">Monthly Car Payment</div>
-                <div class="summary-card-value" id="carPayment">$0</div>
-            </div>
-            <div class="summary-card">
-                <div class="summary-card-label">Monthly House Payment</div>
-                <div class="summary-card-value" id="housePayment">$0</div>
-            </div>
-        </div>
+        <div class="summary-grid" id="summaryCards"></div>
 
         <div class="chart-container">
             <div class="chart-title">Savings Projection Over 5 Years</div>
@@ -3308,7 +3494,7 @@
                         <span class="coming-soon-badge">BETA</span>
                         <button class="ai-rerun-button" id="aiRerunButton">
                             <span class="ai-rerun-text">RERUN ANALYSIS</span>
-                            <span class="ai-rerun-loading" style="display: none;">ANALYZING...</span>
+                            <span class="ai-rerun-loading u-hidden">ANALYZING...</span>
                         </button>
                     </div>
                 </div>
@@ -3319,7 +3505,7 @@
                     <div class="ai-grade-display">
                         <span class="ai-grade-letter" id="aiGradeLetter">B+</span>
                         <div class="ai-grade-meter">
-                            <div class="ai-grade-bar" style="width: 78%;"></div>
+                            <div class="ai-grade-bar"></div>
                         </div>
                         <span class="ai-grade-score">78/100</span>
                     </div>
@@ -3367,6 +3553,86 @@
         let spendingChart = null;
         let incomeEnabled = true;
 
+        const instructionItems = [
+            {
+                title: 'Income Control',
+                text: 'Drag the vertical slider or click the amount to edit. Maximum income is $50,000/month.'
+            },
+            {
+                title: 'Budget Items',
+                text: 'Each slider controls a spending category. Drag the handle or click the amount to edit. Maximum per item is $5,000/month.'
+            },
+            {
+                title: 'Adding Items',
+                text: 'Click "Add Budget Item" to create new spending categories. Click the × button to remove items.'
+            },
+            {
+                title: 'Major Purchases',
+                text: 'Toggle Dream Car and Dream House to include/exclude them. Adjust purchase year to see how timing affects your savings.'
+            },
+            {
+                title: 'Charts & Data',
+                text: 'Scroll down to see savings projections, spending breakdowns, and yearly financial summaries. All updates in real-time.'
+            },
+            {
+                title: 'Affordability',
+                text: 'The banner at the top shows if you can afford your lifestyle. Negative savings are indicated by a darker appearance over 5 years.'
+            }
+        ];
+
+        const summaryCardConfig = [
+            { id: 'monthlySavings', label: 'Monthly Savings' },
+            { id: 'totalSavings', label: '5-Year Total Savings' },
+            { id: 'carPayment', label: 'Monthly Car Payment' },
+            { id: 'housePayment', label: 'Monthly House Payment' }
+        ];
+
+        const purchaseYearOptions = [
+            { value: '0', label: 'Year 0 (Before savings start)' },
+            { value: '1', label: 'Year 1' },
+            { value: '2', label: 'Year 2' },
+            { value: '3', label: 'Year 3' },
+            { value: '4', label: 'Year 4' },
+            { value: '5', label: 'Year 5' }
+        ];
+
+        function renderInstructions() {
+            const container = document.getElementById('instructionsContent');
+            if (!container) return;
+            container.innerHTML = instructionItems.map(({ title, text }) => `
+                <div class="instruction-item">
+                    <div class="instruction-item-title">${title}</div>
+                    <div class="instruction-item-text">${text}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderSummaryCards() {
+            const container = document.getElementById('summaryCards');
+            if (!container) return;
+            container.innerHTML = summaryCardConfig.map(({ id, label }) => `
+                <div class="summary-card">
+                    <div class="summary-card-label">${label}</div>
+                    <div class="summary-card-value" id="${id}">$0</div>
+                </div>
+            `).join('');
+        }
+
+        function populatePurchaseYearSelects() {
+            const optionsMarkup = purchaseYearOptions.map(({ value, label }) => `<option value="${value}">${label}</option>`).join('');
+            document.querySelectorAll('[data-year-options]').forEach((select) => {
+                select.innerHTML = optionsMarkup;
+                const defaultValue = select.dataset.default ?? purchaseYearOptions[0].value;
+                select.value = defaultValue;
+            });
+        }
+
+        function initStaticSections() {
+            renderSummaryCards();
+            renderInstructions();
+            populatePurchaseYearSelects();
+        }
+
         // Default budget items
         const defaultBudgetItems = [
             { name: 'Bills & Utilities', amount: 808.63, enabled: true },
@@ -3396,32 +3662,35 @@
             const incomeDiv = document.createElement('div');
             incomeDiv.className = 'budget-item income-item' + (incomeEnabled === false ? ' disabled' : '');
             const incomeMaxValue = 50000;
-            const incomeFaderHeight = (incomeValue / incomeMaxValue) * 100;
-            const incomeHandleTop = 150 - (incomeFaderHeight / 100 * 150) - 8;
+            const incomeFaderWidth = (incomeValue / incomeMaxValue) * 100;
+            const incomeHandleLeft = (incomeFaderWidth / 100 * 120) - 8;
             const incomeToggleIcon = incomeEnabled ? '✓' : '✗';
             
             incomeDiv.innerHTML = `
-                <input type="text" class="form-input budget-item-input" value="Income"
-                       placeholder="Income"
-                       readonly
-                       style="font-size: 0.7rem; padding: 6px; text-align: center; cursor: default;"
-                       ${!incomeEnabled ? 'disabled' : ''}>
-                <button class="btn budget-toggle-btn ${incomeEnabled ? 'enabled' : 'disabled'}" onclick="toggleIncome()" style="font-size: 0.7rem; padding: 4px 8px;" title="${incomeEnabled ? 'Disable' : 'Enable'} income">${incomeToggleIcon}</button>
-                <div class="budget-slider-container" id="slider-container-income" onmousedown="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}" ontouchstart="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}" style="${!incomeEnabled ? 'opacity: 0.4; pointer-events: none;' : ''}">
-                    <div class="fader-track income-fader-track" id="income-fader-track">
-                        <div class="fader-level income-fader-level" id="income-fader-level" style="height: ${incomeFaderHeight}%"></div>
-                        <div class="fader-handle income-fader-handle" id="income-fader-handle" style="top: ${incomeHandleTop}px"></div>
+                <div class="budget-item-content">
+                    <div class="budget-item-top">
+                        <input class="form-input budget-item-input budget-name-input budget-name-input--readonly budget-item-name" value="Income"
+                               placeholder="Income"
+                               readonly
+                               ${!incomeEnabled ? 'disabled' : ''}>
                     </div>
-                    <input type="range" class="budget-slider income-slider"
-                           id="monthlyIncomeSlider"
-                           min="0"
-                           max="${incomeMaxValue}"
-                           step="100"
-                           value="${incomeValue}"
-                           oninput="updateIncomeSlider(this.value)"
-                           ${!incomeEnabled ? 'disabled' : ''}>
+                    <div class="budget-item-amount-row">
+                        <span class="budget-amount-display income-amount-display${incomeEnabled ? '' : ' is-disabled'}" id="incomeAmountDisplay" onclick="${incomeEnabled ? 'editIncomeAmount()' : ''}">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
+                    </div>
+                    <div class="budget-item-slider-row">
+                        <div class="budget-slider-container${incomeEnabled ? '' : ' is-disabled'}" id="slider-container-income" onmousedown="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}" ontouchstart="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}">
+                            <div class="fader-track income-fader-track" id="income-fader-track">
+                                <div class="fader-level income-fader-level" id="income-fader-level" style="width: ${incomeFaderWidth}%"></div>
+                                <div class="fader-handle income-fader-handle" id="income-fader-handle" style="left: ${incomeHandleLeft}px"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="budget-item-toggle-row">
+                        <div class="toggle-switch ${incomeEnabled ? 'enabled' : ''}" role="switch" aria-checked="${incomeEnabled ? 'true' : 'false'}" onclick="toggleIncome()" title="${incomeEnabled ? 'Disable' : 'Enable'} income">
+                            <div class="toggle-thumb"></div>
+                        </div>
+                    </div>
                 </div>
-                <span class="budget-amount-display income-amount-display" id="incomeAmountDisplay" onclick="${incomeEnabled ? 'editIncomeAmount()' : ''}" style="${!incomeEnabled ? 'opacity: 0.4; cursor: default;' : ''}">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
             `;
             container.appendChild(incomeDiv);
             if (incomeEnabled) {
@@ -3437,32 +3706,36 @@
                 const maxValue = 5000;
                 const minValue = 0;
                 
-                const faderHeight = (item.amount / maxValue) * 100;
-                const handleTop = 150 - (faderHeight / 100 * 150) - 8; // Will be corrected after render by updateFaderVisuals
+                const faderWidth = (item.amount / maxValue) * 100;
+                const handleLeft = (faderWidth / 100 * 120) - 8; // Will be corrected after render by updateFaderVisuals
                 const isEnabled = item.enabled !== false;
                 const toggleIcon = isEnabled ? '✓' : '✗';
 
                 div.innerHTML = `
-                    <input type="text" class="form-input budget-item-input" value="${item.name}"
-                           placeholder="Budget item name"
-                           oninput="updateBudgetItem(${index}, 'name', this.value)"
-                           style="font-size: 0.7rem; padding: 6px; text-align: center;"
-                           ${!isEnabled ? 'disabled' : ''}>
-                    <button class="btn budget-toggle-btn ${isEnabled ? 'enabled' : 'disabled'}" onclick="toggleBudgetItem(${index})" style="font-size: 0.7rem; padding: 4px 8px;" title="${isEnabled ? 'Disable' : 'Enable'} item">${toggleIcon}</button>
-                    <div class="budget-slider-container" id="slider-container-${index}" onmousedown="${isEnabled ? `startFaderDrag(event, ${index})` : ''}" ontouchstart="${isEnabled ? `startFaderDrag(event, ${index})` : ''}" style="${!isEnabled ? 'opacity: 0.4; pointer-events: none;' : ''}">
-                        <div class="fader-track" id="fader-track-${index}">
-                            <div class="fader-level" id="fader-level-${index}" style="height: ${faderHeight}%"></div>
-                            <div class="fader-handle" id="fader-handle-${index}" style="top: ${handleTop}px"></div>
+                    <div class="budget-item-content">
+                        <div class="budget-item-top">
+                            <input class="form-input budget-item-input budget-name-input budget-item-name" value="${item.name}"
+                                   placeholder="Budget item name"
+                                   oninput="updateBudgetItem(${index}, 'name', this.value)"
+                                   ${!isEnabled ? 'disabled' : ''}>
                         </div>
-                        <input type="range" class="budget-slider"
-                               min="${minValue}"
-                               max="${maxValue}"
-                               step="10"
-                               value="${item.amount}"
-                               oninput="updateBudgetSlider(${index}, this.value, this)"
-                               ${!isEnabled ? 'disabled' : ''}>
+                        <div class="budget-item-amount-row">
+                            <span class="budget-amount-display${isEnabled ? '' : ' is-disabled'}" id="budget-amount-${index}" onclick="${isEnabled ? `editBudgetAmount(${index})` : ''}">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
+                        </div>
+                        <div class="budget-item-slider-row">
+                            <div class="budget-slider-container${isEnabled ? '' : ' is-disabled'}" id="slider-container-${index}" onmousedown="${isEnabled ? `startFaderDrag(event, ${index})` : ''}" ontouchstart="${isEnabled ? `startFaderDrag(event, ${index})` : ''}">
+                                <div class="fader-track" id="fader-track-${index}">
+                                    <div class="fader-level" id="fader-level-${index}" style="width: ${faderWidth}%"></div>
+                                    <div class="fader-handle" id="fader-handle-${index}" style="left: ${handleLeft}px"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="budget-item-toggle-row">
+                            <div class="toggle-switch ${isEnabled ? 'enabled' : ''}" role="switch" aria-checked="${isEnabled ? 'true' : 'false'}" onclick="toggleBudgetItem(${index})" title="${isEnabled ? 'Disable' : 'Enable'} item">
+                                <div class="toggle-thumb"></div>
+                            </div>
+                        </div>
                     </div>
-                    <span class="budget-amount-display" id="budget-amount-${index}" onclick="${isEnabled ? `editBudgetAmount(${index})` : ''}" style="${!isEnabled ? 'opacity: 0.4; cursor: default;' : ''}">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
                 `;
                 container.appendChild(div);
 
@@ -3521,19 +3794,20 @@
         function updateIncomeFaderVisuals() {
             const incomeValue = parseFloat(document.getElementById('monthlyIncome').value) || 0;
             const maxValue = 50000;
-            const faderHeight = (incomeValue / maxValue) * 100;
+            const faderWidth = (incomeValue / maxValue) * 100;
             const track = document.getElementById('income-fader-track');
-            const trackHeight = track ? track.offsetHeight : 150;
-            const handleTop = trackHeight - (faderHeight / 100 * trackHeight) - 8;
+            const trackWidth = track ? track.offsetWidth : 120;
+            let handleLeft = (faderWidth / 100 * trackWidth) - 8;
+            handleLeft = Math.max(-8, Math.min(trackWidth - 8, handleLeft));
 
             const faderLevel = document.getElementById('income-fader-level');
             const faderHandle = document.getElementById('income-fader-handle');
 
             if (faderLevel) {
-                faderLevel.style.height = faderHeight + '%';
+                faderLevel.style.width = faderWidth + '%';
             }
             if (faderHandle) {
-                faderHandle.style.top = handleTop + 'px';
+                faderHandle.style.left = handleLeft + 'px';
             }
         }
 
@@ -3576,7 +3850,7 @@
             const clampedValue = Math.max(0, Math.min(maxValue, numValue));
             
             hiddenInput.value = clampedValue;
-            slider.value = clampedValue;
+            if (slider) slider.value = clampedValue;
             updateIncomeFaderVisuals();
             
             // Find the input that's currently being edited and replace it
@@ -3598,7 +3872,8 @@
             const maxValue = 50000;
             const clampedValue = Math.max(0, Math.min(maxValue, incomeValue));
             
-            document.getElementById('monthlyIncomeSlider').value = clampedValue;
+            const slider = document.getElementById('monthlyIncomeSlider');
+            if (slider) slider.value = clampedValue;
             const displayElement = document.getElementById('incomeAmountDisplay');
             if (displayElement) {
                 displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
@@ -3675,12 +3950,12 @@
         // Fader drag functionality
         let isDragging = false;
         let dragIndex = -1;
-        let dragStartY = 0;
+        let dragStartX = 0;
         let dragStartValue = 0;
         
         // Income fader drag functionality
         let isIncomeDragging = false;
-        let incomeDragStartY = 0;
+        let incomeDragStartX = 0;
         let incomeDragStartValue = 0;
 
         function startIncomeFaderDrag(event) {
@@ -3688,8 +3963,8 @@
             event.stopPropagation();
             isIncomeDragging = true;
             const currentValue = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-            incomeDragStartY = clientY;
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            incomeDragStartX = clientX;
             incomeDragStartValue = currentValue;
             document.addEventListener('mousemove', dragIncomeFader);
             document.addEventListener('mouseup', stopIncomeFaderDrag);
@@ -3702,17 +3977,18 @@
             event.preventDefault();
 
             const track = document.getElementById('income-fader-track');
-            const trackHeight = track ? track.offsetHeight : 150;
-            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-            const deltaY = incomeDragStartY - clientY;
-            const deltaPercent = deltaY / trackHeight;
+            const trackWidth = track ? track.offsetWidth : 120;
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            const deltaX = clientX - incomeDragStartX;
+            const deltaPercent = deltaX / trackWidth;
 
             const maxValue = 50000;
             let newValue = incomeDragStartValue + (deltaPercent * maxValue);
             newValue = Math.max(0, Math.min(maxValue, Math.round(newValue / 100) * 100));
 
             document.getElementById('monthlyIncome').value = newValue;
-            document.getElementById('monthlyIncomeSlider').value = newValue;
+            const slider = document.getElementById('monthlyIncomeSlider');
+            if (slider) slider.value = newValue;
             updateIncomeFaderVisuals();
             
             const displayElement = document.getElementById('incomeAmountDisplay');
@@ -3734,8 +4010,8 @@
             event.preventDefault();
             isDragging = true;
             dragIndex = index;
-            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-            dragStartY = clientY;
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            dragStartX = clientX;
             dragStartValue = budgetItems[index].amount;
             document.addEventListener('mousemove', dragFader);
             document.addEventListener('mouseup', stopFaderDrag);
@@ -3748,10 +4024,10 @@
             event.preventDefault();
 
             const track = document.getElementById(`fader-track-${dragIndex}`);
-            const trackHeight = track ? track.offsetHeight : 150;
-            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-            const deltaY = dragStartY - clientY;
-            const deltaPercent = deltaY / trackHeight;
+            const trackWidth = track ? track.offsetWidth : 120;
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            const deltaX = clientX - dragStartX;
+            const deltaPercent = deltaX / trackWidth;
 
             const maxValue = 5000;
             let newValue = dragStartValue + (deltaPercent * maxValue);
@@ -3774,19 +4050,19 @@
 
         function updateFaderVisuals(index) {
             const maxValue = 5000;
-            const faderHeight = (budgetItems[index].amount / maxValue) * 100;
+            const faderWidth = (budgetItems[index].amount / maxValue) * 100;
             const track = document.getElementById(`fader-track-${index}`);
-            const trackHeight = track ? track.offsetHeight : 150;
-            const handleTop = trackHeight - (faderHeight / 100 * trackHeight) - 8;
+            const trackWidth = track ? track.offsetWidth : 120;
+            const handleLeft = (faderWidth / 100 * trackWidth) - 8;
 
             const faderLevel = document.getElementById(`fader-level-${index}`);
             const faderHandle = document.getElementById(`fader-handle-${index}`);
 
             if (faderLevel) {
-                faderLevel.style.height = faderHeight + '%';
+                faderLevel.style.width = faderWidth + '%';
             }
             if (faderHandle) {
-                faderHandle.style.top = handleTop + 'px';
+                faderHandle.style.left = handleLeft + 'px';
             }
         }
 
@@ -4589,7 +4865,6 @@
                         image.classList.add('loaded');
                     });
                     image.addEventListener('error', function() {
-                        console.log('Banner image failed to load, using fallback background');
                         image.style.display = 'none';
                     });
                 }
@@ -4663,6 +4938,7 @@
         }
 
         // Initialize
+        initStaticSections();
         initBudgetItems();
         // Initialize income fader visuals
         setTimeout(() => updateIncomeFaderVisuals(), 0);
@@ -5027,5 +5303,4 @@
         </div>
     </footer>
 </body>
-</html>
 </html>
