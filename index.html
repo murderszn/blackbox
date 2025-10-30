@@ -168,7 +168,7 @@
         }
 
         .header {
-            margin-bottom: 64px;
+            margin: 0 auto 64px auto;
             animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             padding: 0;
@@ -176,8 +176,8 @@
             border-radius: 0;
             border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.9), 
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.9),
                 inset 0 1px 0 rgba(255, 255, 255, 0.05),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.02);
             min-height: 400px;
@@ -330,7 +330,7 @@
             mix-blend-mode: normal !important;
             white-space: nowrap;
             position: relative;
-            margin-top: -28px;
+            margin-bottom: 16px;
             align-self: flex-start;
             box-shadow: 
                 0 0 12px rgba(255, 255, 255, 0.2),
@@ -2071,6 +2071,26 @@
                 box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 4px rgba(255, 255, 255, 0.2);
             }
 
+            .header-banner-countdown {
+                gap: 8px;
+                margin-top: 16px;
+                margin-bottom: 6px;
+            }
+
+            .countdown-item {
+                min-width: 45px;
+                padding: 5px 6px;
+            }
+
+            .countdown-number {
+                font-size: 1.25rem;
+            }
+
+            .countdown-label {
+                font-size: 0.45rem;
+                margin-top: 2px;
+            }
+
             .mixing-board-container {
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 8px;
@@ -3313,34 +3333,31 @@
             <!-- Banner Title -->
             <div class="header-banner-title">
                 <div class="header-banner-title-wrapper">
-                    <h1 class="header-banner-title-text">BLACK BOX</h1>
                     <span class="beta-tag">BETA</span>
+                    <h1 class="header-banner-title-text">BLACK BOX</h1>
+                </div>
+                <div class="header-banner-countdown" id="countdown">
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="days">--</div>
+                        <div class="countdown-label">DAYS</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="hours">--</div>
+                        <div class="countdown-label">HOURS</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="minutes">--</div>
+                        <div class="countdown-label">MINUTES</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="seconds">--</div>
+                        <div class="countdown-label">SECONDS</div>
+                    </div>
                 </div>
                 <div class="header-banner-subtitle">
                     <div class="subtitle-divider"></div>
                     <span class="subtitle-main">LIFESTYLE AFFORDABILITY CALCULATOR</span>
                     <div class="subtitle-divider"></div>
-                    <span class="subtitle-accent">EST. 2025</span>
-                </div>
-
-                <!-- Countdown Timer -->
-                <div class="header-banner-countdown" id="countdownTimer">
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="days">00</div>
-                        <div class="countdown-label">Days</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="hours">00</div>
-                        <div class="countdown-label">Hours</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="minutes">00</div>
-                        <div class="countdown-label">Minutes</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="seconds">00</div>
-                        <div class="countdown-label">Seconds</div>
-                    </div>
                 </div>
 
                 <!-- Email Signup -->
