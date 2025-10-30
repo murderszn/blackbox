@@ -2706,6 +2706,18 @@
             opacity: 1;
         }
 
+        .income-budget-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .income-budget-content:not(.expanded) {
+            max-height: 0;
+            opacity: 0;
+        }
+
         .instruction-item {
             padding: 16px;
             background: var(--bg-secondary);
@@ -3417,24 +3429,27 @@
                     <div class="tooltip-trigger">?</div>
                     <div class="tooltip-content">Drag sliders or click amounts to edit values</div>
                 </div>
+                <button class="instructions-toggle" onclick="toggleIncomeBudget()" id="incomeBudgetToggle" aria-expanded="true" aria-controls="incomeBudgetContent">Hide Income & Budget</button>
             </div>
-            <div class="legend u-mb-24">
-                <div class="legend-item">
-                    <div class="legend-color income"></div>
-                    <span>Income (Max: $50,000/month)</span>
+            <div class="income-budget-content expanded" id="incomeBudgetContent">
+                <div class="legend u-mb-24">
+                    <div class="legend-item">
+                        <div class="legend-color income"></div>
+                        <span>Income (Max: $50,000/month)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color budget"></div>
+                        <span>Spending (Max: $5,000/item/month)</span>
+                    </div>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color budget"></div>
-                    <span>Spending (Max: $5,000/item/month)</span>
+                <div id="budgetItems" class="mixing-board-container">
+                    <!-- Income and budget items will be added here -->
                 </div>
+                <button class="btn btn-secondary u-w-100 u-mt-24" onclick="addBudgetItem()">
+                    + Add Budget Item
+                </button>
+                <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593.42" step="0.01" oninput="updateIncomeFromInput(this.value)">
             </div>
-            <div id="budgetItems" class="mixing-board-container">
-                <!-- Income and budget items will be added here -->
-            </div>
-            <button class="btn btn-secondary u-w-100 u-mt-24" onclick="addBudgetItem()">
-                + Add Budget Item
-            </button>
-            <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593.42" step="0.01" oninput="updateIncomeFromInput(this.value)">
         </div>
 
         <div class="main-layout">
@@ -4935,6 +4950,23 @@
             } else {
                 content.classList.add('expanded');
                 toggle.textContent = 'Hide Instructions';
+                toggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        // Toggle income and budget panel
+        function toggleIncomeBudget() {
+            const content = document.getElementById('incomeBudgetContent');
+            const toggle = document.getElementById('incomeBudgetToggle');
+            const isExpanded = content.classList.contains('expanded');
+
+            if (isExpanded) {
+                content.classList.remove('expanded');
+                toggle.textContent = 'Show Income & Budget';
+                toggle.setAttribute('aria-expanded', 'false');
+            } else {
+                content.classList.add('expanded');
+                toggle.textContent = 'Hide Income & Budget';
                 toggle.setAttribute('aria-expanded', 'true');
             }
         }
