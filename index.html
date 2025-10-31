@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/blackbox.png">
     <title>Black Box - Lifestyle Affordability Calculator</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -1422,74 +1423,151 @@
 
         /* Sliding toggle switch - monochrome black/white */
         .toggle-switch {
-            width: 48px;
-            height: 26px;
-            border-radius: 9999px;
+            width: 52px;
+            height: 28px;
+            border-radius: 14px;
             position: relative;
             cursor: pointer;
-            background: rgba(0, 0, 0, 0.8);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(20, 20, 20, 0.9) 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow:
-                inset 0 1px 2px rgba(0,0,0,0.8),
-                0 1px 3px rgba(0,0,0,0.3);
+                inset 0 1px 3px rgba(0,0,0,0.9),
+                0 2px 8px rgba(0,0,0,0.4),
+                0 1px 2px rgba(255, 255, 255, 0.02);
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .toggle-switch::before {
+            content: '✗';
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .toggle-switch::after {
+            content: '✓';
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: rgba(0, 0, 0, 0.4);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 1;
         }
 
         .toggle-switch:hover {
-            border-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.15);
             box-shadow:
-                inset 0 1px 2px rgba(0,0,0,0.8),
-                0 2px 6px rgba(0,0,0,0.4);
+                inset 0 1px 3px rgba(0,0,0,0.9),
+                0 4px 16px rgba(0,0,0,0.6),
+                0 2px 4px rgba(255, 255, 255, 0.04);
+            transform: translateY(-1px);
         }
 
         .toggle-switch:focus-visible {
             outline: none;
             box-shadow:
-                inset 0 1px 2px rgba(0,0,0,0.8),
-                0 1px 3px rgba(0,0,0,0.3),
-                0 0 0 3px rgba(255, 255, 255, 0.12);
+                inset 0 1px 3px rgba(0,0,0,0.9),
+                0 2px 8px rgba(0,0,0,0.4),
+                0 1px 2px rgba(255, 255, 255, 0.02),
+                0 0 0 3px rgba(255, 255, 255, 0.1);
         }
 
         .toggle-switch.enabled {
-            background: rgba(255, 255, 255, 0.95);
-            border-color: rgba(255, 255, 255, 0.4);
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.95) 100%);
+            border-color: rgba(255, 255, 255, 0.3);
             box-shadow:
-                inset 0 1px 2px rgba(0,0,0,0.1),
-                0 1px 3px rgba(0,0,0,0.2);
+                inset 0 1px 3px rgba(0,0,0,0.08),
+                0 2px 8px rgba(0,0,0,0.2),
+                0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-switch.enabled::before {
+            color: rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle-switch.enabled::after {
+            color: rgba(0, 0, 0, 0.8);
         }
 
         .toggle-switch.enabled:hover {
-            background: #ffffff;
-            border-color: rgba(255, 255, 255, 0.6);
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow:
+                inset 0 1px 3px rgba(0,0,0,0.05),
+                0 4px 16px rgba(0,0,0,0.3),
+                0 2px 4px rgba(255, 255, 255, 0.15);
         }
 
         .toggle-thumb {
             position: absolute;
             top: 3px;
             left: 3px;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: #ffffff; /* off thumb: white on black track */
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.55);
-            transition: left 0.2s ease, transform 0.18s ease;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(240, 240, 240, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow:
+                0 2px 6px rgba(0,0,0,0.3),
+                0 1px 2px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
         }
 
-        .toggle-switch:hover .toggle-thumb { transform: translateY(-0.5px); }
+        .toggle-switch:hover .toggle-thumb {
+            box-shadow:
+                0 3px 8px rgba(0,0,0,0.4),
+                0 2px 4px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
 
         .toggle-switch.enabled .toggle-thumb {
-            left: 23px;
-            background: #0b0b0b; /* on thumb: black on white track */
-            border-color: rgba(0, 0, 0, 0.7);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.45);
+            left: 27px;
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(0, 0, 0, 0.9) 100%);
+            border-color: rgba(0, 0, 0, 0.6);
+            box-shadow:
+                0 2px 6px rgba(0,0,0,0.2),
+                0 1px 2px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle-switch.enabled:hover .toggle-thumb {
+            box-shadow:
+                0 3px 8px rgba(0,0,0,0.3),
+                0 2px 4px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(0, 0, 0, 0.4);
         }
 
         @media (max-width: 480px) {
-            .toggle-switch { width: 40px; height: 22px; }
-            .toggle-thumb { width: 16px; height: 16px; top: 3px; left: 3px; }
-            .toggle-switch.enabled .toggle-thumb { left: 21px; }
+            .toggle-switch {
+                width: 46px;
+                height: 24px;
+                border-radius: 12px;
+            }
+            .toggle-thumb {
+                width: 18px;
+                height: 18px;
+                top: 3px;
+                left: 3px;
+            }
+            .toggle-switch::before, .toggle-switch::after {
+                font-size: 9px;
+            }
+            .toggle-switch::before { left: 5px; }
+            .toggle-switch::after { right: 5px; }
+            .toggle-switch.enabled .toggle-thumb { left: 23px; }
         }
 
         .budget-slider-container {
@@ -2590,6 +2668,119 @@
             border-radius: 4px;
         }
 
+        /* Budget Pie Chart Styles */
+        .budget-pie-container {
+            width: 100%;
+            height: 480px;
+            margin-top: 20px;
+            position: relative;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .budget-pie-chart-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            height: 100%;
+            min-height: 280px;
+        }
+
+        .budget-pie-canvas {
+            width: 280px !important;
+            height: 280px !important;
+            max-width: 280px;
+            max-height: 280px;
+            flex-shrink: 0;
+        }
+
+        .budget-pie-legend {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            align-items: stretch;
+            align-content: start;
+            justify-items: stretch;
+        }
+
+        .budget-pie-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .budget-pie-legend-item:hover {
+            background: var(--card);
+            border-color: var(--border-light);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .budget-pie-legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+        }
+
+        .budget-pie-legend-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .budget-pie-legend-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 0.02em;
+        }
+
+        .budget-pie-legend-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .budget-pie-legend-amount {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+        }
+
+        .budget-pie-legend-percentage {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: var(--border-light);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
         /* Tooltip Styles */
         .tooltip {
             position: relative;
@@ -3607,6 +3798,316 @@
         .promo-marquee:hover::before {
             animation-duration: 1.5s;
         }
+        /* Scenarios Section */
+        .scenarios-section {
+            border: 1px solid var(--border);
+            border-radius: 0;
+            background: var(--card);
+            padding: 24px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0 0 4px 0;
+            letter-spacing: 0.05em;
+        }
+
+        .section-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .scenario-controls {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .scenario-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 0;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+
+        .scenario-input:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+        }
+
+        .scenario-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .scenario-save-btn {
+            padding: 12px 20px;
+            background: var(--accent);
+            color: #000000;
+            border: 1px solid var(--accent);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-save-btn:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .scenario-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .scenario-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 0;
+            background: var(--card);
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-item:hover {
+            background: var(--card-hover);
+            border-color: var(--border-light);
+        }
+
+        .scenario-info {
+            flex: 1;
+        }
+
+        .scenario-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+            letter-spacing: 0.05em;
+        }
+
+        .scenario-date {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+        }
+
+        .scenario-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .scenario-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 0;
+            background: var(--card);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-btn:hover {
+            border-color: var(--border-focus);
+            background: var(--card-hover);
+        }
+
+        .load-btn:hover {
+            color: var(--accent);
+        }
+
+        .delete-btn:hover {
+            color: #ff6b6b;
+        }
+
+        .no-scenarios {
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.875rem;
+            padding: 24px;
+            letter-spacing: 0.05em;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card);
+            border: 1px solid var(--border-focus);
+            border-radius: 0;
+            padding: 12px 20px;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mini Dashboard */
+        .mini-dashboard {
+            border: 1px solid var(--border);
+            border-radius: 0;
+            background: var(--card);
+            padding: 20px;
+        }
+
+        .mini-dashboard-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .mini-dashboard-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0 0 4px 0;
+            letter-spacing: 0.05em;
+        }
+
+        .mini-dashboard-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .mini-dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .mini-metric {
+            background: var(--card-hover);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .mini-metric:hover {
+            background: var(--card);
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+
+        .mini-metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        .mini-metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.02em;
+        }
+
+        .mini-metric-trend {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+        }
+
+        .mini-metric-trend.positive {
+            color: #c0c0c0;
+        }
+
+        .mini-metric-trend.warning {
+            color: #909090;
+        }
+
+        .mini-metric-trend.negative {
+            color: #707070;
+        }
+
+        .mini-dashboard-chart {
+            width: 100%;
+            height: 120px;
+            background: var(--card-hover);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mini-dashboard-chart canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .mini-dashboard-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .mini-metric {
+                padding: 10px;
+            }
+
+            .mini-metric-value {
+                font-size: 1.1rem;
+            }
+
+            .scenario-controls {
+                flex-direction: column;
+            }
+
+            .scenario-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .scenario-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
     </style>
 </head>
 <body>
@@ -3617,6 +4118,9 @@
             <span>Black Box Finance: The first finance app from Aurablox • iOS & Android launching 1/1/26 • Early feedback program active • Secure lifestyle budgeting • Advanced analytics • Privacy-first design • Get notified for launch</span>
         </div>
     </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
 
     <div class="app-container">
         <div class="header">
@@ -3712,6 +4216,39 @@
             <div class="affordability-amount" id="finalSavings">$0</div>
         </div>
 
+        <!-- Mini Dashboard -->
+        <div class="mini-dashboard u-mb-40">
+            <div class="mini-dashboard-header">
+                <h3 class="mini-dashboard-title">Live Financial Overview</h3>
+                <span class="mini-dashboard-subtitle">Real-time calculations as you adjust</span>
+            </div>
+            <div class="mini-dashboard-content">
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Monthly Cash Flow</div>
+                    <div class="mini-metric-value" id="miniMonthlyCashFlow">$0.00</div>
+                    <div class="mini-metric-trend" id="miniMonthlyCashFlowTrend">↗ Neutral</div>
+                </div>
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Expense Ratio</div>
+                    <div class="mini-metric-value" id="miniExpenseRatio">0%</div>
+                    <div class="mini-metric-trend" id="miniExpenseRatioTrend">→ Optimal</div>
+                </div>
+                <div class="mini-metric">
+                    <div class="mini-metric-label">5-Year Projection</div>
+                    <div class="mini-metric-value" id="miniFiveYearProjection">$0</div>
+                    <div class="mini-metric-trend" id="miniFiveYearProjectionTrend">→ Stable</div>
+                </div>
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Major Purchases</div>
+                    <div class="mini-metric-value" id="miniMajorPurchases">$0/month</div>
+                    <div class="mini-metric-trend" id="miniMajorPurchasesTrend">→ Manageable</div>
+                </div>
+            </div>
+            <div class="mini-dashboard-chart">
+                <canvas id="miniSavingsChart" width="400" height="120"></canvas>
+            </div>
+        </div>
+
         <!-- Combined Income and Budget Panel -->
         <div class="panel u-mb-40">
             <div class="panel-title u-mb-24">
@@ -3739,6 +4276,22 @@
                 <button class="btn btn-secondary u-w-100 u-mt-24" onclick="addBudgetItem()">
                     + Add Budget Item
                 </button>
+
+                <!-- Scenarios Section -->
+                <div class="scenarios-section u-mt-32">
+                    <div class="section-header">
+                        <h3 class="section-title">Save & Load Scenarios</h3>
+                        <span class="section-subtitle">Experiment with different financial situations</span>
+                    </div>
+                    <div class="scenario-controls u-mt-16">
+                        <input type="text" id="scenarioName" class="form-input scenario-input" placeholder="Enter scenario name" maxlength="30">
+                        <button class="btn btn-primary scenario-save-btn" onclick="saveCurrentScenario()">Save Scenario</button>
+                    </div>
+                    <div id="scenarioList" class="scenario-list u-mt-16">
+                        <div class="no-scenarios">No saved scenarios yet</div>
+                    </div>
+                </div>
+
                 <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593.42" step="0.01" oninput="updateIncomeFromInput(this.value)">
             </div>
         </div>
@@ -3831,8 +4384,19 @@
         <div class="summary-grid" id="summaryCards"></div>
 
         <div class="chart-container">
+            <div class="chart-title">Monthly Budget Breakdown</div>
+            <div class="chart-description">This pie chart shows the distribution of your monthly spending across all budget categories. The chart automatically updates as you adjust budget amounts or toggle categories on/off. Each slice represents a portion of your total monthly expenses, helping you visualize spending priorities.</div>
+            <div class="budget-pie-container">
+                <div class="budget-pie-chart-wrapper">
+                    <canvas id="budgetPieChart" class="budget-pie-canvas"></canvas>
+                    <div id="budgetPieLegend" class="budget-pie-legend"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
             <div class="chart-title">Savings Projection Over 5 Years</div>
-            <div class="chart-description">This line chart displays your cumulative savings projection over a 5-year period. The line shows how your savings accumulate (or deplete) month by month. Values above zero indicate positive savings, while values below zero indicate you're spending more than you earn. Hover over data points to see exact values.</div>
+            <div class="chart-description">This line chart displays your cumulative savings projection over a 5-year period. The line shows how your savings accumulate (or deplete) month by month. Values above zero indicate positive savings, while values below zero indicate you're spending more than you earn. Hover over year markers to highlight individual years and see cumulative savings amounts for that specific year.</div>
             <div class="chart-wrapper">
                 <canvas id="savingsChart"></canvas>
             </div>
@@ -3943,6 +4507,7 @@
         let budgetItems = [];
         let savingsChart = null;
         let spendingChart = null;
+        let budgetPieChart = null;
         let incomeEnabled = true;
 
         const instructionItems = [
@@ -4043,6 +4608,294 @@
         function initBudgetItems() {
             budgetItems = [...defaultBudgetItems];
             renderBudgetItems();
+        }
+
+        // Save/Load functionality
+        function getCurrentState() {
+            return {
+                monthlyIncome: parseFloat(document.getElementById('monthlyIncome').value) || 9593.42,
+                incomeEnabled: incomeEnabled,
+                budgetItems: [...budgetItems],
+                carEnabled: document.getElementById('carEnabled').checked,
+                carPrice: parseFloat(document.getElementById('carPrice').value) || 40000,
+                carInterestRate: parseFloat(document.getElementById('carInterestRate').value) || 6,
+                carLoanMonths: parseInt(document.getElementById('carLoanMonths').value) || 60,
+                carPurchaseYear: parseInt(document.getElementById('carPurchaseYear').value) || 0,
+                houseEnabled: document.getElementById('houseEnabled').checked,
+                housePrice: parseFloat(document.getElementById('housePrice').value) || 400000,
+                houseInterestRate: parseFloat(document.getElementById('houseInterestRate').value) || 6,
+                houseLoanYears: parseInt(document.getElementById('houseLoanYears').value) || 30,
+                housePurchaseYear: parseInt(document.getElementById('housePurchaseYear').value) || 0,
+                houseAdditionalBills: parseFloat(document.getElementById('houseAdditionalBills').value) || 2000,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        function loadState(state) {
+            // Load income
+            document.getElementById('monthlyIncome').value = state.monthlyIncome;
+            incomeEnabled = state.incomeEnabled;
+
+            // Load budget items
+            budgetItems = [...state.budgetItems];
+
+            // Load car settings
+            document.getElementById('carEnabled').checked = state.carEnabled;
+            document.getElementById('carPrice').value = state.carPrice;
+            document.getElementById('carInterestRate').value = state.carInterestRate;
+            document.getElementById('carLoanMonths').value = state.carLoanMonths;
+            document.getElementById('carPurchaseYear').value = state.carPurchaseYear;
+
+            // Load house settings
+            document.getElementById('houseEnabled').checked = state.houseEnabled;
+            document.getElementById('housePrice').value = state.housePrice;
+            document.getElementById('houseInterestRate').value = state.houseInterestRate;
+            document.getElementById('houseLoanYears').value = state.houseLoanYears;
+            document.getElementById('housePurchaseYear').value = state.housePurchaseYear;
+            document.getElementById('houseAdditionalBills').value = state.houseAdditionalBills;
+
+            // Update UI
+            renderBudgetItems();
+            calculate();
+
+            // Update toggles
+            updateCarToggle();
+            updateHouseToggle();
+        }
+
+        function saveScenario(name) {
+            const scenarios = JSON.parse(localStorage.getItem('blackbox_scenarios') || '{}');
+            scenarios[name] = getCurrentState();
+            localStorage.setItem('blackbox_scenarios', JSON.stringify(scenarios));
+            updateScenarioList();
+            showNotification('Scenario saved: ' + name);
+        }
+
+        function loadScenario(name) {
+            const scenarios = JSON.parse(localStorage.getItem('blackbox_scenarios') || '{}');
+            if (scenarios[name]) {
+                loadState(scenarios[name]);
+                showNotification('Scenario loaded: ' + name);
+            }
+        }
+
+        function deleteScenario(name) {
+            const scenarios = JSON.parse(localStorage.getItem('blackbox_scenarios') || '{}');
+            delete scenarios[name];
+            localStorage.setItem('blackbox_scenarios', JSON.stringify(scenarios));
+            updateScenarioList();
+            showNotification('Scenario deleted: ' + name);
+        }
+
+        function updateScenarioList() {
+            const scenarios = JSON.parse(localStorage.getItem('blackbox_scenarios') || '{}');
+            const container = document.getElementById('scenarioList');
+            if (!container) return;
+
+            const scenarioNames = Object.keys(scenarios).sort();
+            if (scenarioNames.length === 0) {
+                container.innerHTML = '<div class="no-scenarios">No saved scenarios yet</div>';
+                return;
+            }
+
+            container.innerHTML = scenarioNames.map(name => {
+                const scenario = scenarios[name];
+                const date = new Date(scenario.timestamp).toLocaleDateString();
+                return `
+                    <div class="scenario-item">
+                        <div class="scenario-info">
+                            <div class="scenario-name">${name}</div>
+                            <div class="scenario-date">Saved ${date}</div>
+                        </div>
+                        <div class="scenario-actions">
+                            <button class="scenario-btn load-btn" onclick="loadScenario('${name}')">Load</button>
+                            <button class="scenario-btn delete-btn" onclick="deleteScenario('${name}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.textContent = message;
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Mini Dashboard functionality
+        let miniSavingsChart = null;
+
+        function updateMiniDashboard() {
+            const monthlyIncome = incomeEnabled ? (parseFloat(document.getElementById('monthlyIncome').value) || 0) : 0;
+            const monthlySpending = budgetItems.reduce((sum, item) => {
+                if (item.enabled === false) return sum;
+                return sum + (parseFloat(item.amount) || 0);
+            }, 0);
+
+            // Calculate monthly cash flow
+            const monthlyCashFlow = monthlyIncome - monthlySpending;
+            const miniMonthlyCashFlow = document.getElementById('miniMonthlyCashFlow');
+            const miniMonthlyCashFlowTrend = document.getElementById('miniMonthlyCashFlowTrend');
+
+            miniMonthlyCashFlow.textContent = '$' + monthlyCashFlow.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+            if (monthlyCashFlow > 500) {
+                miniMonthlyCashFlowTrend.textContent = '↗ Strong';
+                miniMonthlyCashFlowTrend.className = 'mini-metric-trend positive';
+            } else if (monthlyCashFlow > 0) {
+                miniMonthlyCashFlowTrend.textContent = '→ Positive';
+                miniMonthlyCashFlowTrend.className = 'mini-metric-trend positive';
+            } else if (monthlyCashFlow === 0) {
+                miniMonthlyCashFlowTrend.textContent = '→ Neutral';
+                miniMonthlyCashFlowTrend.className = 'mini-metric-trend';
+            } else {
+                miniMonthlyCashFlowTrend.textContent = '↘ Deficit';
+                miniMonthlyCashFlowTrend.className = 'mini-metric-trend negative';
+            }
+
+            // Calculate expense ratio
+            const expenseRatio = monthlyIncome > 0 ? (monthlySpending / monthlyIncome) * 100 : 0;
+            const miniExpenseRatio = document.getElementById('miniExpenseRatio');
+            const miniExpenseRatioTrend = document.getElementById('miniExpenseRatioTrend');
+
+            miniExpenseRatio.textContent = Math.round(expenseRatio) + '%';
+
+            if (expenseRatio < 60) {
+                miniExpenseRatioTrend.textContent = '→ Optimal';
+                miniExpenseRatioTrend.className = 'mini-metric-trend positive';
+            } else if (expenseRatio < 80) {
+                miniExpenseRatioTrend.textContent = '⚠ Moderate';
+                miniExpenseRatioTrend.className = 'mini-metric-trend warning';
+            } else {
+                miniExpenseRatioTrend.textContent = '⚠ High';
+                miniExpenseRatioTrend.className = 'mini-metric-trend negative';
+            }
+
+            // Calculate major purchases
+            const carEnabled = document.getElementById('carEnabled').checked;
+            const houseEnabled = document.getElementById('houseEnabled').checked;
+            const carPayment = carEnabled ? calculateCarPayment() : 0;
+            const housePayment = houseEnabled ? calculateHousePayment() : 0;
+            const totalMajorPayments = carPayment + housePayment;
+
+            const miniMajorPurchases = document.getElementById('miniMajorPurchases');
+            const miniMajorPurchasesTrend = document.getElementById('miniMajorPurchasesTrend');
+
+            miniMajorPurchases.textContent = '$' + totalMajorPayments.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}) + '/month';
+
+            const majorPaymentRatio = monthlyIncome > 0 ? (totalMajorPayments / monthlyIncome) * 100 : 0;
+            if (majorPaymentRatio < 20) {
+                miniMajorPurchasesTrend.textContent = '→ Manageable';
+                miniMajorPurchasesTrend.className = 'mini-metric-trend positive';
+            } else if (majorPaymentRatio < 35) {
+                miniMajorPurchasesTrend.textContent = '⚠ Moderate';
+                miniMajorPurchasesTrend.className = 'mini-metric-trend warning';
+            } else {
+                miniMajorPurchasesTrend.textContent = '⚠ High Load';
+                miniMajorPurchasesTrend.className = 'mini-metric-trend negative';
+            }
+
+            // Update 5-year projection (simplified)
+            const projectedSavings = monthlyCashFlow * 12 * 5; // Rough estimate
+            const miniFiveYearProjection = document.getElementById('miniFiveYearProjection');
+            const miniFiveYearProjectionTrend = document.getElementById('miniFiveYearProjectionTrend');
+
+            miniFiveYearProjection.textContent = '$' + Math.abs(projectedSavings).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+
+            if (projectedSavings > 50000) {
+                miniFiveYearProjectionTrend.textContent = '↗ Excellent';
+                miniFiveYearProjectionTrend.className = 'mini-metric-trend positive';
+            } else if (projectedSavings > 10000) {
+                miniFiveYearProjectionTrend.textContent = '→ Good';
+                miniFiveYearProjectionTrend.className = 'mini-metric-trend positive';
+            } else if (projectedSavings > 0) {
+                miniFiveYearProjectionTrend.textContent = '→ Building';
+                miniFiveYearProjectionTrend.className = 'mini-metric-trend warning';
+            } else {
+                miniFiveYearProjectionTrend.textContent = '↘ Negative';
+                miniFiveYearProjectionTrend.className = 'mini-metric-trend negative';
+            }
+
+            // Update mini chart
+            updateMiniChart(monthlyIncome, monthlySpending, totalMajorPayments);
+        }
+
+        function calculateCarPayment() {
+            const carPrice = parseFloat(document.getElementById('carPrice').value) || 0;
+            const carInterestRate = parseFloat(document.getElementById('carInterestRate').value) || 0;
+            const carLoanMonths = parseInt(document.getElementById('carLoanMonths').value) || 60;
+            return carPrice > 0 ? calculateLoanPayment(carPrice, carInterestRate, carLoanMonths) : 0;
+        }
+
+        function calculateHousePayment() {
+            const housePrice = parseFloat(document.getElementById('housePrice').value) || 0;
+            const houseInterestRate = parseFloat(document.getElementById('houseInterestRate').value) || 0;
+            const houseLoanYears = parseInt(document.getElementById('houseLoanYears').value) || 30;
+            const houseLoanMonths = houseLoanYears * 12;
+            return housePrice > 0 ? calculateLoanPayment(housePrice, houseInterestRate, houseLoanMonths) : 0;
+        }
+
+        function updateMiniChart(income, spending, majorPayments) {
+            const canvas = document.getElementById('miniSavingsChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Simple bar chart data
+            const data = [
+                { label: 'Income', value: income, color: '#ffffff' },
+                { label: 'Spending', value: spending, color: '#666666' },
+                { label: 'Major', value: majorPayments, color: '#999999' }
+            ];
+
+            const maxValue = Math.max(...data.map(d => d.value), 1);
+            const barWidth = (canvas.width - 80) / data.length;
+            const barSpacing = 20;
+
+            // Draw bars
+            data.forEach((item, index) => {
+                const barHeight = (item.value / maxValue) * (canvas.height - 60);
+                const x = 40 + index * (barWidth + barSpacing);
+                const y = canvas.height - 40 - barHeight;
+
+                // Draw bar
+                ctx.fillStyle = item.color;
+                ctx.fillRect(x, y, barWidth, barHeight);
+
+                // Draw label
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '10px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText(item.label, x + barWidth/2, canvas.height - 20);
+
+                // Draw value
+                ctx.fillText('$' + Math.round(item.value), x + barWidth/2, y - 5);
+            });
+
+            // Draw y-axis labels
+            ctx.fillStyle = '#666666';
+            ctx.font = '8px JetBrains Mono';
+            ctx.textAlign = 'right';
+            ctx.fillText('$' + Math.round(maxValue), 35, 15);
+            ctx.fillText('$0', 35, canvas.height - 35);
+        }
+
+        function saveCurrentScenario() {
+            const scenarioName = document.getElementById('scenarioName').value.trim();
+            if (!scenarioName) {
+                showNotification('Please enter a scenario name');
+                return;
+            }
+            saveScenario(scenarioName);
+            document.getElementById('scenarioName').value = '';
         }
 
         function renderBudgetItems() {
@@ -4618,12 +5471,16 @@
             updateSavingsChart(labels, savingsData);
             updateSpendingChart(labels, budgetItems, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseEnabled, months);
             updateBentoBox(budgetItems, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseEnabled, months);
+            updateBudgetPieChart(budgetItems);
             updateYearlyTable(monthlyIncome, baseMonthlySavings, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseDownPayment, houseEnabled, years, months, monthlyRate);
+
+            // Update mini dashboard
+            updateMiniDashboard();
         }
 
         function updateSavingsChart(labels, data) {
             const ctx = document.getElementById('savingsChart').getContext('2d');
-            
+
             if (savingsChart) {
                 savingsChart.destroy();
             }
@@ -4631,6 +5488,60 @@
             const minValue = Math.min(...data);
             const maxValue = Math.max(...data);
             const isNegative = minValue < 0;
+
+            // Calculate yearly cumulative savings for hover tooltips
+            const yearlySavings = [];
+            for (let year = 0; year <= 5; year++) {
+                const monthIndex = year * 12;
+                yearlySavings.push({
+                    year: year,
+                    savings: data[monthIndex] || 0,
+                    monthIndex: monthIndex
+                });
+            }
+
+            // Create a plugin for year highlighting on hover
+            const yearHighlightPlugin = {
+                id: 'yearHighlight',
+                beforeDraw: (chart) => {
+                    const { ctx, chartArea: { left, right, top, bottom }, scales: { x } } = chart;
+                    const hoveredIndex = chart.tooltip?.dataPoints?.[0]?.dataIndex;
+
+                    if (hoveredIndex !== undefined && hoveredIndex % 12 === 0) {
+                        // Only highlight at year boundaries (every 12 months)
+                        const yearIndex = Math.floor(hoveredIndex / 12);
+                        const xPosition = x.getPixelForValue(hoveredIndex);
+
+                        // Draw vertical highlight line
+                        ctx.save();
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([5, 5]);
+                        ctx.beginPath();
+                        ctx.moveTo(xPosition, top);
+                        ctx.lineTo(xPosition, bottom);
+                        ctx.stroke();
+
+                        // Draw year label background
+                        const yearLabel = `Year ${yearIndex}`;
+                        ctx.font = 'bold 12px Inter, sans-serif';
+                        const labelWidth = ctx.measureText(yearLabel).width;
+                        const labelHeight = 20;
+                        const labelX = xPosition - labelWidth / 2;
+                        const labelY = top - 25;
+
+                        // Background rectangle
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                        ctx.fillRect(labelX - 5, labelY - labelHeight + 5, labelWidth + 10, labelHeight);
+
+                        // Label text
+                        ctx.fillStyle = '#ffffff';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(yearLabel, xPosition, labelY);
+                        ctx.restore();
+                    }
+                }
+            };
 
             savingsChart = new Chart(ctx, {
                 type: 'line',
@@ -4648,9 +5559,14 @@
                         pointHoverRadius: 6
                     }]
                 },
+                plugins: [yearHighlightPlugin],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
                     plugins: {
                         legend: {
                             display: true,
@@ -4660,6 +5576,40 @@
                                 font: {
                                     size: 12,
                                     weight: 500
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                title: function(context) {
+                                    const dataIndex = context[0].dataIndex;
+                                    const year = Math.floor(dataIndex / 12);
+                                    const month = dataIndex % 12;
+                                    if (month === 0) {
+                                        return `Year ${year} - Start`;
+                                    } else {
+                                        return `Year ${year}, Month ${month}`;
+                                    }
+                                },
+                                label: function(context) {
+                                    const value = context.parsed.y;
+                                    const dataIndex = context.dataIndex;
+                                    const year = Math.floor(dataIndex / 12);
+
+                                    if (dataIndex % 12 === 0) {
+                                        // This is a year marker - show cumulative savings for this year
+                                        return `Cumulative Savings: $${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                    } else {
+                                        return `Savings Balance: $${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                    }
                                 }
                             }
                         }
@@ -5188,6 +6138,136 @@
                 legendItem.append('span')
                     .text(`${category.name}: $${category.value.toLocaleString(undefined, {maximumFractionDigits: 0})} (${category.percentage.toFixed(1)}%)`);
             });
+        }
+
+        function updateBudgetPieChart(budgetItems) {
+            const ctx = document.getElementById('budgetPieChart').getContext('2d');
+            const legendContainer = document.getElementById('budgetPieLegend');
+
+            if (budgetPieChart) {
+                budgetPieChart.destroy();
+            }
+
+            // Filter enabled budget items and calculate totals
+            const enabledItems = budgetItems.filter(item => item.enabled !== false);
+            const totalMonthly = enabledItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+
+            if (enabledItems.length === 0 || totalMonthly === 0) {
+                // No data to display
+                legendContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px; font-family: Inter, sans-serif;">No budget items enabled</div>';
+                return;
+            }
+
+            // Prepare data for pie chart
+            const data = enabledItems.map(item => ({
+                name: item.name,
+                value: parseFloat(item.amount) || 0,
+                percentage: ((parseFloat(item.amount) || 0) / totalMonthly) * 100
+            }));
+
+            // Gray color palette for pie chart (shades of gray)
+            const grayColors = [
+                '#4a4a4a', // Dark gray
+                '#6b6b6b', // Medium dark gray
+                '#8c8c8c', // Medium gray
+                '#adadad', // Light medium gray
+                '#cecece', // Light gray
+                '#5a5a5a', // Darker gray
+                '#7a7a7a', // Medium dark gray
+                '#9a9a9a', // Medium light gray
+                '#bababa', // Very light gray
+                '#4f4f4f', // Another dark gray
+                '#878787', // Medium gray
+                '#a3a3a3', // Light medium gray
+                '#bfbfbf', // Light gray
+                '#5f5f5f', // Dark gray variant
+                '#939393'  // Medium gray variant
+            ];
+
+            const backgroundColors = data.map((_, index) =>
+                grayColors[index % grayColors.length]
+            );
+
+            const borderColors = backgroundColors.map(color =>
+                color + 'dd' // Add slight transparency for borders
+            );
+
+            // Create pie chart
+            budgetPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.map(item => item.name),
+                    datasets: [{
+                        data: data.map(item => item.value),
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 2,
+                        hoverOffset: 8,
+                        hoverBorderColor: backgroundColors.map(color => color + 'ff'), // Full opacity on hover
+                        hoverBorderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false // We'll use custom legend
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.95)',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            padding: 16,
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            cornerRadius: 8,
+                            titleFont: {
+                                family: 'Inter, sans-serif',
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                family: 'JetBrains Mono, monospace',
+                                size: 12,
+                                weight: '500'
+                            },
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    const item = data[context.dataIndex];
+                                    return `$${item.value.toLocaleString()}/month (${item.percentage.toFixed(1)}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%', // Larger cutout for more modern look
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 800,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+
+            // Create custom legend with detailed information
+            legendContainer.innerHTML = data
+                .sort((a, b) => b.value - a.value) // Sort by value descending
+                .map((item, index) => `
+                    <div class="budget-pie-legend-item">
+                        <div class="budget-pie-legend-color" style="background-color: ${backgroundColors[data.findIndex(d => d.name === item.name)]}"></div>
+                        <div class="budget-pie-legend-text">
+                            <div class="budget-pie-legend-name">${item.name}</div>
+                            <div class="budget-pie-legend-details">
+                                <span class="budget-pie-legend-amount">$${item.value.toLocaleString()}</span>
+                                <span class="budget-pie-legend-percentage">${item.percentage.toFixed(1)}%</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
         }
 
         function updateYearlyTable(income, baseSavings, carPayment, carMonth, carMonths, carEnabled, housePayment, houseMonth, houseBills, houseDownPayment, houseEnabled, years, months, monthlyRate) {
@@ -5774,6 +6854,12 @@
                 closePrivacyPolicy();
             }
         });
+
+        // Initialize scenarios on page load
+        updateScenarioList();
+
+        // Initialize mini dashboard on page load
+        setTimeout(() => updateMiniDashboard(), 100);
 
         // Initialize AI Analysis on page load
         initAIAnalysis();
