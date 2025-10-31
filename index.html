@@ -3534,7 +3534,8 @@
 
         .footer-links {
             display: flex;
-            gap: 16px;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 16px;
             opacity: 0;
             transform: translateY(10px);
@@ -3558,6 +3559,39 @@
 
         .footer-link:hover {
             color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            color: rgba(255, 255, 255, 0.4) !important;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link:hover {
+            color: rgba(255, 255, 255, 0.8) !important;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .social-icon {
+            font-size: 16px;
+            line-height: 1;
+            display: block;
         }
 
         /* Modal Styles */
@@ -3683,7 +3717,9 @@
 
             .footer-links {
                 margin-top: 16px;
-                justify-content: center;
+                flex-direction: column;
+                gap: 16px;
+                align-items: center;
             }
 
             .footer-link {
@@ -6860,6 +6896,14 @@
             <div class="footer-dev-tag">Made with &lt;3 by aurablox © 2025</div>
             <div class="footer-links">
                 <a href="#" onclick="showPrivacyPolicy()" class="footer-link">Privacy Policy</a>
+                <div class="social-links">
+                    <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Follow on X (Twitter)">
+                        <span class="social-icon">🐦</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/jjohnso75/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Connect on LinkedIn">
+                        <span class="social-icon">💼</span>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>
