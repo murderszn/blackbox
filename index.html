@@ -3386,9 +3386,7 @@
             border: 1px solid var(--border);
             position: relative;
             overflow: hidden;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            text-align: center;
             box-shadow:
                 0 20px 60px rgba(0, 0, 0, 0.9),
                 inset 0 1px 0 rgba(255, 255, 255, 0.04),
@@ -3564,10 +3562,12 @@
         }
 
         .footer-social {
+            position: absolute;
+            bottom: 24px;
+            right: 48px;
             display: flex;
             gap: 16px;
             align-items: center;
-            margin-bottom: 8px;
         }
 
         .social-link {
@@ -3721,9 +3721,6 @@
 
 
             .footer {
-                flex-direction: column;
-                align-items: center;
-                gap: 24px;
                 text-align: center;
             }
 
@@ -3733,6 +3730,9 @@
             }
 
             .footer-social {
+                position: static;
+                justify-content: center;
+                margin-top: 16px;
                 margin-bottom: 0;
             }
 
