@@ -201,51 +201,21 @@
 
         .header-banner-image {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 110%;
-            min-height: 110%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%) scale(1.1);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
             filter: brightness(1.0) contrast(1.0);
             z-index: 0;
-            animation: bannerZoom 20s ease-in-out infinite alternate;
         }
 
         .header-banner-image.loaded {
             opacity: 0.95;
         }
 
-        @keyframes bannerZoom {
-            0% {
-                transform: translate(-50%, -50%) scale(1.05);
-            }
-            100% {
-                transform: translate(-48%, -52%) scale(1.15);
-            }
-        }
-
-        @keyframes bannerMove {
-            0% {
-                transform: translate(-50%, -50%) scale(1.05);
-            }
-            25% {
-                transform: translate(-48%, -52%) scale(1.08);
-            }
-            50% {
-                transform: translate(-52%, -48%) scale(1.1);
-            }
-            75% {
-                transform: translate(-50%, -50%) scale(1.08);
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1.05);
-            }
-        }
 
         .header-banner-title {
             position: absolute;
@@ -4264,10 +4234,6 @@
         <div class="panel u-mb-40">
             <div class="panel-title u-mb-24">
                 <span>Income & Monthly Spending</span>
-                <div class="tooltip">
-                    <div class="tooltip-trigger">?</div>
-                    <div class="tooltip-content">Drag sliders or click amounts to edit values</div>
-                </div>
                 <button class="instructions-toggle" onclick="toggleIncomeBudget()" id="incomeBudgetToggle" aria-expanded="true" aria-controls="incomeBudgetContent">Hide Income & Budget</button>
             </div>
             <div class="income-budget-content expanded" id="incomeBudgetContent">
@@ -4313,10 +4279,6 @@
                 <div class="panel-title">
                     <span>Dream Car</span>
                     <div class="u-flex-gap-12">
-                        <div class="tooltip">
-                            <div class="tooltip-trigger">?</div>
-                            <div class="tooltip-content">Calculate loan payments over your selected term and purchase year</div>
-                        </div>
                         <div class="panel-title-checkbox">
                             <input type="checkbox" id="carEnabled" checked onchange="toggleCar()" aria-label="Include Dream Car in calculations">
                             <label for="carEnabled">Include</label>
@@ -4352,10 +4314,6 @@
                 <div class="panel-title">
                     <span>Dream House</span>
                     <div class="u-flex-gap-12">
-                        <div class="tooltip">
-                            <div class="tooltip-trigger">?</div>
-                            <div class="tooltip-content">Down payment uses accumulated savings. Additional monthly bills (taxes, insurance) are separate from loan payment</div>
-                        </div>
                         <div class="panel-title-checkbox">
                             <input type="checkbox" id="houseEnabled" checked onchange="toggleHouse()" aria-label="Include Dream House in calculations">
                             <label for="houseEnabled">Include</label>
