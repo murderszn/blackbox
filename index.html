@@ -6677,24 +6677,27 @@
                         aiPanel.insertBefore(signupNotice, aiPanel.firstChild);
                     }
                     
-                    // Scroll to email signup form
-                    const emailSignupForm = document.querySelector('.header-email-signup');
-                    if (emailSignupForm) {
-                        emailSignupForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // Highlight the email form briefly
-                        emailSignupForm.style.transition = 'box-shadow 0.3s ease';
-                        emailSignupForm.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.3)';
-                        setTimeout(() => {
-                            emailSignupForm.style.boxShadow = '';
-                        }, 2000);
-                        // Focus on name input after a brief delay
-                        setTimeout(() => {
-                            const nameInput = document.getElementById('nameSignupInput');
-                            if (nameInput) {
-                                nameInput.focus();
-                            }
-                        }, 800);
-                    }
+                    // Scroll to top of page smoothly
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    // Highlight the email form briefly after scrolling
+                    setTimeout(() => {
+                        const emailSignupForm = document.querySelector('.header-email-signup');
+                        if (emailSignupForm) {
+                            emailSignupForm.style.transition = 'box-shadow 0.3s ease';
+                            emailSignupForm.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.3)';
+                            setTimeout(() => {
+                                emailSignupForm.style.boxShadow = '';
+                            }, 2000);
+                            // Focus on name input after highlighting
+                            setTimeout(() => {
+                                const nameInput = document.getElementById('nameSignupInput');
+                                if (nameInput) {
+                                    nameInput.focus();
+                                }
+                            }, 300);
+                        }
+                    }, 500);
                     return;
                 }
 
