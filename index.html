@@ -2744,14 +2744,14 @@
         }
 
         .budget-pie-legend-name {
-            font-family: 'Inter', sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 500;
             color: var(--text);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.08em;
         }
 
         .budget-pie-legend-details {
@@ -2779,6 +2779,17 @@
             background: var(--border-light);
             padding: 2px 6px;
             border-radius: 3px;
+        }
+
+        /* Hide legend on smaller screens to prevent overlap */
+        @media (max-width: 1024px) {
+            .budget-pie-legend {
+                display: none;
+            }
+
+            .budget-pie-chart-wrapper {
+                justify-content: center;
+            }
         }
 
         /* Tooltip Styles */
@@ -6268,6 +6279,14 @@
                         </div>
                     </div>
                 `).join('');
+
+            // Ensure chart renders properly after scroll animations
+            setTimeout(() => {
+                if (budgetPieChart) {
+                    budgetPieChart.resize();
+                    budgetPieChart.update();
+                }
+            }, 1000);
         }
 
         function updateYearlyTable(income, baseSavings, carPayment, carMonth, carMonths, carEnabled, housePayment, houseMonth, houseBills, houseDownPayment, houseEnabled, years, months, monthlyRate) {
