@@ -238,7 +238,6 @@
             border: 1px solid var(--border);
             color: var(--text);
             padding: 0.75rem 1.5rem;
-            border-radius: 6px;
             font-weight: 600;
             font-size: 0.9rem;
             font-family: 'JetBrains Mono', monospace;
@@ -250,6 +249,27 @@
             background: var(--card-hover);
             border-color: var(--border-light);
             transform: translateY(-1px);
+        }
+
+        .community-button {
+            background: var(--text);
+            color: var(--bg);
+            padding: 1rem 2rem;
+            border: 2px solid var(--text);
+            font-weight: 600;
+            font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .community-button:hover {
+            background: var(--bg);
+            color: var(--text);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
         /* Hero Section - DollarWise Inspired Parallax Design */
@@ -303,7 +323,6 @@
 
         .shape {
             position: absolute;
-            border-radius: 50%;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
             backdrop-filter: blur(1px);
         }
@@ -390,7 +409,6 @@
             padding: 1.25rem 2.5rem;
             background: var(--text);
             color: var(--bg);
-            border-radius: 50px;
             font-weight: 700;
             font-size: 1.1rem;
             font-family: 'JetBrains Mono', monospace;
@@ -583,7 +601,6 @@
             text-align: center;
             padding: 3rem 2.5rem;
             background: var(--card);
-            border-radius: 16px;
             border: 1px solid var(--border);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
@@ -696,7 +713,6 @@
             max-width: 280px;
             height: 500px;
             background: var(--card);
-            border-radius: 24px;
             margin: 0 auto 2rem;
             display: flex;
             align-items: center;
@@ -715,7 +731,6 @@
             width: 120px;
             height: 6px;
             background: var(--border);
-            border-radius: 3px;
         }
 
         .device-label {
@@ -789,7 +804,6 @@
 
         .testimonial-card {
             background: var(--card);
-            border-radius: 16px;
             padding: 3rem 2.5rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             border: 1px solid var(--border);
@@ -867,7 +881,6 @@
             background: var(--card);
             color: var(--text);
             padding: 1.5rem 4rem;
-            border-radius: 12px;
             font-weight: 700;
             font-size: 1.3rem;
             font-family: 'JetBrains Mono', monospace;
@@ -889,7 +902,6 @@
             width: 100%;
             height: 400px;
             background: var(--card);
-            border-radius: 12px;
             border: 1px solid var(--border);
             margin: 2rem 0;
         }
@@ -905,7 +917,6 @@
             width: 100%;
             height: 600px;
             background: var(--card);
-            border-radius: 12px;
             border: 1px solid var(--border);
             margin: 2rem 0;
         }
@@ -957,7 +968,6 @@
             position: absolute;
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 8px;
             padding: 12px;
             font-size: 0.875rem;
             font-family: 'JetBrains Mono', monospace;
@@ -1003,7 +1013,6 @@
             width: 100%;
             height: 400px;
             background: var(--card);
-            border-radius: 12px;
             border: 1px solid var(--border);
             margin: 2rem 0;
         }
@@ -1015,7 +1024,6 @@
             align-items: center;
             justify-content: center;
             background: var(--card);
-            border-radius: 12px;
             border: 1px solid var(--border);
             color: var(--text-secondary);
             font-family: 'JetBrains Mono', monospace;
@@ -1224,7 +1232,6 @@
             height: 40px;
             color: rgba(255, 255, 255, 0.5) !important;
             text-decoration: none;
-            border-radius: 8px;
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1304,7 +1311,6 @@
             color: var(--text);
             cursor: pointer;
             padding: 4px;
-            border-radius: 4px;
             transition: all 0.2s ease;
         }
 
