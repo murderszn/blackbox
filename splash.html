@@ -299,14 +299,14 @@
         .hero h1 {
             font-size: clamp(3.5rem, 8vw, 7rem);
             margin-bottom: 2rem;
-            font-weight: 900;
-            letter-spacing: -0.02em;
+            font-weight: 700;
+            letter-spacing: -0.01em;
             background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             line-height: 1.05;
-            font-family: 'Exo 2', sans-serif;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .hero .hero-subtitle {
@@ -679,190 +679,6 @@
             font-size: 0.9rem;
         }
 
-        /* Community Section - Redesigned */
-        .community-section {
-            padding: 120px 0 140px;
-            background: var(--bg);
-            position: relative;
-        }
-
-        .community-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
-        }
-
-        .community-section h2 {
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            color: var(--text);
-            font-weight: 900;
-            letter-spacing: -0.02em;
-        }
-
-        .community-section .section-subtitle {
-            font-size: 1.3rem;
-            text-align: center;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 2rem;
-            font-weight: 400;
-            line-height: 1.6;
-        }
-
-        .community-section p {
-            text-align: center;
-            font-size: 1.1rem;
-            color: var(--text-tertiary);
-            max-width: 600px;
-            margin: 0 auto 5rem;
-            line-height: 1.7;
-            font-weight: 300;
-        }
-
-        .community-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6rem;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .community-text h3 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--text);
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        .community-text p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 2.5rem;
-            font-size: 1.1rem;
-        }
-
-        .community-button {
-            background: var(--text);
-            color: var(--bg);
-            padding: 1.25rem 3rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            font-size: 1rem;
-            display: inline-block;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 2px solid var(--text);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .community-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .community-button:hover::before {
-            left: 100%;
-        }
-
-        .community-button:hover {
-            transform: translateY(-4px);
-            box-shadow:
-                0 16px 48px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        }
-
-        .community-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .community-feature {
-            text-align: center;
-            padding: 2.5rem 2rem;
-            background: var(--card);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .community-feature::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--text-secondary));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .community-feature:hover::before {
-            opacity: 1;
-        }
-
-        .community-feature:hover {
-            transform: translateY(-6px);
-            box-shadow:
-                0 16px 48px rgba(0, 0, 0, 0.15),
-                0 8px 24px rgba(0, 0, 0, 0.1);
-            background: var(--card-hover);
-            border-color: var(--border-light);
-        }
-
-        .community-feature .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 1.8rem;
-            color: var(--bg);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .community-feature h4 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: var(--text);
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        .community-feature p {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
 
         /* Testimonials - Redesigned */
         .testimonials {
@@ -1584,7 +1400,6 @@
             <nav class="nav-links">
                 <a href="#help" class="nav-link">How We Help</a>
                 <a href="#app" class="nav-link">The App</a>
-                <a href="#community" class="nav-link">Community</a>
                 <a href="#testimonials" class="nav-link">Reviews</a>
                 <a href="index.html" class="cta-button">Try Calculator</a>
             </nav>
@@ -1596,7 +1411,7 @@
     <section class="hero" id="main">
         <div class="container">
             <div class="hero-content">
-                <h1>Take Back Control of Your Money</h1>
+                <h1>Take Control of Your Money</h1>
                 <p class="hero-subtitle">Transform uncertainty into confidence with data-driven financial clarity</p>
                 <p>Stop wondering if you can afford that dream car or home. Get crystal-clear answers about your cash flow, savings potential, and exactly what your lifestyle can truly support.</p>
                 <a href="#help" class="hero-cta">Discover Your Financial Truth</a>
@@ -1703,7 +1518,6 @@
                     <svg class="treemap-svg" id="sampleTreemapSvg"></svg>
                     <div class="treemap-tooltip" id="sampleTreemapTooltip"></div>
                 </div>
-                <div class="treemap-legend" id="sampleTreemapLegend"></div>
             </div>
 
             <div style="text-align: center; margin-top: 3rem;">
@@ -1713,49 +1527,6 @@
         </div>
     </section>
 
-    <!-- Community Section -->
-    <section id="community" class="community-section">
-        <div class="container">
-            <h2>Black Box Community & Support</h2>
-            <p class="section-subtitle">Where financial transformation happens together</p>
-            <p>Your financial journey doesn't have to be lonely. Join a community of like-minded individuals who understand your goals and celebrate your wins.</p>
-
-            <div class="community-content">
-                <div class="community-text">
-                    <h3>Real People, Real Results</h3>
-                    <p>Connect with thousands of users who have transformed their financial lives using Black Box. Share strategies, celebrate milestones, and learn from others who have been exactly where you are now.</p>
-                    <p>Our community features regular challenges, expert Q&A sessions, and peer support groups. Whether you're just starting your financial journey or looking to optimize your strategy, you'll find the encouragement and knowledge you need.</p>
-                    <a href="index.html" class="community-button">Join Our Community</a>
-                </div>
-
-                <div class="community-features">
-                    <div class="community-feature">
-                        <div class="feature-icon">💭</div>
-                        <h4>Expert Discussions</h4>
-                        <p>Weekly Q&A sessions with financial experts and community leaders.</p>
-                    </div>
-
-                    <div class="community-feature">
-                        <div class="feature-icon">🏅</div>
-                        <h4>Monthly Challenges</h4>
-                        <p>Structured challenges to help you build better financial habits.</p>
-                    </div>
-
-                    <div class="community-feature">
-                        <div class="feature-icon">📖</div>
-                        <h4>Resource Library</h4>
-                        <p>Access to exclusive guides, templates, and educational content.</p>
-                    </div>
-
-                    <div class="community-feature">
-                        <div class="feature-icon">🎖️</div>
-                        <h4>Achievement System</h4>
-                        <p>Earn badges and recognition as you reach financial milestones.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Testimonials -->
     <section id="testimonials" class="testimonials">
@@ -2113,12 +1884,7 @@
                 .enter().append('div')
                 .attr('class', 'treemap-legend-item');
 
-            legendItems.append('div')
-                .attr('class', 'treemap-legend-color')
-                .style('background-color', d => d.color);
-
-            legendItems.append('span')
-                .text(d => `${d.name}: $${Math.round(d.value / 1000)}k`);
+            // Legend removed to save space
         }
 
         // Scroll animations
