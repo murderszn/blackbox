@@ -252,15 +252,15 @@
             transform: translateY(-1px);
         }
 
-        /* Hero Section - Matching index.html */
+        /* Hero Section - Professional Design */
         .hero {
             background: var(--bg);
             color: var(--text);
-            padding: 140px 0 100px;
+            padding: 160px 0 120px;
             text-align: center;
             position: relative;
             overflow: hidden;
-            min-height: 80vh;
+            min-height: 90vh;
             display: flex;
             align-items: center;
         }
@@ -273,172 +273,359 @@
             right: 0;
             bottom: 0;
             background: url('blackbox.png') center center / cover no-repeat;
-            opacity: 0.08;
+            opacity: 0.05;
             z-index: 1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+            z-index: 2;
         }
 
         .hero-content {
             position: relative;
-            z-index: 2;
-            max-width: 800px;
+            z-index: 3;
+            max-width: 900px;
             margin: 0 auto;
+            padding: 0 2rem;
         }
 
         .hero h1 {
-            font-size: clamp(3.5rem, 10vw, 8.5rem);
-            margin-bottom: 1.5rem;
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            margin-bottom: 2rem;
             font-weight: 900;
-            letter-spacing: 0.02em;
-            background: linear-gradient(45deg, var(--text), rgba(255,255,255,0.9));
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.1;
+            line-height: 1.05;
             font-family: 'Exo 2', sans-serif;
         }
 
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 3rem;
+        .hero .hero-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
             opacity: 0.9;
-            max-width: 600px;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
             line-height: 1.6;
             color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 4rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+            color: var(--text-tertiary);
+            font-weight: 300;
         }
 
         .hero-cta {
-            background: var(--card);
-            color: var(--text);
-            padding: 1.2rem 3rem;
-            border-radius: 8px;
+            background: var(--text);
+            color: var(--bg);
+            padding: 1.5rem 4rem;
+            border-radius: 50px;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             display: inline-block;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--text);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .hero-cta:hover::before {
+            left: 100%;
         }
 
         .hero-cta:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
-            background: var(--card-hover);
+            transform: translateY(-4px);
+            box-shadow:
+                0 16px 48px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            background: var(--text);
         }
 
-        /* Stats Section */
+        .hero-cta:active {
+            transform: translateY(-2px);
+        }
+
+        /* Stats Section - Redesigned */
         .stats {
-            padding: 80px 0;
+            padding: 100px 0 120px;
             background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+        }
+
+        .stats::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
         }
 
         .stats .container {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 2rem;
+            gap: 4rem;
+            position: relative;
+            z-index: 1;
         }
 
         .stats-number {
-            font-size: 4rem;
+            font-size: 5rem;
             font-weight: 900;
             color: var(--text);
             font-family: 'Orbitron', monospace;
             line-height: 1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .stats-number::after {
+            content: '+';
+            font-size: 0.6em;
+            position: absolute;
+            top: 0.1em;
+            right: -0.8em;
+            opacity: 0.7;
+        }
+
+        .stats-content {
+            max-width: 300px;
+            text-align: left;
         }
 
         .stats-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
             color: var(--text);
+            font-weight: 700;
+            line-height: 1.2;
         }
 
         .stats-label {
             color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 1rem;
+            font-weight: 400;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin: 0;
         }
 
-        /* How We Help Section */
+        /* How We Help Section - Redesigned */
         .help-section {
-            padding: 100px 0;
+            padding: 120px 0 140px;
             background: var(--bg);
+            position: relative;
+        }
+
+        .help-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
         }
 
         .help-section h2 {
-            font-size: 2.5rem;
+            font-size: 3.2rem;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             color: var(--text);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .help-section .section-subtitle {
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-weight: 400;
+            line-height: 1.6;
         }
 
         .help-section p {
             text-align: center;
-            font-size: 1.2rem;
-            color: var(--text-secondary);
+            font-size: 1.1rem;
+            color: var(--text-tertiary);
             max-width: 600px;
-            margin: 0 auto 4rem;
+            margin: 0 auto 5rem;
+            line-height: 1.7;
+            font-weight: 300;
         }
 
         .help-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .help-item {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2.5rem;
             background: var(--card);
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .help-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--text-secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .help-item:hover::before {
+            opacity: 1;
         }
 
         .help-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(-8px);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 8px 32px rgba(0, 0, 0, 0.1);
             background: var(--card-hover);
             border-color: var(--border-light);
         }
 
+        .help-item .icon-placeholder {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--bg);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
         .help-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.6rem;
+            margin-bottom: 1.25rem;
             color: var(--text);
             font-weight: 700;
+            line-height: 1.3;
         }
 
         .help-description {
             color: var(--text-secondary);
             line-height: 1.6;
+            font-size: 1rem;
+            font-weight: 400;
         }
 
-        /* App Screenshots Section */
+        /* App Showcase Section - Redesigned */
         .app-showcase {
-            padding: 100px 0;
+            padding: 120px 0 140px;
             background: var(--bg-tertiary);
             color: var(--text);
+            position: relative;
+        }
+
+        .app-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
         }
 
         .app-showcase h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .app-showcase .section-subtitle {
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-weight: 400;
+            line-height: 1.6;
         }
 
         .app-showcase p {
             text-align: center;
-            font-size: 1.2rem;
-            opacity: 0.9;
+            font-size: 1.1rem;
+            opacity: 0.8;
             max-width: 600px;
-            margin: 0 auto 4rem;
-            color: var(--text-secondary);
+            margin: 0 auto 5rem;
+            color: var(--text-tertiary);
+            line-height: 1.7;
+            font-weight: 300;
         }
 
         .app-devices {
@@ -492,136 +679,297 @@
             font-size: 0.9rem;
         }
 
-        /* Community Section */
+        /* Community Section - Redesigned */
         .community-section {
-            padding: 100px 0;
+            padding: 120px 0 140px;
             background: var(--bg);
+            position: relative;
+        }
+
+        .community-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
         }
 
         .community-section h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             color: var(--text);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .community-section .section-subtitle {
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-weight: 400;
+            line-height: 1.6;
         }
 
         .community-section p {
             text-align: center;
-            font-size: 1.2rem;
-            color: var(--text-secondary);
+            font-size: 1.1rem;
+            color: var(--text-tertiary);
             max-width: 600px;
-            margin: 0 auto 4rem;
+            margin: 0 auto 5rem;
+            line-height: 1.7;
+            font-weight: 300;
         }
 
         .community-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            gap: 6rem;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .community-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
             color: var(--text);
+            font-weight: 700;
+            line-height: 1.3;
         }
 
         .community-text p {
             color: var(--text-secondary);
             line-height: 1.7;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
         }
 
         .community-button {
-            background: var(--card);
-            color: var(--text);
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
+            background: var(--text);
+            color: var(--bg);
+            padding: 1.25rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 1rem;
             display: inline-block;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--text);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .community-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .community-button:hover::before {
+            left: 100%;
         }
 
         .community-button:hover {
-            background: var(--card-hover);
-            transform: translateY(-2px);
-            border-color: var(--border-light);
+            transform: translateY(-4px);
+            box-shadow:
+                0 16px 48px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
         .community-features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 2rem;
+            margin-top: 2rem;
         }
 
         .community-feature {
             text-align: center;
-            padding: 2rem;
+            padding: 2.5rem 2rem;
             background: var(--card);
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .community-feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--text-secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .community-feature:hover::before {
+            opacity: 1;
+        }
+
+        .community-feature:hover {
+            transform: translateY(-6px);
+            box-shadow:
+                0 16px 48px rgba(0, 0, 0, 0.15),
+                0 8px 24px rgba(0, 0, 0, 0.1);
+            background: var(--card-hover);
+            border-color: var(--border-light);
+        }
+
+        .community-feature .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.8rem;
+            color: var(--bg);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
 
         .community-feature h4 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
             color: var(--text);
+            font-weight: 700;
+            line-height: 1.3;
         }
 
         .community-feature p {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
-        /* Testimonials */
+        /* Testimonials - Redesigned */
         .testimonials {
             background: var(--bg-secondary);
-            padding: 100px 0;
+            padding: 120px 0 140px;
+            position: relative;
+        }
+
+        .testimonials::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
         }
 
         .testimonials h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             color: var(--text);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .testimonials .section-subtitle {
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-weight: 400;
+            line-height: 1.6;
         }
 
         .testimonials p {
             text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 4rem;
+            color: var(--text-tertiary);
+            margin-bottom: 5rem;
             font-size: 1.1rem;
+            line-height: 1.7;
+            font-weight: 300;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .testimonials-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .testimonial-card {
             background: var(--card);
-            border-radius: 12px;
-            padding: 2.5rem;
+            border-radius: 16px;
+            padding: 3rem 2.5rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             border: 1px solid var(--border);
             position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 1.5rem;
+            left: 2rem;
+            font-size: 4rem;
+            color: var(--text-secondary);
+            opacity: 0.3;
+            font-family: 'Exo 2', sans-serif;
+            line-height: 1;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 16px 48px rgba(0, 0, 0, 0.15),
+                0 8px 24px rgba(0, 0, 0, 0.1);
+            background: var(--card-hover);
+            border-color: var(--border-light);
         }
 
         .testimonial-quote {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-style: italic;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             color: var(--text-secondary);
             line-height: 1.6;
+            padding-left: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         .testimonial-author {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text);
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: right;
+            position: relative;
+            z-index: 1;
         }
 
         /* CTA Section */
@@ -1249,6 +1597,7 @@
         <div class="container">
             <div class="hero-content">
                 <h1>Take Back Control of Your Money</h1>
+                <p class="hero-subtitle">Transform uncertainty into confidence with data-driven financial clarity</p>
                 <p>Stop wondering if you can afford that dream car or home. Get crystal-clear answers about your cash flow, savings potential, and exactly what your lifestyle can truly support.</p>
                 <a href="#help" class="hero-cta">Discover Your Financial Truth</a>
             </div>
@@ -1275,35 +1624,42 @@
     <section id="help" class="help-section">
         <div class="container">
             <h2>Here's How We Help You Take Control</h2>
-            <p>Our comprehensive approach combines cutting-edge technology with proven financial strategies to give you the complete picture.</p>
+            <p class="section-subtitle">Six powerful ways we transform your financial future</p>
+            <p>Our comprehensive approach combines cutting-edge technology with proven financial strategies to give you the complete picture of what you can truly afford.</p>
 
             <div class="help-grid">
                 <div class="help-item">
+                    <div class="icon-placeholder">⚡</div>
                     <h3 class="help-title">Precise Affordability Calculations</h3>
                     <p class="help-description">Factor in every expense—from your morning coffee to major life purchases. Our algorithm considers your full financial picture for accurate results.</p>
                 </div>
 
                 <div class="help-item">
+                    <div class="icon-placeholder">📈</div>
                     <h3 class="help-title">5-Year Financial Projections</h3>
                     <p class="help-description">See exactly where your money will go over the next half-decade. Make informed decisions about cars, homes, and investments.</p>
                 </div>
 
                 <div class="help-item">
+                    <div class="icon-placeholder">🤖</div>
                     <h3 class="help-title">AI-Powered Insights</h3>
                     <p class="help-description">Get personalized recommendations based on your unique financial situation. Our AI analyzes thousands of data points for tailored advice.</p>
                 </div>
 
                 <div class="help-item">
+                    <div class="icon-placeholder">💡</div>
                     <h3 class="help-title">Smart Budgeting Tools</h3>
                     <p class="help-description">Track every dollar with intuitive budgeting features. Set goals, monitor progress, and build habits that stick.</p>
                 </div>
 
                 <div class="help-item">
+                    <div class="icon-placeholder">🔒</div>
                     <h3 class="help-title">Bank-Level Security</h3>
                     <p class="help-description">Your financial data is encrypted and secure. We never sell your information and prioritize your privacy above all else.</p>
                 </div>
 
                 <div class="help-item">
+                    <div class="icon-placeholder">📱</div>
                     <h3 class="help-title">Works Everywhere</h3>
                     <p class="help-description">Access your financial insights on any device. Our responsive design ensures a perfect experience on desktop, tablet, and mobile.</p>
                 </div>
@@ -1315,7 +1671,8 @@
     <section id="app" class="app-showcase">
         <div class="container">
             <h2>See Your Financial Data in Action</h2>
-            <p>Explore sample visualizations from our comprehensive financial dashboard. These interactive charts show how Black Box transforms your data into actionable insights.</p>
+            <p class="section-subtitle">Interactive visualizations that bring clarity to complexity</p>
+            <p>Explore sample visualizations from our comprehensive financial dashboard. These interactive charts show how Black Box transforms your data into actionable insights you can trust.</p>
 
             <!-- Sample Pie Chart -->
             <div class="chart-showcase-item">
@@ -1360,6 +1717,7 @@
     <section id="community" class="community-section">
         <div class="container">
             <h2>Black Box Community & Support</h2>
+            <p class="section-subtitle">Where financial transformation happens together</p>
             <p>Your financial journey doesn't have to be lonely. Join a community of like-minded individuals who understand your goals and celebrate your wins.</p>
 
             <div class="community-content">
@@ -1372,21 +1730,25 @@
 
                 <div class="community-features">
                     <div class="community-feature">
+                        <div class="feature-icon">💭</div>
                         <h4>Expert Discussions</h4>
                         <p>Weekly Q&A sessions with financial experts and community leaders.</p>
                     </div>
 
                     <div class="community-feature">
+                        <div class="feature-icon">🏅</div>
                         <h4>Monthly Challenges</h4>
                         <p>Structured challenges to help you build better financial habits.</p>
                     </div>
 
                     <div class="community-feature">
+                        <div class="feature-icon">📖</div>
                         <h4>Resource Library</h4>
                         <p>Access to exclusive guides, templates, and educational content.</p>
                     </div>
 
                     <div class="community-feature">
+                        <div class="feature-icon">🎖️</div>
                         <h4>Achievement System</h4>
                         <p>Earn badges and recognition as you reach financial milestones.</p>
                     </div>
@@ -1399,6 +1761,7 @@
     <section id="testimonials" class="testimonials">
         <div class="container">
             <h2>See What Everyone Is Saying</h2>
+            <p class="section-subtitle">Stories of financial transformation and renewed confidence</p>
             <p>Real stories from real people who have transformed their financial futures with Black Box.</p>
 
             <div class="testimonials-grid">
