@@ -7,11 +7,111 @@
     <meta name="description" content="Take control of your financial future with Black Box Finance. Calculate your lifestyle affordability, budget smarter, and build wealth with confidence.">
     <link rel="icon" type="image/png" href="blackbox.png">
 
+    <!-- Charts and Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0d0d0d;
+            --bg-tertiary: #080808;
+            --card: #050505; /* deeper matte base */
+            --card-hover: #0a0a0a; /* subtle glossy lift */
+            --card-active: #0d0d0d;
+            --text: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.75);
+            --text-tertiary: rgba(255, 255, 255, 0.55);
+            --text-muted: rgba(255, 255, 255, 0.35);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-light: rgba(255, 255, 255, 0.1);
+            --border-focus: rgba(255, 255, 255, 0.2);
+            --accent: #ffffff;
+            --accent-hover: rgba(255, 255, 255, 0.85);
+            --shadow-sm: rgba(0, 0, 0, 0.95);
+            --shadow-md: rgba(0, 0, 0, 0.85);
+            --shadow-lg: rgba(0, 0, 0, 0.75);
+            --gloss-sheen: rgba(255, 255, 255, 0.12);
+            --gloss-sheen-hover: rgba(255, 255, 255, 0.2);
+            --matte-overlay: rgba(255, 255, 255, 0.015);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        @keyframes expandLine {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
         /* Reset and Base Styles */
         * {
             margin: 0;
@@ -24,10 +124,12 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
-            color: #333;
-            background: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         img {
@@ -40,7 +142,7 @@
             color: inherit;
         }
 
-        /* Typography - Matching index.html */
+        /* Typography - Exact match with index.html */
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Exo 2', sans-serif;
             font-weight: 700;
@@ -64,8 +166,8 @@
             position: absolute;
             top: -40px;
             left: 6px;
-            background: #000;
-            color: white;
+            background: var(--bg);
+            color: var(--text);
             padding: 8px;
             text-decoration: none;
             z-index: 1000;
@@ -75,16 +177,17 @@
             top: 6px;
         }
 
-        /* Header - DollarWise Style */
+        /* Header - Matching index.html */
         .header {
-            background: #0a0a0a;
-            color: white;
+            background: var(--bg);
+            color: var(--text);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border);
         }
 
         .header .container {
@@ -98,7 +201,7 @@
             font-family: 'Orbitron', monospace;
             font-size: 1.5rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--text);
             text-decoration: none;
         }
 
@@ -109,48 +212,50 @@
         }
 
         .nav-link {
-            color: rgba(255,255,255,0.8);
+            color: var(--text-secondary);
             font-weight: 500;
             font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
             transition: color 0.3s ease;
             padding: 0.5rem 0;
         }
 
         .nav-link:hover {
-            color: #ffffff;
+            color: var(--text);
         }
 
         .mobile-menu-toggle {
             display: none;
             background: none;
             border: none;
-            color: white;
+            color: var(--text);
             font-size: 1.5rem;
             cursor: pointer;
         }
 
         .cta-button {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
             padding: 0.75rem 1.5rem;
             border-radius: 6px;
             font-weight: 600;
             font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
             transition: all 0.3s ease;
             white-space: nowrap;
         }
 
         .cta-button:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.5);
+            background: var(--card-hover);
+            border-color: var(--border-light);
             transform: translateY(-1px);
         }
 
-        /* Hero Section */
+        /* Hero Section - Matching index.html */
         .hero {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            color: white;
+            background: var(--bg);
+            color: var(--text);
             padding: 140px 0 100px;
             text-align: center;
             position: relative;
@@ -180,15 +285,16 @@
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 6vw, 5rem);
+            font-size: clamp(3.5rem, 10vw, 8.5rem);
             margin-bottom: 1.5rem;
             font-weight: 900;
             letter-spacing: 0.02em;
-            background: linear-gradient(45deg, #ffffff, rgba(255,255,255,0.9));
+            background: linear-gradient(45deg, var(--text), rgba(255,255,255,0.9));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             line-height: 1.1;
+            font-family: 'Exo 2', sans-serif;
         }
 
         .hero p {
@@ -199,32 +305,35 @@
             margin-left: auto;
             margin-right: auto;
             line-height: 1.6;
+            color: var(--text-secondary);
         }
 
         .hero-cta {
-            background: #ffffff;
-            color: #0a0a0a;
+            background: var(--card);
+            color: var(--text);
             padding: 1.2rem 3rem;
             border-radius: 8px;
             font-weight: 700;
             font-size: 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
             display: inline-block;
             transition: all 0.3s ease;
             box-shadow: 0 6px 25px rgba(0,0,0,0.3);
-            border: none;
+            border: 1px solid var(--border);
             cursor: pointer;
         }
 
         .hero-cta:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+            background: var(--card-hover);
         }
 
         /* Stats Section */
         .stats {
             padding: 80px 0;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
         }
 
         .stats .container {
@@ -237,7 +346,7 @@
         .stats-number {
             font-size: 4rem;
             font-weight: 900;
-            color: #0a0a0a;
+            color: var(--text);
             font-family: 'Orbitron', monospace;
             line-height: 1;
         }
@@ -245,11 +354,11 @@
         .stats-content h3 {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
-            color: #333;
+            color: var(--text);
         }
 
         .stats-label {
-            color: #666;
+            color: var(--text-secondary);
             font-weight: 500;
             font-size: 1rem;
         }
@@ -257,20 +366,20 @@
         /* How We Help Section */
         .help-section {
             padding: 100px 0;
-            background: white;
+            background: var(--bg);
         }
 
         .help-section h2 {
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 1rem;
-            color: #0a0a0a;
+            color: var(--text);
         }
 
         .help-section p {
             text-align: center;
             font-size: 1.2rem;
-            color: #666;
+            color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto 4rem;
         }
@@ -285,35 +394,36 @@
         .help-item {
             text-align: center;
             padding: 2rem;
-            background: #f8f9fa;
+            background: var(--card);
             border-radius: 12px;
-            border: 1px solid #e9ecef;
+            border: 1px solid var(--border);
             transition: all 0.3s ease;
         }
 
         .help-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            background: white;
+            background: var(--card-hover);
+            border-color: var(--border-light);
         }
 
         .help-title {
             font-size: 1.5rem;
             margin-bottom: 1rem;
-            color: #0a0a0a;
+            color: var(--text);
             font-weight: 700;
         }
 
         .help-description {
-            color: #666;
+            color: var(--text-secondary);
             line-height: 1.6;
         }
 
         /* App Screenshots Section */
         .app-showcase {
             padding: 100px 0;
-            background: #0a0a0a;
-            color: white;
+            background: var(--bg-tertiary);
+            color: var(--text);
         }
 
         .app-showcase h2 {
@@ -328,6 +438,7 @@
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto 4rem;
+            color: var(--text-secondary);
         }
 
         .app-devices {
@@ -346,13 +457,13 @@
             width: 100%;
             max-width: 280px;
             height: 500px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            background: var(--card);
             border-radius: 24px;
             margin: 0 auto 2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 8px solid #333;
+            border: 8px solid var(--border);
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             position: relative;
         }
@@ -365,7 +476,7 @@
             transform: translateX(-50%);
             width: 120px;
             height: 6px;
-            background: #333;
+            background: var(--border);
             border-radius: 3px;
         }
 
@@ -373,30 +484,31 @@
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
+            color: var(--text);
         }
 
         .device-subtitle {
-            color: rgba(255,255,255,0.7);
+            color: var(--text-tertiary);
             font-size: 0.9rem;
         }
 
         /* Community Section */
         .community-section {
             padding: 100px 0;
-            background: white;
+            background: var(--bg);
         }
 
         .community-section h2 {
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 1rem;
-            color: #0a0a0a;
+            color: var(--text);
         }
 
         .community-section p {
             text-align: center;
             font-size: 1.2rem;
-            color: #666;
+            color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto 4rem;
         }
@@ -411,28 +523,31 @@
         .community-text h3 {
             font-size: 1.8rem;
             margin-bottom: 1rem;
-            color: #0a0a0a;
+            color: var(--text);
         }
 
         .community-text p {
-            color: #666;
+            color: var(--text-secondary);
             line-height: 1.7;
             margin-bottom: 2rem;
         }
 
         .community-button {
-            background: #0a0a0a;
-            color: white;
+            background: var(--card);
+            color: var(--text);
             padding: 1rem 2rem;
             border-radius: 8px;
             font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
             display: inline-block;
             transition: all 0.3s ease;
+            border: 1px solid var(--border);
         }
 
         .community-button:hover {
-            background: #2a2a2a;
+            background: var(--card-hover);
             transform: translateY(-2px);
+            border-color: var(--border-light);
         }
 
         .community-features {
@@ -444,25 +559,25 @@
         .community-feature {
             text-align: center;
             padding: 2rem;
-            background: #f8f9fa;
+            background: var(--card);
             border-radius: 12px;
-            border: 1px solid #e9ecef;
+            border: 1px solid var(--border);
         }
 
         .community-feature h4 {
             font-size: 1.2rem;
             margin-bottom: 0.5rem;
-            color: #0a0a0a;
+            color: var(--text);
         }
 
         .community-feature p {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
         /* Testimonials */
         .testimonials {
-            background: #f8f9fa;
+            background: var(--bg-secondary);
             padding: 100px 0;
         }
 
@@ -470,12 +585,12 @@
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 1rem;
-            color: #0a0a0a;
+            color: var(--text);
         }
 
         .testimonials p {
             text-align: center;
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 4rem;
             font-size: 1.1rem;
         }
@@ -487,11 +602,11 @@
         }
 
         .testimonial-card {
-            background: white;
+            background: var(--card);
             border-radius: 12px;
             padding: 2.5rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border: 1px solid #e9ecef;
+            border: 1px solid var(--border);
             position: relative;
         }
 
@@ -499,20 +614,20 @@
             font-size: 1.1rem;
             font-style: italic;
             margin-bottom: 1.5rem;
-            color: #333;
+            color: var(--text-secondary);
             line-height: 1.6;
         }
 
         .testimonial-author {
             font-weight: 600;
-            color: #0a0a0a;
+            color: var(--text);
             font-size: 1rem;
         }
 
         /* CTA Section */
         .final-cta {
-            background: linear-gradient(135deg, #0a0a0a 0%, #2a2a2a 100%);
-            color: white;
+            background: var(--bg);
+            color: var(--text);
             padding: 100px 0;
             text-align: center;
         }
@@ -530,25 +645,193 @@
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
+            color: var(--text-secondary);
         }
 
         .final-cta-button {
-            background: white;
-            color: #0a0a0a;
+            background: var(--card);
+            color: var(--text);
             padding: 1.5rem 4rem;
             border-radius: 12px;
             font-weight: 700;
             font-size: 1.3rem;
+            font-family: 'JetBrains Mono', monospace;
             display: inline-block;
             transition: all 0.3s ease;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            border: none;
+            border: 1px solid var(--border);
             cursor: pointer;
         }
 
         .final-cta-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            background: var(--card-hover);
+        }
+
+        /* Chart Styles - Matching index.html */
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        .chart-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .treemap-container {
+            width: 100%;
+            height: 600px;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        .treemap-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .treemap-rect {
+            stroke: var(--border);
+            stroke-width: 1px;
+        }
+
+        .treemap-rect:hover {
+            opacity: 0.9;
+            stroke: var(--border-light);
+        }
+
+        .treemap-text tspan {
+            fill: var(--text);
+        }
+
+        .treemap-text {
+            pointer-events: none;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .treemap-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .treemap-label tspan {
+            dominant-baseline: hanging;
+        }
+
+        .treemap-amount {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .treemap-percentage {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .treemap-tooltip {
+            position: absolute;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.875rem;
+            font-family: 'JetBrains Mono', monospace;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .treemap-tooltip.show {
+            opacity: 1;
+        }
+
+        .treemap-tooltip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .treemap-tooltip-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .budget-pie-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .budget-pie-chart-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .budget-pie-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .budget-pie-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .budget-pie-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .chart-wrapper {
+            width: 100%;
+            height: 400px;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        .sample-chart-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .chart-showcase-item {
+            margin-bottom: 4rem;
+        }
+
+        .chart-showcase-item:last-child {
+            margin-bottom: 2rem;
         }
 
         /* Footer */
@@ -1031,31 +1314,44 @@
     <!-- App Showcase Section -->
     <section id="app" class="app-showcase">
         <div class="container">
-            <h2>Experience Black Box on Any Device</h2>
-            <p>Our intuitive interface works seamlessly across all platforms, giving you access to powerful financial tools wherever you are.</p>
+            <h2>See Your Financial Data in Action</h2>
+            <p>Explore sample visualizations from our comprehensive financial dashboard. These interactive charts show how Black Box transforms your data into actionable insights.</p>
 
-            <div class="app-devices">
-                <div class="device-item">
-                    <div class="device-image">
-                        <div style="text-align: center; color: rgba(255,255,255,0.7); font-size: 14px;">
-                            Desktop View<br>
-                            <span style="font-size: 12px; opacity: 0.6;">Full feature set</span>
-                        </div>
+            <!-- Sample Pie Chart -->
+            <div class="chart-showcase-item">
+                <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text);">Monthly Budget Breakdown</h3>
+                <div class="chart-description">This pie chart shows how your monthly expenses are distributed across different budget categories, giving you a clear picture of spending priorities.</div>
+                <div class="budget-pie-container">
+                    <div class="budget-pie-chart-wrapper">
+                        <canvas id="samplePieChart" width="300" height="300"></canvas>
+                        <div class="budget-pie-legend" id="samplePieLegend"></div>
                     </div>
-                    <div class="device-label">Desktop & Laptop</div>
-                    <div class="device-subtitle">Complete financial dashboard with advanced analytics</div>
                 </div>
+            </div>
 
-                <div class="device-item">
-                    <div class="device-image">
-                        <div style="text-align: center; color: rgba(255,255,255,0.7); font-size: 14px;">
-                            📲 Mobile View<br>
-                            <span style="font-size: 12px; opacity: 0.6;">Optimized for mobile</span>
-                        </div>
-                    </div>
-                    <div class="device-label">iPhone & Mobile</div>
-                    <div class="device-subtitle">Touch-optimized interface for on-the-go calculations</div>
+            <!-- Sample Line Chart -->
+            <div class="chart-showcase-item">
+                <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text);">5-Year Savings Projection</h3>
+                <div class="chart-description">This line chart displays your cumulative savings growth over five years, helping you visualize long-term financial progress.</div>
+                <div class="chart-wrapper">
+                    <canvas id="sampleLineChart"></canvas>
                 </div>
+            </div>
+
+            <!-- Sample Treemap -->
+            <div class="chart-showcase-item">
+                <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text);">5-Year Spending by Category</h3>
+                <div class="chart-description">This treemap visualization shows total spending across different categories over five years, where box size and color represent spending amounts.</div>
+                <div class="treemap-container">
+                    <svg class="treemap-svg" id="sampleTreemapSvg"></svg>
+                    <div class="treemap-tooltip" id="sampleTreemapTooltip"></div>
+                </div>
+                <div class="treemap-legend" id="sampleTreemapLegend"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem;">Ready to see your own financial data come to life?</p>
+                <a href="index.html" class="community-button" style="display: inline-block;">Try the Full Calculator</a>
             </div>
         </div>
     </section>
@@ -1222,6 +1518,246 @@
             }
         }
 
+        // Sample Chart Data
+        const sampleBudgetData = [
+            { name: 'Housing', value: 1800, color: '#4a4a4a' },
+            { name: 'Food', value: 600, color: '#666666' },
+            { name: 'Transportation', value: 400, color: '#808080' },
+            { name: 'Entertainment', value: 300, color: '#999999' },
+            { name: 'Utilities', value: 250, color: '#b3b3b3' },
+            { name: 'Insurance', value: 200, color: '#cccccc' },
+            { name: 'Savings', value: 450, color: '#e6e6e6' }
+        ];
+
+        const sampleSavingsData = {
+            labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+            datasets: [{
+                label: 'Cumulative Savings',
+                data: [2400, 5280, 8640, 12480, 16800],
+                borderColor: 'rgba(255, 255, 255, 0.8)',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        };
+
+        const sampleTreemapData = [
+            { name: 'Housing', value: 108000, color: '#4a4a4a' },
+            { name: 'Food', value: 36000, color: '#666666' },
+            { name: 'Transportation', value: 24000, color: '#808080' },
+            { name: 'Entertainment', value: 18000, color: '#999999' },
+            { name: 'Utilities', value: 15000, color: '#b3b3b3' },
+            { name: 'Insurance', value: 12000, color: '#cccccc' },
+            { name: 'Healthcare', value: 8000, color: '#e6e6e6' },
+            { name: 'Shopping', value: 6000, color: '#f2f2f2' }
+        ];
+
+        // Create Sample Pie Chart
+        function createSamplePieChart() {
+            const ctx = document.getElementById('samplePieChart').getContext('2d');
+            const legendContainer = document.getElementById('samplePieLegend');
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: sampleBudgetData.map(d => d.value),
+                        backgroundColor: sampleBudgetData.map(d => d.color),
+                        borderWidth: 2,
+                        borderColor: 'rgba(255, 255, 255, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `$${value.toLocaleString()} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Create custom legend
+            sampleBudgetData.forEach(item => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'budget-pie-legend-item';
+                legendItem.innerHTML = `
+                    <div class="budget-pie-legend-color" style="background-color: ${item.color}"></div>
+                    <span>${item.name}: $${item.value}</span>
+                `;
+                legendContainer.appendChild(legendItem);
+            });
+        }
+
+        // Create Sample Line Chart
+        function createSampleLineChart() {
+            const ctx = document.getElementById('sampleLineChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: sampleSavingsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                },
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create Sample Treemap
+        function createSampleTreemap() {
+            const svg = d3.select('#sampleTreemapSvg');
+            const tooltip = d3.select('#sampleTreemapTooltip');
+            const legend = d3.select('#sampleTreemapLegend');
+
+            // Clear existing content
+            svg.selectAll('*').remove();
+
+            const container = document.querySelector('.treemap-container');
+            const width = container.clientWidth - 16;
+            const height = container.clientHeight - 16;
+
+            // Create hierarchy for D3 treemap
+            const root = {
+                name: 'root',
+                children: sampleTreemapData.map(d => ({
+                    name: d.name,
+                    value: d.value,
+                    color: d.color
+                }))
+            };
+
+            // Create treemap layout
+            const treemap = d3.treemap()
+                .size([width, height])
+                .padding(4)
+                .round(true);
+
+            const hierarchy = d3.hierarchy(root)
+                .sum(d => d.value)
+                .sort((a, b) => b.value - a.value);
+
+            treemap(hierarchy);
+
+            // Create tooltip function
+            function showTooltip(d, event) {
+                const [x, y] = d3.pointer(event, container);
+                tooltip
+                    .style('left', (x + 10) + 'px')
+                    .style('top', (y + 10) + 'px')
+                    .classed('show', true)
+                    .html(`
+                        <div class="treemap-tooltip-title">${d.data.name}</div>
+                        <div class="treemap-tooltip-amount">$${d.data.value.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+                        <div>${((d.data.value / sampleTreemapData.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1)}% of total spending</div>
+                    `);
+            }
+
+            function hideTooltip() {
+                tooltip.classed('show', false);
+            }
+
+            // Create rectangles
+            const nodes = svg.selectAll('g')
+                .data(hierarchy.leaves())
+                .enter().append('g')
+                .attr('transform', d => `translate(${d.x0},${d.y0})`);
+
+            nodes.append('rect')
+                .attr('class', 'treemap-rect')
+                .attr('width', d => d.x1 - d.x0)
+                .attr('height', d => d.y1 - d.y0)
+                .attr('fill', d => d.data.color)
+                .on('mouseover', showTooltip)
+                .on('mouseout', hideTooltip);
+
+            // Add text labels
+            nodes.filter(d => (d.x1 - d.x0) > 80 && (d.y1 - d.y0) > 50)
+                .append('text')
+                .attr('class', 'treemap-text treemap-label')
+                .attr('x', 8)
+                .attr('y', 16)
+                .selectAll('tspan')
+                .data(d => d.data.name.split(' '))
+                .enter().append('tspan')
+                .attr('x', 8)
+                .attr('dy', (d, i) => i ? 14 : 0)
+                .text(d => d);
+
+            nodes.filter(d => (d.x1 - d.x0) > 80 && (d.y1 - d.y0) > 70)
+                .append('text')
+                .attr('class', 'treemap-text treemap-amount')
+                .attr('x', 8)
+                .attr('y', 50)
+                .text(d => '$' + Math.round(d.data.value / 1000) + 'k');
+
+            nodes.filter(d => (d.x1 - d.x0) > 80 && (d.y1 - d.y0) > 90)
+                .append('text')
+                .attr('class', 'treemap-text treemap-percentage')
+                .attr('x', 8)
+                .attr('y', 70)
+                .text(d => ((d.data.value / sampleTreemapData.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1) + '%');
+
+            // Create legend
+            legend.selectAll('*').remove();
+            const legendItems = legend.selectAll('.treemap-legend-item')
+                .data(sampleTreemapData)
+                .enter().append('div')
+                .attr('class', 'treemap-legend-item');
+
+            legendItems.append('div')
+                .attr('class', 'treemap-legend-color')
+                .style('background-color', d => d.color);
+
+            legendItems.append('span')
+                .text(d => `${d.name}: $${Math.round(d.value / 1000)}k`);
+        }
+
         // Scroll animations
         document.addEventListener('DOMContentLoaded', function() {
             const observerOptions = {
@@ -1252,6 +1788,24 @@
             }, { threshold: 0.1 });
 
             footerObserver.observe(document.querySelector('.footer'));
+
+            // Initialize sample charts when app section comes into view
+            const appObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            createSamplePieChart();
+                            createSampleLineChart();
+                            createSampleTreemap();
+                        }, 500);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            const appSection = document.getElementById('app');
+            if (appSection) {
+                appObserver.observe(appSection);
+            }
         });
 
         // Mobile menu toggle (placeholder)
