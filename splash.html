@@ -355,26 +355,6 @@
             padding: 0 2rem;
         }
 
-        /* Badge */
-        .hero-badge {
-            display: inline-block;
-            margin-bottom: 2rem;
-            padding: 0.75rem 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-        }
-
-        .badge-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
         /* Main Headline */
         .hero h1 {
             font-size: clamp(2.5rem, 6vw, 5rem);
@@ -389,7 +369,7 @@
         /* Subtitle */
         .hero-subtitle {
             font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-            margin-bottom: 2.5rem;
+            margin-bottom: 3rem;
             color: var(--text-secondary);
             line-height: 1.6;
             font-weight: 400;
@@ -398,47 +378,9 @@
             margin-right: auto;
         }
 
-        /* Features Grid */
-        .hero-features {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1.25rem;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .feature-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .feature-icon {
-            font-size: 1.25rem;
-        }
-
-        .feature-item span {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
         /* CTA Group */
         .hero-cta-group {
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .hero-cta-primary {
@@ -500,54 +442,6 @@
             font-size: 0.875rem;
             color: var(--text-tertiary);
             font-family: 'JetBrains Mono', monospace;
-            font-weight: 400;
-        }
-
-        /* Social Proof */
-        .hero-social-proof {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .proof-avatars {
-            display: flex;
-            margin-right: 0.5rem;
-        }
-
-        .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid var(--bg);
-            background: linear-gradient(135deg, var(--text-secondary), var(--text-tertiary));
-            margin-left: -8px;
-            position: relative;
-        }
-
-        .avatar:first-child {
-            margin-left: 0;
-        }
-
-        .proof-text {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .proof-number {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .proof-label {
-            font-size: 0.8rem;
-            color: var(--text-tertiary);
-            font-family: 'Inter', sans-serif;
             font-weight: 400;
         }
 
@@ -1508,23 +1402,6 @@
                 font-size: 1.1rem;
             }
 
-            .hero-features {
-                gap: 1rem;
-            }
-
-            .feature-item {
-                padding: 0.5rem 1rem;
-                gap: 0.5rem;
-            }
-
-            .feature-icon {
-                font-size: 1rem;
-            }
-
-            .feature-item span {
-                font-size: 0.75rem;
-            }
-
             .hero-cta-primary {
                 padding: 1rem 2rem;
                 font-size: 1rem;
@@ -1532,19 +1409,6 @@
 
             .cta-subtext {
                 font-size: 0.8rem;
-            }
-
-            .hero-social-proof {
-                margin-top: 1.5rem;
-            }
-
-            .proof-avatars {
-                margin-right: 0.25rem;
-            }
-
-            .avatar {
-                width: 28px;
-                height: 28px;
             }
 
             .shape-1, .shape-2, .shape-3 {
@@ -1682,53 +1546,21 @@
         <!-- Main Content -->
         <div class="hero-content-wrapper">
             <div class="container">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <span class="badge-text">Free Financial Assessment</span>
-                    </div>
+            <div class="hero-content">
+                <h1>Take Control of Your Money</h1>
 
-                    <h1>Do You Know Your Financial Score?</h1>
+                <p class="hero-subtitle">Stop wondering if you can afford that dream car or home. Get crystal-clear answers about your cash flow, savings potential, and exactly what your lifestyle can truly support.</p>
 
-                    <p class="hero-subtitle">Take our 60-second quiz to calculate your personal Financial Score and discover exactly what you can afford.</p>
-
-                    <div class="hero-features">
-                        <div class="feature-item">
-                            <div class="feature-icon">📊</div>
-                            <span>5-Year Projections</span>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">💰</div>
-                            <span>Cash Flow Analysis</span>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">🎯</div>
-                            <span>Lifestyle Calculator</span>
-                        </div>
-                    </div>
-
-                    <div class="hero-cta-group">
-                        <a href="#help" class="hero-cta-primary">
-                            <span class="cta-text">Take The Quiz</span>
-                            <span class="cta-arrow">→</span>
-                        </a>
-                        <div class="cta-subtext">
-                            No email required • Takes 60 seconds
-                        </div>
-                    </div>
-
-                    <div class="hero-social-proof">
-                        <div class="proof-avatars">
-                            <div class="avatar avatar-1"></div>
-                            <div class="avatar avatar-2"></div>
-                            <div class="avatar avatar-3"></div>
-                            <div class="avatar avatar-4"></div>
-                        </div>
-                        <div class="proof-text">
-                            <span class="proof-number">15,000+</span>
-                            <span class="proof-label">Assessments Completed</span>
-                        </div>
+                <div class="hero-cta-group">
+                    <a href="#help" class="hero-cta-primary">
+                        <span class="cta-text">Discover Your Financial Truth</span>
+                        <span class="cta-arrow">→</span>
+                    </a>
+                    <div class="cta-subtext">
+                        No email required • Takes 60 seconds
                     </div>
                 </div>
+            </div>
             </div>
         </div>
 
