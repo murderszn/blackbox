@@ -1662,7 +1662,6 @@
                 <div class="chart-description">This treemap visualization shows total spending across different categories over five years, where box size and color represent spending amounts.</div>
                 <div class="treemap-container">
                     <svg class="treemap-svg" id="sampleTreemapSvg"></svg>
-                    <div class="treemap-tooltip" id="sampleTreemapTooltip"></div>
                 </div>
             </div>
 
@@ -1875,14 +1874,7 @@
                             display: false
                         },
                         tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.parsed;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = ((value / total) * 100).toFixed(1);
-                                    return `$${value.toLocaleString()} (${percentage}%)`;
-                                }
-                            }
+                            enabled: false
                         }
                     }
                 }
@@ -1937,11 +1929,7 @@
                             display: false
                         },
                         tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return '$' + context.parsed.y.toLocaleString();
-                                }
-                            }
+                            enabled: false
                         }
                     }
                 }
@@ -1951,8 +1939,6 @@
         // Create Sample Treemap
         function createSampleTreemap() {
             const svg = d3.select('#sampleTreemapSvg');
-            const tooltip = d3.select('#sampleTreemapTooltip');
-            const legend = d3.select('#sampleTreemapLegend');
 
             // Clear existing content
             svg.selectAll('*').remove();
@@ -1983,23 +1969,6 @@
 
             treemap(hierarchy);
 
-            // Create tooltip function
-            function showTooltip(d, event) {
-                const [x, y] = d3.pointer(event, container);
-                tooltip
-                    .style('left', (x + 10) + 'px')
-                    .style('top', (y + 10) + 'px')
-                    .classed('show', true)
-                    .html(`
-                        <div class="treemap-tooltip-title">${d.data.name}</div>
-                        <div class="treemap-tooltip-amount">$${d.data.value.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
-                        <div>${((d.data.value / sampleTreemapData.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1)}% of total spending</div>
-                    `);
-            }
-
-            function hideTooltip() {
-                tooltip.classed('show', false);
-            }
 
             // Create rectangles
             const nodes = svg.selectAll('g')
@@ -2011,9 +1980,7 @@
                 .attr('class', 'treemap-rect')
                 .attr('width', d => d.x1 - d.x0)
                 .attr('height', d => d.y1 - d.y0)
-                .attr('fill', d => d.data.color)
-                .on('mouseover', showTooltip)
-                .on('mouseout', hideTooltip);
+                .attr('fill', d => d.data.color);
 
             // Add text labels
             nodes.filter(d => (d.x1 - d.x0) > 80 && (d.y1 - d.y0) > 50)
