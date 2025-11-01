@@ -985,9 +985,10 @@
 
         .budget-pie-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 3rem;
+            gap: 1.5rem;
             margin: 2rem 0;
         }
 
@@ -997,26 +998,6 @@
             justify-content: center;
         }
 
-        .budget-pie-legend {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .budget-pie-legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .budget-pie-legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 2px;
-        }
 
         .chart-wrapper {
             width: 100%;
@@ -1624,7 +1605,6 @@
                 <div class="budget-pie-container">
                     <div class="budget-pie-chart-wrapper">
                         <canvas id="samplePieChart" width="300" height="300"></canvas>
-                        <div class="budget-pie-legend" id="samplePieLegend"></div>
                     </div>
                 </div>
             </div>
@@ -1849,7 +1829,6 @@
         // Create Sample Pie Chart
         function createSamplePieChart() {
             const ctx = document.getElementById('samplePieChart').getContext('2d');
-            const legendContainer = document.getElementById('samplePieLegend');
 
             new Chart(ctx, {
                 type: 'doughnut',
@@ -1873,17 +1852,6 @@
                         }
                     }
                 }
-            });
-
-            // Create custom legend
-            sampleBudgetData.forEach(item => {
-                const legendItem = document.createElement('div');
-                legendItem.className = 'budget-pie-legend-item';
-                legendItem.innerHTML = `
-                    <div class="budget-pie-legend-color" style="background-color: ${item.color}"></div>
-                    <span>${item.name}: $${item.value}</span>
-                `;
-                legendContainer.appendChild(legendItem);
             });
         }
 
