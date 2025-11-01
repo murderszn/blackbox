@@ -679,254 +679,6 @@
             font-size: 0.9rem;
         }
 
-        /* Device Mockup Styles */
-        .device-showcase-section {
-            margin-top: 4rem;
-        }
-
-        .device-mockup {
-            position: relative;
-            margin: 0 auto 2rem;
-        }
-
-        /* Laptop Mockup */
-        .laptop-mockup {
-            width: 320px;
-            height: 220px;
-        }
-
-        .laptop-screen {
-            width: 100%;
-            height: 180px;
-            background: var(--card);
-            border-radius: 8px 8px 0 0;
-            border: 2px solid var(--border);
-            border-bottom: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .laptop-base {
-            width: 100%;
-            height: 20px;
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            position: relative;
-        }
-
-        .laptop-base::after {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 2px;
-            background: var(--border);
-            border-radius: 1px;
-        }
-
-        /* Mobile Mockup */
-        .mobile-mockup {
-            width: 160px;
-            height: 320px;
-        }
-
-        .mobile-screen {
-            width: 100%;
-            height: 280px;
-            background: var(--card);
-            border-radius: 20px;
-            border: 2px solid var(--border);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mobile-home-indicator {
-            width: 100px;
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            margin: 8px auto 0;
-        }
-
-        /* Mockup Content */
-        .screen-content {
-            padding: 12px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        /* Laptop Content */
-        .mockup-charts {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .mockup-pie-chart {
-            width: 60px;
-            height: 60px;
-            background: conic-gradient(var(--text) 0deg 120deg, var(--text-secondary) 120deg 240deg, var(--text-tertiary) 240deg 360deg);
-            border-radius: 50%;
-            border: 2px solid var(--border);
-        }
-
-        .mockup-line-chart {
-            flex: 1;
-            height: 60px;
-            background: var(--bg-secondary);
-            border-radius: 4px;
-            border: 1px solid var(--border);
-            position: relative;
-        }
-
-        .mockup-line-chart::after {
-            content: '';
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            right: 8px;
-            height: 2px;
-            background: linear-gradient(90deg, var(--text), var(--text-secondary));
-            border-radius: 1px;
-        }
-
-        .mockup-interface {
-            text-align: center;
-        }
-
-        .mockup-header {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 8px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .mockup-metrics {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .metric {
-            font-size: 8px;
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Mobile Content */
-        .mobile-interface {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mobile-header {
-            margin-bottom: 16px;
-        }
-
-        .mobile-status-bar {
-            height: 6px;
-            background: var(--bg);
-            border-radius: 3px;
-            margin-bottom: 8px;
-        }
-
-        .app-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text);
-            text-align: center;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .mobile-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .mobile-metric {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .metric-label {
-            font-size: 8px;
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .metric-value {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .mobile-chart-placeholder {
-            width: 80px;
-            height: 60px;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mini-pie {
-            width: 40px;
-            height: 40px;
-            background: conic-gradient(var(--text) 0deg 180deg, var(--text-secondary) 180deg 360deg);
-            border-radius: 50%;
-            border: 1px solid var(--border);
-        }
-
-        .mobile-button {
-            padding: 6px 12px;
-            background: var(--text);
-            color: var(--bg);
-            border-radius: 16px;
-            font-size: 8px;
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Platform Logos */
-        .platform-logos {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
-        .platform-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 500;
-        }
-
-        .platform-logo svg {
-            opacity: 0.8;
-        }
-
 
         /* Testimonials - Redesigned */
         .testimonials {
@@ -1246,6 +998,41 @@
             margin-bottom: 2rem;
         }
 
+        /* Platform Logos */
+        .platform-logos {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .platform-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .platform-logo:hover {
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .platform-logo svg {
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .platform-logo:hover svg {
+            opacity: 1;
+        }
+
         /* Footer */
         .footer {
             margin-top: 96px;
@@ -1554,21 +1341,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .laptop-mockup {
-                width: 280px;
-                height: 190px;
-            }
-
-            .mobile-mockup {
-                width: 140px;
-                height: 280px;
-            }
-
-            .platform-logos {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
             .community-content {
                 grid-template-columns: 1fr;
                 gap: 2rem;
@@ -1585,6 +1357,11 @@
 
             .stats-number {
                 font-size: 3rem;
+            }
+
+            .platform-logos {
+                flex-direction: column;
+                gap: 1.5rem;
             }
 
             .footer {
@@ -1783,87 +1560,26 @@
                 </div>
             </div>
 
-            <!-- Device Showcase -->
-            <div class="device-showcase-section">
-                <h3 style="text-align: center; margin-bottom: 2rem; color: var(--text); font-size: 2rem;">Available on All Your Devices</h3>
-
-                <div class="app-devices">
-                    <div class="device-item">
-                        <div class="device-mockup laptop-mockup">
-                            <div class="laptop-screen">
-                                <div class="screen-content">
-                                    <div class="mockup-charts">
-                                        <div class="mockup-pie-chart"></div>
-                                        <div class="mockup-line-chart"></div>
-                                    </div>
-                                    <div class="mockup-interface">
-                                        <div class="mockup-header">Black Box Finance</div>
-                                        <div class="mockup-metrics">
-                                            <div class="metric">Monthly Savings: $2,450</div>
-                                            <div class="metric">5-Year Projection: $147,600</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="laptop-base"></div>
-                        </div>
-                        <div class="device-label">Desktop & Web</div>
-                        <div class="device-subtitle">Complete financial dashboard with advanced analytics</div>
-                        <div class="platform-logos">
-                            <div class="platform-logo web-logo">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="var(--text)"/>
-                                </svg>
-                                <span>Web App</span>
-                            </div>
-                        </div>
+            <!-- Platform Availability -->
+            <div style="text-align: center; margin-top: 4rem;">
+                <h3 style="margin-bottom: 2rem; color: var(--text); font-size: 1.8rem; font-weight: 600;">Coming Soon to App Stores</h3>
+                <div class="platform-logos">
+                    <div class="platform-logo ios-logo">
+                        <svg width="28" height="32" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22.5714 0H5.42857C2.52857 0 0 2.52857 0 5.42857V26.5714C0 29.4714 2.52857 32 5.42857 32H22.5714C25.4714 32 28 29.4714 28 26.5714V5.42857C28 2.52857 25.4714 0 22.5714 0ZM14 30.2857C12.2571 30.2857 10.8571 28.8857 10.8571 27.1429C10.8571 25.4 12.2571 24 14 24C15.7429 24 17.1429 25.4 17.1429 27.1429C17.1429 28.8857 15.7429 30.2857 14 30.2857ZM23.4286 23.4286H4.57143V5.71429H23.4286V23.4286Z" fill="var(--text)"/>
+                        </svg>
+                        <span>iOS App</span>
                     </div>
-
-                    <div class="device-item">
-                        <div class="device-mockup mobile-mockup">
-                            <div class="mobile-screen">
-                                <div class="screen-content">
-                                    <div class="mobile-interface">
-                                        <div class="mobile-header">
-                                            <div class="mobile-status-bar"></div>
-                                            <div class="app-title">Black Box</div>
-                                        </div>
-                                        <div class="mobile-content">
-                                            <div class="mobile-metric">
-                                                <span class="metric-label">Monthly Budget</span>
-                                                <span class="metric-value">$4,200</span>
-                                            </div>
-                                            <div class="mobile-chart-placeholder">
-                                                <div class="mini-pie"></div>
-                                            </div>
-                                            <div class="mobile-button">Calculate Savings</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mobile-home-indicator"></div>
-                        </div>
-                        <div class="device-label">Mobile Apps</div>
-                        <div class="device-subtitle">Touch-optimized interface for on-the-go calculations</div>
-                        <div class="platform-logos">
-                            <div class="platform-logo ios-logo">
-                                <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17.5 0h-15C1.12 0 0 1.12 0 2.5v19C0 22.88 1.12 24 2.5 24h15c1.38 0 2.5-1.12 2.5-2.5v-19C20 1.12 18.88 0 17.5 0zM10 23c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm7.5-4H2.5V3h15v16z" fill="var(--text)"/>
-                                </svg>
-                                <span>iOS</span>
-                            </div>
-                            <div class="platform-logo android-logo">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17.523 15.3414c-.5511 0-.9993-.4482-.9993-.9993s.4482-.9993.9993-.9993.9993.4482.9993.9993-.4482.9993-.9993.9993zm-11.046 0c-.5511 0-.9993-.4482-.9993-.9993s.4482-.9993.9993-.9993.9993.4482.9993.9993-.4482.9993-.9993.9993zM23 15.5694V8.4306c0-.5523-.4477-1-1-1H2c-.5523 0-1 .4477-1 1v7.1388c0 .5523.4477 1 1 1h20c.5523 0 1-.4477 1-1zM4.8 6.4h1.6V4.8H4.8v1.6zm0-3.2h1.6V1.6H4.8v1.6zM7.2 6.4h1.6V4.8H7.2v1.6zm0-3.2h1.6V1.6H7.2v1.6zM9.6 6.4h1.6V4.8H9.6v1.6zm0-3.2h1.6V1.6H9.6v1.6zM12 6.4h1.6V4.8H12v1.6zm0-3.2h1.6V1.6H12v1.6zM14.4 6.4h1.6V4.8h-1.6v1.6zm0-3.2h1.6V1.6h-1.6v1.6zM16.8 6.4h1.6V4.8h-1.6v1.6zm0-3.2h1.6V1.6h-1.6v1.6z" fill="var(--text)"/>
-                                </svg>
-                                <span>Android</span>
-                            </div>
-                        </div>
+                    <div class="platform-logo android-logo">
+                        <svg width="28" height="32" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.7143 8.57143L14.8571 11.4286L12 8.57143L13.1429 7.42857L14.8571 9.14286L16.5714 7.42857L17.7143 8.57143ZM20.5714 4.57143C21.3571 4.57143 22 3.92857 22 3.14286C22 2.35714 21.3571 1.71429 20.5714 1.71429C19.7857 1.71429 19.1429 2.35714 19.1429 3.14286C19.1429 3.92857 19.7857 4.57143 20.5714 4.57143ZM7.42857 4.57143C8.21429 4.57143 8.85714 3.92857 8.85714 3.14286C8.85714 2.35714 8.21429 1.71429 7.42857 1.71429C6.64286 1.71429 6 2.35714 6 3.14286C6 3.92857 6.64286 4.57143 7.42857 4.57143ZM24.5714 10.8571V21.1429C24.5714 22.7143 23.2857 24 21.7143 24H6.28571C4.71429 24 3.42857 22.7143 3.42857 21.1429V10.8571C3.42857 9.28571 4.71429 8 6.28571 8H21.7143C23.2857 8 24.5714 9.28571 24.5714 10.8571ZM21.7143 10.8571H6.28571V21.1429H21.7143V10.8571Z" fill="var(--text)"/>
+                        </svg>
+                        <span>Android App</span>
                     </div>
                 </div>
             </div>
 
-            <div style="text-align: center; margin-top: 4rem;">
+            <div style="text-align: center; margin-top: 3rem;">
                 <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem;">Ready to see your own financial data come to life?</p>
                 <a href="index.html" class="community-button" style="display: inline-block;">Try the Full Calculator</a>
             </div>
