@@ -1186,21 +1186,6 @@
         }
 
 
-        .footer-links {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 16px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s;
-        }
-
-        .footer.visible .footer-links {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
         .footer-link {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.6875rem;
@@ -1561,8 +1546,6 @@
         <div class="container">
             <h2>Here's How We Help You Take Control</h2>
             <p class="section-subtitle">Six powerful ways we transform your financial future</p>
-            <p>Our comprehensive approach combines cutting-edge technology with proven financial strategies to give you the complete picture of what you can truly afford.</p>
-
             <div class="help-grid">
                 <div class="help-item">
                     <h3 class="help-title">Precise Affordability Calculations</h3>
@@ -1730,15 +1713,8 @@
             <div class="footer-tagline">LIFESTYLE AFFORDABILITY CALCULATOR</div>
             <div class="footer-dev-tag">Made with &lt;3 by aurablox © 2025</div>
         </div>
-        <div class="footer-links">
-            <a href="index.html" class="footer-link">Try Calculator</a>
-            <a href="#help" class="footer-link">How We Help</a>
-            <a href="#app" class="footer-link">The App</a>
-            <a href="#community" class="footer-link">Community</a>
-            <a href="#testimonials" class="footer-link">Reviews</a>
-            <a href="#" onclick="showPrivacyPolicy()" class="footer-link">Privacy Policy</a>
-        </div>
         <div class="footer-social">
+            <a href="#" onclick="showPrivacyPolicy()" class="footer-link">Privacy Policy</a>
             <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Follow on X (Twitter)">
                 <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
