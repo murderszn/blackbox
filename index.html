@@ -124,7 +124,9 @@
             transform: scale(1) translateY(0);
         }
 
-        html {
+        html, body {
+            margin: 0;
+            padding: 0;
             scroll-behavior: smooth;
         }
 
@@ -144,6 +146,61 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             letter-spacing: -0.015em;
+        }
+
+        /* Fixed hero section - stays in place while content scrolls over */
+        .hero {
+            position: fixed;
+            inset: 0;
+            height: 100vh;
+            width: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none; /* Allow content to scroll through */
+        }
+
+        /* Make interactive elements in hero clickable while allowing scroll through background */
+        .hero .header {
+            pointer-events: auto;
+        }
+
+        /* Content scrolls over the hero */
+        .content {
+            position: relative;
+            z-index: 1;
+            margin-top: 100vh;
+            background: var(--bg);
+            min-height: 100vh;
+        }
+
+        /* Hero fade effect at bottom for smooth overlap */
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to bottom, transparent, var(--bg));
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero {
+                height: 100vh;
+                height: 100dvh; /* Dynamic viewport height for mobile */
+            }
+            
+            .content {
+                margin-top: 100vh;
+                margin-top: 100dvh;
+            }
+            
+            .header-banner-title {
+                padding: 0 16px;
+            }
         }
 
         /* Grid background system */
@@ -168,21 +225,33 @@
             animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* Ensure content has solid background to cover hero */
+        .content {
+            background: var(--bg);
+        }
+        
+        .content .app-container,
+        .content .instructions-panel,
+        .content .affordability-banner,
+        .content .mini-dashboard,
+        .content .panel,
+        .content .footer {
+            background: var(--bg);
+            position: relative;
+        }
+
         .header {
-            margin: 0 auto 64px auto;
+            margin: 0;
             animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             padding: 0;
             background: var(--bg);
             border-radius: 0;
-            border: 1px solid var(--border);
+            border: none;
             overflow: hidden;
-            box-shadow:
-                0 20px 60px rgba(0, 0, 0, 0.9),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-            min-height: 400px;
-            aspect-ratio: 16 / 9;
+            box-shadow: none;
+            height: 100vh;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -206,14 +275,17 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0;
+            object-position: center top;
+            clip-path: inset(0 0 5% 0);
+            opacity: 1;
             transition: opacity 1.5s ease-in-out;
             filter: brightness(1.0) contrast(1.0);
             z-index: 0;
+            will-change: transform;
         }
 
         .header-banner-image.loaded {
-            opacity: 0.95;
+            opacity: 1;
         }
 
 
@@ -224,7 +296,7 @@
             transform: translate(-50%, -50%);
             z-index: 200;
             text-align: center;
-            pointer-events: none;
+            pointer-events: auto;
             width: 100%;
             max-width: 1000px;
             display: flex;
@@ -259,16 +331,16 @@
             font-family: 'Exo 2', sans-serif;
             font-size: clamp(3.5rem, 10vw, 8.5rem);
             font-weight: 900;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.08em;
             color: #ffffff !important;
             text-transform: uppercase;
             margin: 0;
-            line-height: 0.92;
+            line-height: 0.95;
             text-shadow:
-                0 0 15px rgba(255, 255, 255, 0.4),
-                0 0 30px rgba(255, 255, 255, 0.25),
-                0 0 60px rgba(255, 255, 255, 0.15),
-                0 1px 3px rgba(0, 0, 0, 0.6) !important;
+                0 0 20px rgba(255, 255, 255, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.2),
+                0 0 80px rgba(255, 255, 255, 0.1),
+                0 2px 4px rgba(0, 0, 0, 0.5) !important;
             opacity: 1;
             text-align: center;
             filter: none !important;
@@ -278,13 +350,19 @@
             background-clip: unset !important;
             mix-blend-mode: normal !important;
             transform: scale(1);
-            transition: transform 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 200;
             position: relative;
+            text-decoration: none !important;
         }
 
         .header-banner-title-text:hover {
-            transform: scale(1.02);
+            transform: scale(1.015);
+            text-shadow:
+                0 0 25px rgba(255, 255, 255, 0.35),
+                0 0 50px rgba(255, 255, 255, 0.25),
+                0 0 100px rgba(255, 255, 255, 0.15),
+                0 2px 6px rgba(0, 0, 0, 0.6) !important;
         }
 
         .beta-tag {
@@ -337,12 +415,24 @@
             flex-direction: column;
             align-items: center;
             min-width: 60px;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            backdrop-filter: blur(12px);
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .countdown-item:hover {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
         .countdown-number {
@@ -380,43 +470,40 @@
 
         .header-banner-subtitle {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.35em;
-            color: #ffffff !important;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            color: rgba(255, 255, 255, 0.9) !important;
             text-transform: uppercase;
-            margin-top: 24px;
+            margin-top: 32px;
             opacity: 0;
             animation: fadeInSubtitle 1.4s ease-out 1.2s forwards;
             text-shadow:
-                0 0 10px rgba(255, 255, 255, 0.1),
-                0 1px 2px rgba(0, 0, 0, 0.2) !important;
+                0 0 8px rgba(255, 255, 255, 0.15),
+                0 1px 2px rgba(0, 0, 0, 0.3) !important;
             filter: none !important;
-            -webkit-text-fill-color: #ffffff !important;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.9) !important;
             background: none !important;
             mix-blend-mode: normal !important;
             position: relative;
-            padding: 0;
+            padding: 12px 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 28px;
-            flex-wrap: wrap;
             width: 100%;
+            text-align: center;
         }
 
         .subtitle-main {
             position: relative;
-            flex: 0 1 auto;
             text-align: center;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.875rem;
             font-weight: 500;
-            letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 0.25em;
+            color: rgba(255, 255, 255, 0.9);
             text-transform: uppercase;
-            margin: 0 24px;
-            padding: 8px 0;
+            padding: 0;
         }
 
         .subtitle-accent {
@@ -424,18 +511,14 @@
             font-size: 0.75rem;
             font-weight: 400;
             letter-spacing: 0.2em;
-            color: rgba(255, 255, 255, 0.6) !important;
+            color: rgba(255, 255, 255, 0.7) !important;
             text-transform: uppercase;
             position: relative;
-            padding: 0 0;
-            flex: 0 0 auto;
+            padding: 0;
         }
 
         .subtitle-divider {
-            width: 1px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.35);
-            flex: 0 0 auto;
+            display: none;
         }
 
         @keyframes fadeInSubtitle {
@@ -743,7 +826,7 @@
             border: 1px solid var(--border);
             border-radius: 0;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .panel,
@@ -1180,6 +1263,7 @@
             position: relative;
             border: 1px solid var(--border);
             min-height: 120px;
+            overflow: visible;
             box-shadow:
                 inset 0 0 0 1px rgba(255, 255, 255, 0.02),
                 0 4px 16px rgba(0, 0, 0, 0.8);
@@ -1204,61 +1288,29 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 12px 16px;
-            background: linear-gradient(135deg, var(--bg) 0%, rgba(255, 255, 255, 0.01) 50%, var(--bg) 100%);
-            border-radius: 6px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            transition: all 0.2s ease;
             height: 240px;
             position: relative;
             width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            overflow: hidden;
-            box-shadow:
-                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-                0 4px 12px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(255, 255, 255, 0.01);
-        }
-
-        .budget-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.06) 50%,
-                transparent 100%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .budget-item.visible::before {
-            opacity: 1;
+            border: 1px solid var(--border);
+            gap: 12px;
         }
 
         .budget-item:hover {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(255, 255, 255, 0.02) 50%, var(--bg-secondary) 100%);
-            border-color: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-            box-shadow:
-                inset 0 0 0 1px rgba(255, 255, 255, 0.03),
-                0 8px 20px rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(255, 255, 255, 0.02);
-        }
-
-        .budget-item:hover::before {
-            opacity: 1;
-            animation: shimmer 2.5s ease-in-out infinite;
+            background: var(--card);
+            border-color: var(--border-light);
         }
 
         .budget-item-label {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.8125rem;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             text-align: center;
             min-height: 36px;
             display: flex;
@@ -1273,25 +1325,23 @@
             text-align: center;
             font-size: 0.9rem;
             font-weight: 500;
-            padding: 10px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(255, 255, 255, 0.02);
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            background: var(--card);
             color: var(--text);
-            border-radius: 4px;
+            border-radius: 2px;
             transition: all 0.2s ease;
             font-family: 'JetBrains Mono', monospace;
         }
 
         .budget-item-input:focus {
             outline: none;
-            border-color: rgba(255, 255, 255, 0.15);
-            background: rgba(255, 255, 255, 0.04);
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+            border-color: var(--border-focus);
+            background: var(--card-hover);
         }
 
         .budget-item-input:hover {
-            border-color: rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--border-light);
         }
 
         .budget-toggle-btn {
@@ -1330,74 +1380,125 @@
             opacity: 0.6;
         }
 
-        /* Budget card layout */
-        .budget-item-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-evenly;
-            height: 100%;
-            width: 100%;
-            text-align: center;
-            padding: 12px 0;
-        }
-
         .budget-item-top {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
+            position: relative;
         }
 
         .budget-item-name {
             text-align: center;
         }
 
+        .budget-item-delete {
+            width: 52px;
+            height: 28px;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(20, 20, 20, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                inset 0 1px 3px rgba(0,0,0,0.9),
+                0 2px 8px rgba(0,0,0,0.4),
+                0 1px 2px rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1;
+            font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .budget-item-delete:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow:
+                inset 0 1px 3px rgba(0,0,0,0.9),
+                0 4px 16px rgba(0,0,0,0.6),
+                0 2px 4px rgba(255, 255, 255, 0.04);
+            transform: translateY(-1px);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .budget-item-delete:active {
+            transform: translateY(0);
+        }
+
+        .budget-item-delete:focus-visible {
+            outline: none;
+            box-shadow:
+                inset 0 1px 3px rgba(0,0,0,0.9),
+                0 2px 8px rgba(0,0,0,0.4),
+                0 1px 2px rgba(255, 255, 255, 0.02),
+                0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
         .budget-item-toggle-row {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 12px;
             width: 100%;
-            padding: 8px 0;
+        }
+
+        @media (max-width: 480px) {
+            .budget-item-delete {
+                width: 46px;
+                height: 24px;
+                border-radius: 12px;
+                font-size: 12px;
+            }
         }
 
         .budget-item-amount-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4px 0;
         }
 
         .budget-item-amount-row .budget-amount-display,
         .budget-item-amount-row .income-amount-display {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+            font-weight: 400;
             padding: 8px 16px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 2px;
+            background: transparent;
+            border: 1px solid transparent;
             transition: all 0.2s ease;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.05em;
         }
 
         .budget-item-amount-row .budget-amount-display:hover,
         .budget-item-amount-row .income-amount-display:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.08);
+            background: var(--card);
+            border-color: var(--border);
         }
 
         .budget-item-slider-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 8px 0;
             width: 100%;
         }
 
         @media (max-width: 480px) {
             .budget-item-amount-row .budget-amount-display,
             .budget-item-amount-row .income-amount-display {
-                font-size: 1.3rem;
+                font-size: 1.5rem;
                 padding: 8px 12px;
+            }
+            
+            .budget-amount-display,
+            .budget-amount-display.income-amount-display {
+                font-size: 1.5rem;
             }
         }
 
@@ -1851,9 +1952,9 @@
         }
 
         .budget-amount-display {
-            font-weight: 600;
+            font-weight: 400;
             color: var(--text);
-            font-size: 1rem;
+            font-size: clamp(1.5rem, 2.5vw, 2.25rem);
             text-align: center;
             min-width: 80px;
             padding: 4px 8px;
@@ -1862,6 +1963,9 @@
             cursor: text;
             user-select: none;
             transition: all 0.2s ease;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.05em;
+            line-height: 1.2;
         }
 
         .budget-amount-display:hover {
@@ -1902,14 +2006,18 @@
         }
 
         .budget-amount-display.income-amount-display {
-            font-weight: 700;
+            font-weight: 400;
             color: var(--text);
+            font-size: clamp(1.5rem, 2.5vw, 2.25rem);
             text-align: center;
             background: var(--bg);
             border: 1px solid var(--border);
             cursor: text;
             user-select: none;
             transition: all 0.2s ease;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.05em;
+            line-height: 1.2;
         }
 
         .budget-amount-display.income-amount-display:hover {
@@ -1925,6 +2033,14 @@
         @media (max-width: 768px) {
             .app-container {
                 padding: 24px 16px;
+            }
+            
+            .income-budget-content {
+                overflow: visible;
+            }
+            
+            .mixing-board-container {
+                overflow: visible;
             }
 
             .header {
@@ -2068,14 +2184,14 @@
                 order: 3;
                 margin-top: 0;
                 margin-bottom: 8px;
-                font-size: 0.85rem;
+                font-size: 1.375rem;
                 padding: 4px 6px;
                 min-width: 70px;
             }
 
 
             .budget-item-label {
-                font-size: 0.7rem;
+                font-size: 0.75rem;
                 min-height: 28px;
                 text-align: center;
             }
@@ -2200,6 +2316,15 @@
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 8px;
                 padding: 10px;
+                overflow: visible;
+            }
+            
+            .income-budget-content {
+                overflow: visible;
+            }
+            
+            .panel {
+                overflow: visible;
             }
         }
 
@@ -2936,14 +3061,15 @@
         }
 
         .income-budget-content {
-            max-height: 1000px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
+            max-height: none;
+            overflow: visible;
+            transition: opacity 0.3s ease;
             opacity: 1;
         }
 
         .income-budget-content:not(.expanded) {
             max-height: 0;
+            overflow: hidden;
             opacity: 0;
         }
 
@@ -3751,91 +3877,6 @@
             }
         }
 
-        /* Promo Marquee Styles */
-        .promo-marquee {
-            width: 100%;
-            height: 40px;
-            background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow:
-                0 1px 3px rgba(0, 0, 0, 0.9),
-                inset 0 1px 0 rgba(255, 255, 255, 0.03);
-            overflow: hidden;
-            position: relative;
-            z-index: 1000;
-        }
-
-        .promo-marquee::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.02) 50%,
-                transparent 100%);
-            animation: shimmer 3s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        .marquee-content {
-            display: flex;
-            white-space: nowrap;
-            animation: scroll 45s linear infinite;
-            font-family: 'JetBrains Mono', 'Orbitron', monospace;
-            font-size: 12px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.85);
-            line-height: 40px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
-        }
-
-        .marquee-content span {
-            margin-right: 80px;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        .marquee-content span::before {
-            content: '◆';
-            margin-right: 12px;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 8px;
-        }
-
-        @keyframes scroll {
-            0% {
-                transform: translateX(100%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        @keyframes shimmer {
-            0%, 100% {
-                opacity: 0;
-                transform: translateX(-100%);
-            }
-            50% {
-                opacity: 1;
-                transform: translateX(0%);
-            }
-        }
-
-        .promo-marquee:hover .marquee-content {
-            animation-play-state: paused;
-            color: rgba(255, 255, 255, 1);
-            text-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-        }
-
-        .promo-marquee:hover::before {
-            animation-duration: 1.5s;
-        }
         /* Scenarios Section */
         .scenarios-section {
             border: 1px solid var(--border);
@@ -4149,25 +4190,18 @@
     </style>
 </head>
 <body>
-    <!-- Promo Marquee Bar -->
-    <div class="promo-marquee">
-        <div class="marquee-content">
-            <span>Black Box Finance: The first finance app from Aurablox • iOS & Android launching 1/1/26 • Early feedback program active • Secure lifestyle budgeting • Advanced analytics • Privacy-first design • Get notified for launch</span>
-            <span>Black Box Finance: The first finance app from Aurablox • iOS & Android launching 1/1/26 • Early feedback program active • Secure lifestyle budgeting • Advanced analytics • Privacy-first design • Get notified for launch</span>
-        </div>
-    </div>
-
     <!-- Notification -->
     <div id="notification" class="notification"></div>
 
-    <div class="app-container">
+    <!-- Fixed Hero Section -->
+    <header class="hero">
         <div class="header">
-            <!-- Banner Image -->
+            <!-- Banner Media -->
             <div class="header-banner-media">
                 <img 
                     class="header-banner-image" 
                     id="headerBannerImage"
-                    src="blackbox.png" 
+                    src="Gemini_Generated_Image_im6r4gim6r4gim6r.png" 
                     alt="Geometric banner background"
                 />
             </div>
@@ -4200,9 +4234,7 @@
                     </div>
                 </div>
                 <div class="header-banner-subtitle">
-                    <div class="subtitle-divider"></div>
                     <span class="subtitle-main">LIFESTYLE AFFORDABILITY CALCULATOR</span>
-                    <div class="subtitle-divider"></div>
                 </div>
 
                 <!-- Email Signup -->
@@ -4228,7 +4260,11 @@
                 </div>
             </div>
         </div>
+    </header>
 
+    <!-- Scrollable Content -->
+    <main class="content">
+        <div class="app-container">
         <!-- Instructions Panel -->
         <div class="instructions-panel">
             <div class="instructions-header">
@@ -4307,9 +4343,14 @@
                 <div id="budgetItems" class="mixing-board-container">
                     <!-- Income and budget items will be added here -->
                 </div>
-                <button class="btn btn-secondary u-w-100 u-mt-24" onclick="addBudgetItem()">
-                    + Add Budget Item
-                </button>
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="addBudgetItem()">
+                        + Add Budget Item
+                    </button>
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="resetAllValues()">
+                        Reset All
+                    </button>
+                </div>
 
                 <!-- Scenarios Section -->
                 <div class="scenarios-section u-mt-32">
@@ -4768,7 +4809,7 @@
             const miniMonthlyCashFlow = document.getElementById('miniMonthlyCashFlow');
             const miniMonthlyCashFlowTrend = document.getElementById('miniMonthlyCashFlowTrend');
 
-            miniMonthlyCashFlow.textContent = '$' + monthlyCashFlow.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            miniMonthlyCashFlow.textContent = '$' + Math.round(monthlyCashFlow).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
 
             if (monthlyCashFlow > 500) {
                 miniMonthlyCashFlowTrend.textContent = '↗ Strong';
@@ -4938,28 +4979,26 @@
             const incomeToggleIcon = incomeEnabled ? '✓' : '✗';
             
             incomeDiv.innerHTML = `
-                <div class="budget-item-content">
-                    <div class="budget-item-top">
-                        <input class="form-input budget-item-input budget-name-input budget-name-input--readonly budget-item-name" value="Income"
-                               placeholder="Income"
-                               readonly
-                               ${!incomeEnabled ? 'disabled' : ''}>
-                    </div>
-                    <div class="budget-item-amount-row">
-                        <span class="budget-amount-display income-amount-display${incomeEnabled ? '' : ' is-disabled'}" id="incomeAmountDisplay" onclick="${incomeEnabled ? 'editIncomeAmount()' : ''}">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
-                    </div>
-                    <div class="budget-item-slider-row">
-                        <div class="budget-slider-container${incomeEnabled ? '' : ' is-disabled'}" id="slider-container-income" onmousedown="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}" ontouchstart="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}">
-                            <div class="fader-track income-fader-track" id="income-fader-track">
-                                <div class="fader-level income-fader-level" id="income-fader-level" style="width: ${incomeFaderWidth}%"></div>
-                                <div class="fader-handle income-fader-handle" id="income-fader-handle" style="left: ${incomeHandleLeft}px"></div>
-                            </div>
+                <div class="budget-item-top">
+                    <input class="form-input budget-item-input budget-name-input budget-name-input--readonly budget-item-name" value="Income"
+                           placeholder="Income"
+                           readonly
+                           ${!incomeEnabled ? 'disabled' : ''}>
+                </div>
+                <div class="budget-item-amount-row">
+                    <span class="budget-amount-display income-amount-display${incomeEnabled ? '' : ' is-disabled'}" id="incomeAmountDisplay" onclick="${incomeEnabled ? 'editIncomeAmount()' : ''}">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
+                </div>
+                <div class="budget-item-slider-row">
+                    <div class="budget-slider-container${incomeEnabled ? '' : ' is-disabled'}" id="slider-container-income" onmousedown="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}" ontouchstart="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}">
+                        <div class="fader-track income-fader-track" id="income-fader-track">
+                            <div class="fader-level income-fader-level" id="income-fader-level" style="width: ${incomeFaderWidth}%"></div>
+                            <div class="fader-handle income-fader-handle" id="income-fader-handle" style="left: ${incomeHandleLeft}px"></div>
                         </div>
                     </div>
-                    <div class="budget-item-toggle-row">
-                        <div class="toggle-switch ${incomeEnabled ? 'enabled' : ''}" role="switch" aria-checked="${incomeEnabled ? 'true' : 'false'}" onclick="toggleIncome()" title="${incomeEnabled ? 'Disable' : 'Enable'} income">
-                            <div class="toggle-thumb"></div>
-                        </div>
+                </div>
+                <div class="budget-item-toggle-row">
+                    <div class="toggle-switch ${incomeEnabled ? 'enabled' : ''}" role="switch" aria-checked="${incomeEnabled ? 'true' : 'false'}" onclick="toggleIncome()" title="${incomeEnabled ? 'Disable' : 'Enable'} income">
+                        <div class="toggle-thumb"></div>
                     </div>
                 </div>
             `;
@@ -4983,29 +5022,30 @@
                 const toggleIcon = isEnabled ? '✓' : '✗';
 
                 div.innerHTML = `
-                    <div class="budget-item-content">
-                        <div class="budget-item-top">
-                            <input class="form-input budget-item-input budget-name-input budget-item-name" value="${item.name}"
-                                   placeholder="Budget item name"
-                                   oninput="updateBudgetItem(${index}, 'name', this.value)"
-                                   ${!isEnabled ? 'disabled' : ''}>
-                        </div>
-                        <div class="budget-item-amount-row">
-                            <span class="budget-amount-display${isEnabled ? '' : ' is-disabled'}" id="budget-amount-${index}" onclick="${isEnabled ? `editBudgetAmount(${index})` : ''}">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
-                        </div>
-                        <div class="budget-item-slider-row">
-                            <div class="budget-slider-container${isEnabled ? '' : ' is-disabled'}" id="slider-container-${index}" onmousedown="${isEnabled ? `startFaderDrag(event, ${index})` : ''}" ontouchstart="${isEnabled ? `startFaderDrag(event, ${index})` : ''}">
-                                <div class="fader-track" id="fader-track-${index}">
-                                    <div class="fader-level" id="fader-level-${index}" style="width: ${faderWidth}%"></div>
-                                    <div class="fader-handle" id="fader-handle-${index}" style="left: ${handleLeft}px"></div>
-                                </div>
+                    <div class="budget-item-top">
+                        <input class="form-input budget-item-input budget-name-input budget-item-name" value="${item.name}"
+                               placeholder="Budget item name"
+                               oninput="updateBudgetItem(${index}, 'name', this.value)"
+                               ${!isEnabled ? 'disabled' : ''}>
+                    </div>
+                    <div class="budget-item-amount-row">
+                        <span class="budget-amount-display${isEnabled ? '' : ' is-disabled'}" id="budget-amount-${index}" onclick="${isEnabled ? `editBudgetAmount(${index})` : ''}">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
+                    </div>
+                    <div class="budget-item-slider-row">
+                        <div class="budget-slider-container${isEnabled ? '' : ' is-disabled'}" id="slider-container-${index}" onmousedown="${isEnabled ? `startFaderDrag(event, ${index})` : ''}" ontouchstart="${isEnabled ? `startFaderDrag(event, ${index})` : ''}">
+                            <div class="fader-track" id="fader-track-${index}">
+                                <div class="fader-level" id="fader-level-${index}" style="width: ${faderWidth}%"></div>
+                                <div class="fader-handle" id="fader-handle-${index}" style="left: ${handleLeft}px"></div>
                             </div>
                         </div>
-                        <div class="budget-item-toggle-row">
-                            <div class="toggle-switch ${isEnabled ? 'enabled' : ''}" role="switch" aria-checked="${isEnabled ? 'true' : 'false'}" onclick="toggleBudgetItem(${index})" title="${isEnabled ? 'Disable' : 'Enable'} item">
-                                <div class="toggle-thumb"></div>
-                            </div>
+                    </div>
+                    <div class="budget-item-toggle-row">
+                        <div class="toggle-switch ${isEnabled ? 'enabled' : ''}" role="switch" aria-checked="${isEnabled ? 'true' : 'false'}" onclick="toggleBudgetItem(${index})" title="${isEnabled ? 'Disable' : 'Enable'} item">
+                            <div class="toggle-thumb"></div>
                         </div>
+                        <button class="budget-item-delete" onclick="deleteBudgetItem(${index})" title="Delete this budget item" aria-label="Delete budget item">
+                            ×
+                        </button>
                     </div>
                 `;
                 container.appendChild(div);
@@ -5034,6 +5074,36 @@
         function addBudgetItem() {
             budgetItems.push({ name: 'New Item', amount: 0, enabled: true });
             renderBudgetItems();
+        }
+
+        function deleteBudgetItem(index) {
+            if (budgetItems.length <= 1) {
+                showNotification('You must have at least one budget item');
+                return;
+            }
+            budgetItems.splice(index, 1);
+            renderBudgetItems();
+            calculate();
+            showNotification('Budget item deleted');
+        }
+
+        function resetAllValues() {
+            // Reset income to 0
+            document.getElementById('monthlyIncome').value = 0;
+            
+            // Reset all budget items to 0
+            budgetItems.forEach(item => {
+                item.amount = 0;
+            });
+            
+            // Re-render budget items to update displays
+            renderBudgetItems();
+            
+            // Recalculate everything
+            calculate();
+            
+            // Show notification
+            showNotification('All values have been reset to zero');
         }
 
         function toggleIncome() {
@@ -5424,8 +5494,8 @@
             const houseMonthlyPayment = houseEnabled && houseLoanAmount > 0 ? calculateLoanPayment(houseLoanAmount, houseInterestRate, houseLoanMonths) : 0;
 
             // Update displays
-            document.getElementById('carPayment').textContent = '$' + carMonthlyPayment.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('housePayment').textContent = '$' + houseMonthlyPayment.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('carPayment').textContent = '$' + Math.round(carMonthlyPayment).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            document.getElementById('housePayment').textContent = '$' + Math.round(houseMonthlyPayment).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
 
             // Calculate 5-year projection
             const years = 5;
@@ -5485,12 +5555,12 @@
                 bannerTitle.textContent = 'You Can Afford This Lifestyle';
                 bannerText.textContent = 'Your projected savings remain positive over 5 years';
             }
-            bannerAmount.textContent = '$' + finalSavings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            bannerAmount.textContent = '$' + Math.round(finalSavings).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
             bannerAmount.className = finalSavings < 0 ? 'affordability-amount' : 'affordability-amount';
 
-            document.getElementById('monthlySavings').textContent = '$' + monthlySavingsAfterLoans.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('monthlySavings').textContent = '$' + Math.round(monthlySavingsAfterLoans).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
             document.getElementById('monthlySavings').className = 'summary-card-value ' + (monthlySavingsAfterLoans >= 0 ? 'positive' : 'negative');
-            document.getElementById('totalSavings').textContent = '$' + finalSavings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('totalSavings').textContent = '$' + Math.round(finalSavings).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
             document.getElementById('totalSavings').className = 'summary-card-value ' + (finalSavings >= 0 ? 'positive' : 'negative');
 
             // Update charts
@@ -6900,10 +6970,14 @@
 
         // Initialize AI Analysis on page load
         initAIAnalysis();
+
+        // Parallax effect disabled for fixed hero - hero stays in place while content scrolls over
+        // The fixed hero approach provides better performance and visual effect
+
     </script>
 
-    <!-- Footer -->
-    <footer class="footer">
+        <!-- Footer -->
+        <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">BLACK BOX</div>
             <div class="footer-tagline">LIFESTYLE AFFORDABILITY CALCULATOR</div>
@@ -6922,7 +6996,10 @@
                 </svg>
             </a>
         </div>
-    </footer>
+        </footer>
+
+        </div>
+    </main>
 
     <!-- Privacy Policy Modal -->
     <div id="privacyModal" class="modal">
