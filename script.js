@@ -231,8 +231,19 @@ function updateMiniDashboard() {
         return sum + (parseFloat(item.amount) || 0);
     }, 0);
 
-    // Calculate monthly cash flow
-    const monthlyCashFlow = monthlyIncome - monthlySpending;
+    // Calculate major purchases first (needed for expense and savings calculations)
+    const carEnabled = document.getElementById('carEnabled').checked;
+    const houseEnabled = document.getElementById('houseEnabled').checked;
+    const carPayment = carEnabled ? calculateCarPayment() : 0;
+    const housePayment = houseEnabled ? calculateHousePayment() : 0;
+    const houseAdditionalBills = houseEnabled ? (parseFloat(document.getElementById('houseAdditionalBills').value) || 0) : 0;
+    const totalMajorPayments = carPayment + housePayment + houseAdditionalBills;
+    
+    // Calculate total expenses including major purchases
+    const totalMonthlyExpenses = monthlySpending + totalMajorPayments;
+    
+    // Calculate monthly cash flow after all expenses including major purchases
+    const monthlyCashFlow = monthlyIncome - totalMonthlyExpenses;
     const miniMonthlyCashFlow = document.getElementById('miniMonthlyCashFlow');
     const miniMonthlyCashFlowTrend = document.getElementById('miniMonthlyCashFlowTrend');
 
@@ -252,8 +263,8 @@ function updateMiniDashboard() {
         miniMonthlyCashFlowTrend.className = 'mini-metric-trend negative';
     }
 
-    // Calculate expense ratio
-    const expenseRatio = monthlyIncome > 0 ? (monthlySpending / monthlyIncome) * 100 : 0;
+    // Calculate expense ratio including major purchases
+    const expenseRatio = monthlyIncome > 0 ? (totalMonthlyExpenses / monthlyIncome) * 100 : 0;
     const miniExpenseRatio = document.getElementById('miniExpenseRatio');
     const miniExpenseRatioTrend = document.getElementById('miniExpenseRatioTrend');
 
@@ -269,13 +280,6 @@ function updateMiniDashboard() {
         miniExpenseRatioTrend.textContent = '⚠ High';
         miniExpenseRatioTrend.className = 'mini-metric-trend negative';
     }
-
-    // Calculate major purchases
-    const carEnabled = document.getElementById('carEnabled').checked;
-    const houseEnabled = document.getElementById('houseEnabled').checked;
-    const carPayment = carEnabled ? calculateCarPayment() : 0;
-    const housePayment = houseEnabled ? calculateHousePayment() : 0;
-    const totalMajorPayments = carPayment + housePayment;
 
     const miniMajorPurchases = document.getElementById('miniMajorPurchases');
     const miniMajorPurchasesTrend = document.getElementById('miniMajorPurchasesTrend');
@@ -300,9 +304,11 @@ function updateMiniDashboard() {
     const carLoanMonths = parseInt(document.getElementById('carLoanMonths').value) || 60;
     const housePurchaseYear = parseInt(document.getElementById('housePurchaseYear').value) || 0;
     const housePurchaseMonth = housePurchaseYear * 12;
-    const houseAdditionalBills = parseFloat(document.getElementById('houseAdditionalBills').value) || 0;
     
     // Calculate house down payment (simplified for mini dashboard)
+    // Note: Use cash flow WITHOUT house payments for down payment calculation
+    // since we're calculating savings accumulated BEFORE the house purchase
+    const baseCashFlow = monthlyIncome - monthlySpending;
     const housePrice = parseFloat(document.getElementById('housePrice').value) || 0;
     let houseDownPayment = 0;
     if (houseEnabled && housePurchaseYear > 0) {
@@ -312,7 +318,8 @@ function updateMiniDashboard() {
         const monthlyRate = annualReturnRate / 12;
         let year1Savings = 0;
         for (let month = 1; month <= monthsBeforeHouse; month++) {
-            let monthlySavingsThisMonth = monthlyCashFlow;
+            let monthlySavingsThisMonth = baseCashFlow;
+            // Subtract car payment if car loan is active in this month
             if (carEnabled && month > carPurchaseMonth && month <= carPurchaseMonth + carLoanMonths) {
                 monthlySavingsThisMonth -= carPayment;
             }
@@ -322,7 +329,7 @@ function updateMiniDashboard() {
         houseDownPayment = Math.min(year1Savings, housePrice);
     }
     
-    // Calculate savings rate
+    // Calculate savings rate (after ALL expenses including major purchases)
     const savingsRate = monthlyIncome > 0 ? (monthlyCashFlow / monthlyIncome) * 100 : 0;
     
     // Update core metrics (Financial Health Score & Savings Rate)
@@ -1325,8 +1332,14 @@ function calculate() {
     const houseMonthlyPayment = houseEnabled && houseLoanAmount > 0 ? calculateLoanPayment(houseLoanAmount, houseInterestRate, houseLoanMonths) : 0;
 
     // Update displays
-    document.getElementById('carPayment').textContent = '$' + Math.round(carMonthlyPayment).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
-    document.getElementById('housePayment').textContent = '$' + Math.round(houseMonthlyPayment).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+    const carPaymentEl = document.getElementById('carPayment');
+    const housePaymentEl = document.getElementById('housePayment');
+    if (carPaymentEl) {
+        carPaymentEl.textContent = '$' + Math.round(carMonthlyPayment).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+    }
+    if (housePaymentEl) {
+        housePaymentEl.textContent = '$' + Math.round(houseMonthlyPayment).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+    }
 
     // Calculate 5-year projection using shared function
     const years = 5;
@@ -2347,44 +2360,6 @@ function initHeaderBanner() {
     }
 }
 
-// Initialize countdown timer
-function initEmailSignupCountdown() {
-    const emailCountdown = document.getElementById('emailSignupCountdown');
-    if (!emailCountdown) return;
-
-    // Set target date to January 1st, 2026 (same as main countdown)
-    const targetDate = new Date('2026-01-01T00:00:00');
-
-    function updateEmailCountdown() {
-        const now = new Date().getTime();
-        const distance = targetDate.getTime() - now;
-
-        if (distance > 0) {
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('emailDays').textContent = days.toString().padStart(2, '0');
-            document.getElementById('emailHours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('emailMinutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('emailSeconds').textContent = seconds.toString().padStart(2, '0');
-        } else {
-            // Countdown finished
-            document.getElementById('emailDays').textContent = '00';
-            document.getElementById('emailHours').textContent = '00';
-            document.getElementById('emailMinutes').textContent = '00';
-            document.getElementById('emailSeconds').textContent = '00';
-        }
-    }
-
-    // Update immediately
-    updateEmailCountdown();
-
-    // Update every second
-    setInterval(updateEmailCountdown, 1000);
-}
-
 // Scroll animations disabled for smoother scrolling
 function initScrollAnimations() {
     // Make all elements visible immediately - no animations for better scroll performance
@@ -2669,8 +2644,6 @@ smoothScrollStyle.textContent = `
     }
 `;
 document.head.appendChild(smoothScrollStyle);
-// Initialize email signup countdown
-initEmailSignupCountdown();
 // Initialize header banner
 initHeaderBanner();
 // Add window resize listener for charts
@@ -2853,8 +2826,10 @@ function initAIAnalysis() {
             const monthlySavings = parseFloat(document.getElementById('monthlySavings').textContent.replace(/[^0-9.-]/g, '')) || 0;
             const carEnabled = document.getElementById('carEnabled')?.checked || false;
             const houseEnabled = document.getElementById('houseEnabled')?.checked || false;
-            const carPayment = parseFloat(document.getElementById('carPayment').textContent.replace(/[^0-9.-]/g, '')) || 0;
-            const housePayment = parseFloat(document.getElementById('housePayment').textContent.replace(/[^0-9.-]/g, '')) || 0;
+            const carPaymentEl = document.getElementById('carPayment');
+            const housePaymentEl = document.getElementById('housePayment');
+            const carPayment = carPaymentEl ? parseFloat(carPaymentEl.textContent.replace(/[^0-9.-]/g, '')) || 0 : 0;
+            const housePayment = housePaymentEl ? parseFloat(housePaymentEl.textContent.replace(/[^0-9.-]/g, '')) || 0 : 0;
             
             // Get car and house details
             const carLoanMonthsEl = document.getElementById('carLoanMonths');
@@ -2893,8 +2868,8 @@ function initAIAnalysis() {
                 const errorText = await response.text();
                 console.error('AI Analysis API error:', response.status, errorText);
                 
-                // Check if it's a 405 Method Not Allowed - likely wrong server
-                if (response.status === 405 && window.location.port !== '8888') {
+                // Check if it's a 405 Method Not Allowed - likely wrong server (only show on localhost)
+                if (response.status === 405 && window.location.hostname === 'localhost' && window.location.port !== '8888') {
                     alert('⚠️ API Error: Please use the Vercel dev server on port 8888.\n\nRun: npx vercel dev --listen 8888\nThen access: http://localhost:8888\n\nThe current server (port ' + window.location.port + ') does not support serverless functions.');
                     throw new Error('Please use Vercel dev server on port 8888');
                 }

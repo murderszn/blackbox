@@ -354,6 +354,7 @@ body::before {
     transition: opacity 1.5s ease-in-out;
     filter: brightness(1.0) contrast(1.0);
     z-index: 0;
+    animation: subtleWobble 8s ease-in-out infinite;
 }
 
 .header-banner-image.loaded {
@@ -370,14 +371,14 @@ body::before {
     text-align: center;
     pointer-events: auto;
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     mix-blend-mode: normal !important;
     isolation: isolate;
-    padding: 0 32px;
+    padding: 0 40px;
 }
 
 @keyframes titleFloat {
@@ -389,30 +390,46 @@ body::before {
     }
 }
 
+@keyframes subtleWobble {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        transform: translate(-2px, 1px) scale(1.002);
+    }
+    50% {
+        transform: translate(1px, -1px) scale(1);
+    }
+    75% {
+        transform: translate(-1px, -2px) scale(1.001);
+    }
+}
+
 .header-banner-title-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 20px;
     width: 100%;
     position: relative;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    margin-bottom: 4px;
 }
 
 .header-banner-title-text {
     font-family: 'Exo 2', sans-serif;
-    font-size: clamp(3.5rem, 10vw, 8.5rem);
+    font-size: clamp(4rem, 12vw, 10rem);
     font-weight: 900;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     color: #ffffff !important;
     text-transform: uppercase;
     margin: 0;
-    line-height: 0.95;
+    line-height: 0.92;
     text-shadow:
-        0 0 20px rgba(255, 255, 255, 0.3),
-        0 0 40px rgba(255, 255, 255, 0.2),
-        0 0 80px rgba(255, 255, 255, 0.1),
-        0 2px 4px rgba(0, 0, 0, 0.5) !important;
+        0 0 30px rgba(255, 255, 255, 0.35),
+        0 0 60px rgba(255, 255, 255, 0.25),
+        0 0 100px rgba(255, 255, 255, 0.15),
+        0 4px 8px rgba(0, 0, 0, 0.6) !important;
     opacity: 1;
     text-align: center;
     filter: none !important;
@@ -439,15 +456,15 @@ body::before {
 
 .beta-tag {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     font-weight: 600;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     color: var(--text) !important;
     text-transform: uppercase;
     background: var(--gloss-sheen);
     border: 1px solid var(--border-light);
-    padding: 6px 14px;
-    border-radius: 6px;
+    padding: 8px 18px;
+    border-radius: 8px;
     opacity: 0;
     animation: fadeInTitle 1.4s ease-out 0.5s forwards;
     mix-blend-mode: normal !important;
@@ -455,7 +472,7 @@ body::before {
     position: relative;
     margin-bottom: 12px;
     align-self: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
@@ -483,41 +500,43 @@ body::before {
 
 .header-banner-subtitle {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.875rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.125rem);
     font-weight: 500;
-    letter-spacing: 0.25em;
-    color: var(--text-secondary) !important;
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.85) !important;
     text-transform: uppercase;
-    margin-top: 40px;
-    margin-bottom: 48px;
+    margin-top: 20px;
+    margin-bottom: 32px;
     opacity: 0;
     animation: fadeInSubtitle 1.4s ease-out 1.2s forwards;
     text-shadow:
-        0 0 8px rgba(255, 255, 255, 0.15),
-        0 1px 2px rgba(0, 0, 0, 0.3) !important;
+        0 0 12px rgba(255, 255, 255, 0.2),
+        0 2px 4px rgba(0, 0, 0, 0.4) !important;
     filter: none !important;
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.9) !important;
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
     background: none !important;
     mix-blend-mode: normal !important;
     position: relative;
-    padding: 12px 24px;
+    padding: 16px 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     text-align: center;
+    line-height: 1.6;
 }
 
 .subtitle-main {
     position: relative;
     text-align: center;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.875rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.125rem);
     font-weight: 500;
-    letter-spacing: 0.25em;
-    color: var(--text-secondary);
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.85);
     text-transform: uppercase;
     padding: 0;
+    line-height: 1.6;
 }
 
 .subtitle-accent {
@@ -547,15 +566,14 @@ body::before {
 }
 
 .header-email-signup {
-    margin-top: 40px;
+    margin-top: 28px;
     width: 100%;
-    max-width: 500px;
+    max-width: 540px;
     opacity: 0;
     animation: fadeInSignup 1.2s ease-out 1s forwards;
     pointer-events: auto;
     position: relative;
     padding-top: 0;
-    margin-top: 0;
 }
 
 .header-email-signup::before {
@@ -590,14 +608,15 @@ body::before {
 
 .email-signup-text {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: clamp(0.8125rem, 1.1vw, 0.9375rem);
     font-weight: 400;
-    color: var(--text-secondary) !important;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8) !important;
+    letter-spacing: 0.06em;
+    text-transform: none;
     text-align: center;
-    margin-bottom: 16px;
-    line-height: 1.5;
+    margin-bottom: 24px;
+    line-height: 1.6;
+    max-width: 480px;
 }
 
 .email-signup-countdown {
