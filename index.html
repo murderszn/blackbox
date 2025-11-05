@@ -101,39 +101,63 @@
             to { transform: scaleX(1); }
         }
 
-        /* Scroll-triggered animation classes */
-        .scroll-fade-in {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .scroll-fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+        /* Scroll animations disabled for maximum scroll performance */
+        .scroll-fade-in,
         .scroll-scale-in {
-            opacity: 0;
-            transform: scale(0.96) translateY(30px);
-            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 1 !important;
+            transition: none !important;
         }
 
+        .scroll-fade-in.visible,
         .scroll-scale-in.visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+            opacity: 1 !important;
         }
 
         html, body {
             margin: 0;
             padding: 0;
             scroll-behavior: smooth;
+            overflow-x: hidden;
+            max-width: 100%;
+            scroll-snap-type: none;
+        }
+        
+        /* Ensure all content sections have smooth scrolling */
+        .content * {
+            scroll-snap-align: none;
+            scroll-snap-stop: normal;
+        }
+        
+        /* Performance optimizations for smooth scrolling */
+        .content .panel,
+        .content .chart-container,
+        .content .summary-card,
+        .content .instructions-panel {
+            /* Removed contain property which can cause layout issues */
+            transform: translateZ(0);
+        }
+        
+        /* Prevent layout shifts during scroll */
+        canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -ms-overflow-style: none;  /* IE and Edge - hide scrollbars */
+            scrollbar-width: none;  /* Firefox - hide scrollbars */
+        }
+
+        *::-webkit-scrollbar {
+            display: none;  /* Chrome, Safari, Opera - hide scrollbars */
+        }
+
+        html {
+            overflow-y: auto;  /* Keep scroll functionality */
         }
 
         body {
@@ -146,6 +170,10 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             letter-spacing: -0.015em;
+            overflow-x: hidden;
+            overflow-y: auto;  /* Keep scroll functionality */
+            width: 100%;
+            position: relative;
         }
 
         /* Fixed hero section - stays in place while content scrolls over */
@@ -154,6 +182,7 @@
             inset: 0;
             height: 100vh;
             width: 100%;
+            max-width: 100%;
             z-index: 0;
             overflow: hidden;
             pointer-events: none; /* Allow content to scroll through */
@@ -164,13 +193,24 @@
             pointer-events: auto;
         }
 
-        /* Content scrolls over the hero */
+        /* Content scrolls over the hero - optimized for smooth scrolling */
         .content {
             position: relative;
             z-index: 1;
             margin-top: 100vh;
             background: var(--bg);
             min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            overflow-y: visible;
+            scroll-behavior: smooth;
+            scroll-snap-type: none;
+            scroll-padding-top: 0;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            transform: translateZ(0); /* GPU acceleration */
+            backface-visibility: hidden;
+            perspective: 1000px;
         }
 
         /* Hero fade effect at bottom for smooth overlap */
@@ -223,6 +263,10 @@
             margin: 0 auto;
             padding: 48px 24px;
             animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+            box-sizing: border-box;
+            overflow: visible;
+            overflow-y: visible;
         }
 
         /* Ensure content has solid background to cover hero */
@@ -238,6 +282,8 @@
         .content .footer {
             background: var(--bg);
             position: relative;
+            overflow: visible;
+            overflow-y: visible;
         }
 
         .header {
@@ -252,9 +298,11 @@
             box-shadow: none;
             height: 100vh;
             width: 100%;
+            max-width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-sizing: border-box;
         }
 
         .header-banner-media {
@@ -370,10 +418,10 @@
             font-size: 0.75rem;
             font-weight: 600;
             letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.95) !important;
+            color: var(--text) !important;
             text-transform: uppercase;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: var(--gloss-sheen);
+            border: 1px solid var(--border-light);
             padding: 6px 14px;
             border-radius: 6px;
             opacity: 0;
@@ -416,8 +464,8 @@
             align-items: center;
             min-width: 60px;
             padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
             border-radius: 6px;
             backdrop-filter: blur(12px);
             box-shadow: 
@@ -427,8 +475,8 @@
         }
 
         .countdown-item:hover {
-            background: rgba(0, 0, 0, 0.5);
-            border-color: rgba(255, 255, 255, 0.25);
+            background: var(--bg-tertiary);
+            border-color: var(--border-light);
             transform: translateY(-2px);
             box-shadow: 
                 0 6px 20px rgba(0, 0, 0, 0.5),
@@ -439,7 +487,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 2rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--text);
             line-height: 1;
             text-shadow:
                 0 0 10px rgba(255, 255, 255, 0.8),
@@ -450,7 +498,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.6rem;
             font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.15em;
             margin-top: 4px;
@@ -473,7 +521,7 @@
             font-size: 0.875rem;
             font-weight: 500;
             letter-spacing: 0.25em;
-            color: rgba(255, 255, 255, 0.9) !important;
+            color: var(--text-secondary) !important;
             text-transform: uppercase;
             margin-top: 32px;
             opacity: 0;
@@ -501,7 +549,7 @@
             font-size: 0.875rem;
             font-weight: 500;
             letter-spacing: 0.25em;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             text-transform: uppercase;
             padding: 0;
         }
@@ -511,7 +559,7 @@
             font-size: 0.75rem;
             font-weight: 400;
             letter-spacing: 0.2em;
-            color: rgba(255, 255, 255, 0.7) !important;
+            color: var(--text-tertiary) !important;
             text-transform: uppercase;
             position: relative;
             padding: 0;
@@ -594,7 +642,7 @@
 
         .email-signup-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr auto;
+            grid-template-columns: 1.5fr 1.5fr auto;
             gap: 10px;
             width: 100%;
             align-items: stretch;
@@ -787,7 +835,7 @@
 
         .header p {
             font-size: 1.375rem;
-            color: rgba(255, 255, 255, 0.92);
+            color: var(--text-secondary);
             font-weight: 300;
             line-height: 1.7;
             max-width: 750px;
@@ -827,6 +875,10 @@
             border-radius: 0;
             position: relative;
             overflow: visible;
+            /* Performance optimizations */
+            transform: translateZ(0);
+            will-change: auto;
+            contain: layout style paint;
         }
 
         .panel,
@@ -869,7 +921,13 @@
 
         .panel {
             padding: 32px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            /* Only transition hover states, not all properties for better scroll performance */
+            transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            /* Performance optimizations for smooth scrolling */
+            transform: translateZ(0);
+            will-change: auto;
             box-shadow: 
                 inset 0 0 0 1px rgba(255, 255, 255, 0.03),
                 0 4px 20px var(--shadow-md),
@@ -1459,46 +1517,175 @@
 
         .budget-item-amount-row {
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .budget-item-amount-row .budget-amount-display,
-        .budget-item-amount-row .income-amount-display {
-            font-size: clamp(1.5rem, 2.5vw, 2.25rem);
-            font-weight: 400;
-            padding: 8px 16px;
-            border-radius: 2px;
-            background: transparent;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: 0.05em;
-        }
-
-        .budget-item-amount-row .budget-amount-display:hover,
-        .budget-item-amount-row .income-amount-display:hover {
-            background: var(--card);
-            border-color: var(--border);
-        }
-
-        .budget-item-slider-row {
-            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
+            position: relative;
+            gap: 6px;
+        }
+
+        .income-label {
+            font-size: 0.625rem;
+            color: var(--text-tertiary);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        .budget-amount-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 220px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .budget-amount-input-wrapper:hover:not(.is-disabled) {
+            background: var(--card);
+            border-color: var(--border-light);
+        }
+
+        .budget-amount-input-wrapper:focus-within {
+            background: var(--card);
+            border-color: var(--border-light);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        }
+
+        .budget-amount-input-wrapper.is-disabled {
+            opacity: 0.4;
+        }
+
+        .budget-amount-input {
+            font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+            font-weight: 400;
+            padding: 12px 44px;
+            border: none;
+            border-radius: 4px;
+            background: transparent;
+            color: var(--text);
+            text-align: center;
+            width: 100%;
+            transition: all 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.05em;
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        .budget-amount-input::-webkit-inner-spin-button,
+        .budget-amount-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        .budget-amount-input:focus {
+            outline: none;
+        }
+
+        .budget-amount-input.is-disabled {
+            cursor: not-allowed;
+        }
+
+        /* Spinner controls */
+        .budget-spinner-controls {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            z-index: 1;
+        }
+
+        .budget-spinner-btn {
+            width: 24px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            padding: 0;
+            margin: 0;
+        }
+
+        .budget-spinner-btn:first-child {
+            border-radius: 3px 3px 0 0;
+            border-bottom: none;
+        }
+
+        .budget-spinner-btn:last-child {
+            border-radius: 0 0 3px 3px;
+        }
+
+        .budget-spinner-btn:hover:not(:disabled) {
+            background: var(--card-hover);
+            border-color: var(--border-light);
+        }
+
+        .budget-spinner-btn:active:not(:disabled) {
+            background: var(--card-active);
+            transform: scale(0.95);
+        }
+
+        .budget-spinner-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .budget-spinner-btn svg {
+            width: 12px;
+            height: 12px;
+            stroke: var(--text);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .budget-spinner-btn:hover:not(:disabled) svg {
+            stroke: var(--text);
+        }
+
+        .budget-item-slider-row {
+            display: none;
         }
 
         @media (max-width: 480px) {
-            .budget-item-amount-row .budget-amount-display,
-            .budget-item-amount-row .income-amount-display {
-                font-size: 1.5rem;
-                padding: 8px 12px;
+            .budget-item-amount-row {
+                max-width: 180px;
             }
-            
-            .budget-amount-display,
-            .budget-amount-display.income-amount-display {
+
+            .budget-amount-input-wrapper {
+                max-width: 180px;
+            }
+
+            .budget-amount-input {
                 font-size: 1.5rem;
+                padding: 10px 40px;
+            }
+
+            .budget-spinner-btn {
+                width: 20px;
+                height: 18px;
+            }
+
+            .budget-spinner-btn svg {
+                width: 10px;
+                height: 10px;
             }
         }
 
@@ -1771,9 +1958,10 @@
                 margin-bottom: 32px;
                 border-radius: 0;
                 min-height: 420px;
-                margin-left: -16px;
-                margin-right: -16px;
-                width: calc(100% + 32px);
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+                max-width: 100%;
             }
 
             .header-banner-title-wrapper {
@@ -2043,14 +2231,28 @@
                 overflow: visible;
             }
 
+            .chart-container {
+                padding: 20px 16px;
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                font-size: 0.75rem;
+            }
+
             .header {
                 padding: 0;
                 margin-bottom: 32px;
                 border-radius: 0;
                 min-height: 420px;
-                margin-left: -16px;
-                margin-right: -16px;
-                width: calc(100% + 32px);
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+                max-width: 100%;
             }
 
             .header-banner-title-wrapper {
@@ -2508,6 +2710,19 @@
                 0 8px 32px var(--shadow-md), 
                 inset 0 1px 0 rgba(255, 255, 255, 0.04),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Allow horizontal scroll only for table within chart-container */
+        .chart-container:has(table) {
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+        
+        /* Fallback for browsers that don't support :has() - ensure table doesn't overflow */
+        .chart-container table {
+            max-width: 100%;
         }
 
         .chart-container::after {
@@ -2587,9 +2802,11 @@
 
         table {
             width: 100%;
+            max-width: 100%;
             border-collapse: collapse;
             background: var(--bg);
             border: 1px solid var(--border);
+            table-layout: auto;
         }
 
         thead {
@@ -2607,6 +2824,7 @@
             text-transform: uppercase;
             letter-spacing: 0.08em;
             border-bottom: 2px solid var(--border);
+            white-space: nowrap;
         }
 
         td {
@@ -2615,6 +2833,7 @@
             font-family: 'JetBrains Mono', monospace;
             color: var(--text);
             font-size: 0.875rem;
+            white-space: nowrap;
         }
 
         tr:hover {
@@ -3051,18 +3270,21 @@
             gap: 20px;
             max-height: 0;
             overflow: hidden;
+            overflow-y: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 0;
         }
 
         .instructions-content.expanded {
             max-height: 1000px;
+            overflow-y: visible;
             opacity: 1;
         }
 
         .income-budget-content {
             max-height: none;
             overflow: visible;
+            overflow-y: visible;
             transition: opacity 0.3s ease;
             opacity: 1;
         }
@@ -3070,6 +3292,7 @@
         .income-budget-content:not(.expanded) {
             max-height: 0;
             overflow: hidden;
+            overflow-y: hidden;
             opacity: 0;
         }
 
@@ -3594,9 +3817,9 @@
             line-height: 1.2;
             text-shadow: none !important;
             position: relative;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            transition: none !important;
             filter: none !important;
             -webkit-text-fill-color: #ffffff !important;
             background: none !important;
@@ -3607,9 +3830,8 @@
         }
 
         .footer.visible .footer-brand {
-            opacity: 1;
-            transform: translateY(0);
-            transition-delay: 0.2s;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
 
 
@@ -3621,9 +3843,9 @@
             color: #ffffff !important;
             text-transform: uppercase;
             margin-top: 12px;
-            opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            transition: none !important;
             text-shadow: none !important;
             filter: none !important;
             -webkit-text-fill-color: #ffffff !important;
@@ -3634,8 +3856,8 @@
         }
 
         .footer.visible .footer-tagline {
-            opacity: 1;
-            transform: translateY(0);
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
 
         .footer-dev-tag {
@@ -3645,16 +3867,16 @@
             letter-spacing: 0.05em;
             color: rgba(255, 255, 255, 0.4) !important;
             margin-top: 32px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            transition: none !important;
             position: relative;
             z-index: 1;
         }
 
         .footer.visible .footer-dev-tag {
-            opacity: 1;
-            transform: translateY(0);
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
 
 
@@ -3685,6 +3907,150 @@
 
         .footer-link:hover {
             color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        /* App Stores Section */
+        .app-stores-section {
+            padding: 80px 0;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            position: relative;
+        }
+
+        .app-stores-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .app-stores-title {
+            font-family: 'Exo 2', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .app-stores-subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+        }
+
+        .app-stores-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .app-store-link {
+            display: inline-block;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .app-store-link:hover {
+            opacity: 1;
+            transform: translateY(-4px);
+        }
+
+        .app-store-logo {
+            height: 60px;
+            width: auto;
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
+        }
+
+        .app-store-link:hover .app-store-logo {
+            filter: grayscale(0%);
+        }
+
+        .app-stores-coming-soon {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .app-stores-stars {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .app-stores-stars .star {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            color: #ffffff;
+            line-height: 1;
+            filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
+            animation: starGlow 2s ease-in-out infinite;
+        }
+
+        .app-stores-stars .star:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .app-stores-stars .star:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .app-stores-stars .star:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .app-stores-stars .star:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        .app-stores-stars .star:nth-child(5) {
+            animation-delay: 0.8s;
+        }
+
+        @keyframes starGlow {
+            0%, 100% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-stores-section {
+                padding: 60px 0;
+            }
+
+            .app-stores-logos {
+                gap: 1.5rem;
+            }
+
+            .app-store-logo {
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-stores-logos {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .app-store-logo {
+                height: 45px;
+            }
         }
 
         .footer-social {
@@ -4057,100 +4423,249 @@
             transform: translateY(0);
         }
 
-        /* Mini Dashboard */
+        /* Mini Dashboard - Stealth Black & White Theme */
         .mini-dashboard {
             border: 1px solid var(--border);
             border-radius: 0;
             background: var(--card);
-            padding: 20px;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mini-dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 20%,
+                rgba(255, 255, 255, 0.1) 80%,
+                transparent 100%);
         }
 
         .mini-dashboard-header {
             text-align: center;
-            margin-bottom: 20px;
+            padding: 32px 32px 24px 32px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .mini-dashboard-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.08) 20%,
+                rgba(255, 255, 255, 0.08) 80%,
+                transparent 100%);
         }
 
         .mini-dashboard-title {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 1.125rem;
             font-weight: 600;
             color: var(--text);
-            margin: 0 0 4px 0;
-            letter-spacing: 0.05em;
+            margin: 0 0 8px 0;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
         }
 
         .mini-dashboard-subtitle {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.875rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
         }
 
         .mini-dashboard-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+            margin: 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
 
         .mini-metric {
-            background: var(--card-hover);
-            border: 1px solid var(--border);
+            background: var(--card);
+            border: none;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
             border-radius: 0;
-            padding: 12px;
+            padding: 24px 20px;
             text-align: center;
-            transition: all 0.3s ease;
+            position: relative;
+            transition: background-color 0.2s ease;
+            cursor: help;
+        }
+
+        .mini-metric:nth-child(2n) {
+            border-right: none;
+        }
+
+        .mini-metric:nth-child(n+3) {
+            border-bottom: none;
+        }
+
+        .mini-metric::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.05) 50%,
+                transparent 100%);
         }
 
         .mini-metric:hover {
-            background: var(--card);
-            border-color: var(--border-light);
-            transform: translateY(-2px);
+            background: var(--card-hover);
         }
 
         .mini-metric-label {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            letter-spacing: 0.05em;
-            font-weight: 500;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+            letter-spacing: 0.15em;
+            font-weight: 400;
+            text-transform: uppercase;
         }
 
         .mini-metric-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 2px;
             font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.02em;
+            font-size: 1.875rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+            line-height: 1.2;
         }
 
         .mini-metric-trend {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
-            color: var(--text-tertiary);
-            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
 
         .mini-metric-trend.positive {
-            color: #c0c0c0;
+            color: var(--text-secondary);
         }
 
         .mini-metric-trend.warning {
-            color: #909090;
+            color: var(--text-tertiary);
         }
 
         .mini-metric-trend.negative {
-            color: #707070;
+            color: var(--text-muted);
+        }
+
+        /* Mini Metric Tooltips */
+        .mini-metric-tooltip {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 12px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            color: var(--text);
+            white-space: normal;
+            width: 220px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9);
+            letter-spacing: 0.05em;
+            line-height: 1.5;
+            text-align: left;
+            text-transform: none;
+        }
+
+        .mini-metric-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--border);
+        }
+
+        .mini-metric-tooltip::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--bg-secondary);
+            margin-top: -1px;
+            z-index: 1;
+        }
+
+        .mini-metric:hover .mini-metric-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-4px);
+        }
+
+        .mini-metric-tooltip-title {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+        }
+
+        .mini-metric-tooltip-text {
+            color: var(--text-secondary);
+            font-size: 0.6875rem;
+            line-height: 1.4;
         }
 
         .mini-dashboard-chart {
             width: 100%;
-            height: 120px;
-            background: var(--card-hover);
-            border: 1px solid var(--border);
+            height: 140px;
+            background: var(--card);
+            border: none;
+            border-top: 1px solid var(--border);
             border-radius: 0;
-            padding: 12px;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+        }
+
+        .mini-dashboard-chart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.05) 50%,
+                transparent 100%);
         }
 
         .mini-dashboard-chart canvas {
@@ -4159,17 +4674,25 @@
         }
 
         @media (max-width: 768px) {
+            .mini-dashboard-header {
+                padding: 24px 20px 20px 20px;
+            }
+
             .mini-dashboard-content {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
             }
 
             .mini-metric {
-                padding: 10px;
+                padding: 20px 16px;
             }
 
             .mini-metric-value {
-                font-size: 1.1rem;
+                font-size: 1.5rem;
+            }
+
+            .mini-dashboard-chart {
+                height: 120px;
+                padding: 16px;
             }
 
             .scenario-controls {
@@ -4187,6 +4710,96 @@
                 justify-content: flex-end;
             }
         }
+
+        /* Floating Navigation Bar */
+        .floating-nav {
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            opacity: 1;
+            will-change: auto;
+            transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: auto;
+        }
+
+        .floating-nav:hover {
+            background: var(--card-hover);
+            border-color: var(--border-light);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .floating-nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            position: relative;
+            padding: 4px 0;
+        }
+
+        .floating-nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .floating-nav-link:hover {
+            color: var(--text);
+        }
+
+        .floating-nav-link:hover::after {
+            width: 100%;
+        }
+
+        .floating-nav-link:active {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .floating-nav {
+                top: 16px;
+                padding: 10px 16px;
+                gap: 20px;
+                font-size: 12px;
+            }
+
+            .floating-nav-link {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .floating-nav {
+                gap: 12px;
+                padding: 8px 12px;
+            }
+
+            .floating-nav-link {
+                font-size: 11px;
+                letter-spacing: 0.3px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -4195,6 +4808,12 @@
 
     <!-- Fixed Hero Section -->
     <header class="hero">
+        <!-- Floating Navigation Bar -->
+        <nav class="floating-nav">
+            <a href="#get-started" class="floating-nav-link">Get Started</a>
+            <a href="#analysis" class="floating-nav-link">Analysis</a>
+            <a href="#download" class="floating-nav-link">Download the App</a>
+        </nav>
         <div class="header">
             <!-- Banner Media -->
             <div class="header-banner-media">
@@ -4266,7 +4885,7 @@
     <main class="content">
         <div class="app-container">
         <!-- Instructions Panel -->
-        <div class="instructions-panel">
+        <div class="instructions-panel" id="get-started">
             <div class="instructions-header">
                 <div class="instructions-title">
                     <span>Quick Guide</span>
@@ -4298,21 +4917,37 @@
             </div>
             <div class="mini-dashboard-content">
                 <div class="mini-metric">
+                    <div class="mini-metric-tooltip">
+                        <div class="mini-metric-tooltip-title">Monthly Cash Flow</div>
+                        <div class="mini-metric-tooltip-text">Your income minus total monthly expenses. Positive values indicate money left after bills, negative values show a monthly deficit.</div>
+                    </div>
                     <div class="mini-metric-label">Monthly Cash Flow</div>
                     <div class="mini-metric-value" id="miniMonthlyCashFlow">$0.00</div>
                     <div class="mini-metric-trend" id="miniMonthlyCashFlowTrend">↗ Neutral</div>
                 </div>
                 <div class="mini-metric">
+                    <div class="mini-metric-tooltip">
+                        <div class="mini-metric-tooltip-title">Expense Ratio</div>
+                        <div class="mini-metric-tooltip-text">Percentage of income spent on expenses. Lower ratios (under 60%) indicate healthier financial habits with more savings capacity.</div>
+                    </div>
                     <div class="mini-metric-label">Expense Ratio</div>
                     <div class="mini-metric-value" id="miniExpenseRatio">0%</div>
                     <div class="mini-metric-trend" id="miniExpenseRatioTrend">→ Optimal</div>
                 </div>
                 <div class="mini-metric">
+                    <div class="mini-metric-tooltip">
+                        <div class="mini-metric-tooltip-title">5-Year Projection</div>
+                        <div class="mini-metric-tooltip-text">Total savings accumulated over 5 years based on current income, expenses, and major purchases. Includes interest and compounding effects.</div>
+                    </div>
                     <div class="mini-metric-label">5-Year Projection</div>
                     <div class="mini-metric-value" id="miniFiveYearProjection">$0</div>
                     <div class="mini-metric-trend" id="miniFiveYearProjectionTrend">→ Stable</div>
                 </div>
                 <div class="mini-metric">
+                    <div class="mini-metric-tooltip">
+                        <div class="mini-metric-tooltip-title">Major Purchases</div>
+                        <div class="mini-metric-tooltip-text">Combined monthly payments for car and house purchases. Includes loan payments, insurance, taxes, and other associated costs.</div>
+                    </div>
                     <div class="mini-metric-label">Major Purchases</div>
                     <div class="mini-metric-value" id="miniMajorPurchases">$0/month</div>
                     <div class="mini-metric-trend" id="miniMajorPurchasesTrend">→ Manageable</div>
@@ -4367,7 +5002,7 @@
                     </div>
                 </div>
 
-                <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593.42" step="0.01" oninput="updateIncomeFromInput(this.value)">
+                <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593" step="1" oninput="updateIncomeFromInput(this.value)">
             </div>
         </div>
 
@@ -4509,7 +5144,7 @@
         </div>
 
         <!-- AI Analysis Section -->
-        <div class="panel ai-analysis-panel">
+        <div class="panel ai-analysis-panel" id="analysis">
             <div class="ai-analysis-header">
                 <div class="ai-analysis-title-wrapper">
                     <h2 class="ai-analysis-title">AI Financial Viability Analysis</h2>
@@ -4726,8 +5361,8 @@
             calculate();
 
             // Update toggles
-            updateCarToggle();
-            updateHouseToggle();
+            toggleCar();
+            toggleHouse();
         }
 
         function saveScenario(name) {
@@ -4970,12 +5605,9 @@
             container.innerHTML = '';
             
             // First, render the income item
-            const incomeValue = parseFloat(document.getElementById('monthlyIncome').value) || 9593.42;
+            const incomeValue = Math.round(parseFloat(document.getElementById('monthlyIncome').value) || 9593);
             const incomeDiv = document.createElement('div');
             incomeDiv.className = 'budget-item income-item' + (incomeEnabled === false ? ' disabled' : '');
-            const incomeMaxValue = 50000;
-            const incomeFaderWidth = (incomeValue / incomeMaxValue) * 100;
-            const incomeHandleLeft = (incomeFaderWidth / 100 * 120) - 8;
             const incomeToggleIcon = incomeEnabled ? '✓' : '✗';
             
             incomeDiv.innerHTML = `
@@ -4986,15 +5618,31 @@
                            ${!incomeEnabled ? 'disabled' : ''}>
                 </div>
                 <div class="budget-item-amount-row">
-                    <span class="budget-amount-display income-amount-display${incomeEnabled ? '' : ' is-disabled'}" id="incomeAmountDisplay" onclick="${incomeEnabled ? 'editIncomeAmount()' : ''}">$${incomeValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
-                </div>
-                <div class="budget-item-slider-row">
-                    <div class="budget-slider-container${incomeEnabled ? '' : ' is-disabled'}" id="slider-container-income" onmousedown="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}" ontouchstart="${incomeEnabled ? 'startIncomeFaderDrag(event)' : ''}">
-                        <div class="fader-track income-fader-track" id="income-fader-track">
-                            <div class="fader-level income-fader-level" id="income-fader-level" style="width: ${incomeFaderWidth}%"></div>
-                            <div class="fader-handle income-fader-handle" id="income-fader-handle" style="left: ${incomeHandleLeft}px"></div>
+                    <div class="budget-amount-input-wrapper${!incomeEnabled ? ' is-disabled' : ''}">
+                        <input type="number" 
+                               class="budget-amount-input income-amount-input${!incomeEnabled ? ' is-disabled' : ''}" 
+                               id="incomeAmountInput" 
+                               value="${(incomeValue / 1000).toFixed(1)}" 
+                               min="0" 
+                               max="50" 
+                               step="0.1"
+                               oninput="updateIncomeFromThousands(parseFloat(this.value) || 0)"
+                               ${!incomeEnabled ? 'disabled' : ''}
+                               placeholder="0">
+                        <div class="budget-spinner-controls">
+                            <button type="button" class="budget-spinner-btn" onclick="incrementIncome()" ${!incomeEnabled ? 'disabled' : ''} aria-label="Increase income">
+                                <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 3 L9 7 L3 7 Z" />
+                                </svg>
+                            </button>
+                            <button type="button" class="budget-spinner-btn" onclick="decrementIncome()" ${!incomeEnabled ? 'disabled' : ''} aria-label="Decrease income">
+                                <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9 L3 5 L9 5 Z" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
+                    <div class="income-label">In Thousands</div>
                 </div>
                 <div class="budget-item-toggle-row">
                     <div class="toggle-switch ${incomeEnabled ? 'enabled' : ''}" role="switch" aria-checked="${incomeEnabled ? 'true' : 'false'}" onclick="toggleIncome()" title="${incomeEnabled ? 'Disable' : 'Enable'} income">
@@ -5003,21 +5651,12 @@
                 </div>
             `;
             container.appendChild(incomeDiv);
-            if (incomeEnabled) {
-                setTimeout(() => updateIncomeFaderVisuals(), 0);
-            }
             
             // Then render budget items
             budgetItems.forEach((item, index) => {
                 const div = document.createElement('div');
                 div.className = 'budget-item' + (item.enabled === false ? ' disabled' : '');
                 
-                // Fixed max value of $5,000 per month
-                const maxValue = 5000;
-                const minValue = 0;
-                
-                const faderWidth = (item.amount / maxValue) * 100;
-                const handleLeft = (faderWidth / 100 * 120) - 8; // Will be corrected after render by updateFaderVisuals
                 const isEnabled = item.enabled !== false;
                 const toggleIcon = isEnabled ? '✓' : '✗';
 
@@ -5029,13 +5668,28 @@
                                ${!isEnabled ? 'disabled' : ''}>
                     </div>
                     <div class="budget-item-amount-row">
-                        <span class="budget-amount-display${isEnabled ? '' : ' is-disabled'}" id="budget-amount-${index}" onclick="${isEnabled ? `editBudgetAmount(${index})` : ''}">$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
-                    </div>
-                    <div class="budget-item-slider-row">
-                        <div class="budget-slider-container${isEnabled ? '' : ' is-disabled'}" id="slider-container-${index}" onmousedown="${isEnabled ? `startFaderDrag(event, ${index})` : ''}" ontouchstart="${isEnabled ? `startFaderDrag(event, ${index})` : ''}">
-                            <div class="fader-track" id="fader-track-${index}">
-                                <div class="fader-level" id="fader-level-${index}" style="width: ${faderWidth}%"></div>
-                                <div class="fader-handle" id="fader-handle-${index}" style="left: ${handleLeft}px"></div>
+                        <div class="budget-amount-input-wrapper${!isEnabled ? ' is-disabled' : ''}">
+                            <input type="number" 
+                                   class="budget-amount-input${!isEnabled ? ' is-disabled' : ''}" 
+                                   id="budget-amount-${index}" 
+                                   value="${Math.round(parseFloat(item.amount) || 0)}" 
+                                   min="0" 
+                                   max="5000" 
+                                   step="10"
+                                   oninput="updateBudgetItem(${index}, 'amount', Math.round(parseFloat(this.value) || 0))"
+                                   ${!isEnabled ? 'disabled' : ''}
+                                   placeholder="0">
+                            <div class="budget-spinner-controls">
+                                <button type="button" class="budget-spinner-btn" onclick="incrementBudgetItem(${index})" ${!isEnabled ? 'disabled' : ''} aria-label="Increase amount">
+                                    <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 3 L9 7 L3 7 Z" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="budget-spinner-btn" onclick="decrementBudgetItem(${index})" ${!isEnabled ? 'disabled' : ''} aria-label="Decrease amount">
+                                    <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 9 L3 5 L9 5 Z" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -5050,15 +5704,23 @@
                 `;
                 container.appendChild(div);
 
-                // Update fader visuals after DOM insertion to get correct dimensions
-                if (isEnabled) {
-                    setTimeout(() => updateFaderVisuals(index), 0);
-                }
             });
         }
 
         function updateBudgetItem(index, field, value) {
-            budgetItems[index][field] = field === 'amount' ? value : value;
+            if (field === 'amount') {
+                const maxValue = 5000;
+                const roundedValue = Math.round(parseFloat(value) || 0);
+                const clampedValue = Math.max(0, Math.min(maxValue, roundedValue));
+                budgetItems[index].amount = clampedValue;
+                // Update the input value to reflect clamped value
+                const inputElement = document.getElementById(`budget-amount-${index}`);
+                if (inputElement) {
+                    inputElement.value = clampedValue;
+                }
+            } else {
+                budgetItems[index][field] = value;
+            }
             calculate();
         }
 
@@ -5120,16 +5782,57 @@
             }
         }
 
-        function updateIncomeSlider(value) {
-            const incomeValue = parseFloat(value) || 0;
+        function updateIncome(value) {
+            const incomeValue = Math.round(parseFloat(value) || 0);
             const maxValue = 50000;
-            document.getElementById('monthlyIncome').value = incomeValue;
-            const displayElement = document.getElementById('incomeAmountDisplay');
-            if (displayElement) {
-                displayElement.textContent = '$' + incomeValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            const clampedValue = Math.max(0, Math.min(maxValue, incomeValue));
+            document.getElementById('monthlyIncome').value = clampedValue;
+            const inputElement = document.getElementById('incomeAmountInput');
+            if (inputElement) {
+                inputElement.value = (clampedValue / 1000).toFixed(1);
             }
-            updateIncomeFaderVisuals();
             calculate();
+        }
+
+        function updateIncomeFromThousands(thousandsValue) {
+            const dollarValue = Math.round(thousandsValue * 1000);
+            updateIncome(dollarValue);
+        }
+
+        function incrementIncome() {
+            const input = document.getElementById('incomeAmountInput');
+            if (input && !input.disabled) {
+                const currentValue = parseFloat(input.value) || 0;
+                const newValue = Math.min(50, currentValue + 0.1);
+                updateIncomeFromThousands(newValue);
+            }
+        }
+
+        function decrementIncome() {
+            const input = document.getElementById('incomeAmountInput');
+            if (input && !input.disabled) {
+                const currentValue = parseFloat(input.value) || 0;
+                const newValue = Math.max(0, currentValue - 0.1);
+                updateIncomeFromThousands(newValue);
+            }
+        }
+
+        function incrementBudgetItem(index) {
+            const input = document.getElementById(`budget-amount-${index}`);
+            if (input && !input.disabled) {
+                const currentValue = Math.round(parseFloat(input.value) || 0);
+                const newValue = Math.min(5000, currentValue + 10);
+                updateBudgetItem(index, 'amount', newValue);
+            }
+        }
+
+        function decrementBudgetItem(index) {
+            const input = document.getElementById(`budget-amount-${index}`);
+            if (input && !input.disabled) {
+                const currentValue = Math.round(parseFloat(input.value) || 0);
+                const newValue = Math.max(0, currentValue - 10);
+                updateBudgetItem(index, 'amount', newValue);
+            }
         }
 
         function updateIncomeFaderVisuals() {
@@ -5209,7 +5912,7 @@
         }
 
         function updateIncomeFromInput(value) {
-            const incomeValue = parseFloat(value) || 0;
+            const incomeValue = Math.round(parseFloat(value) || 0);
             const maxValue = 50000;
             const clampedValue = Math.max(0, Math.min(maxValue, incomeValue));
             
@@ -5218,6 +5921,10 @@
             const displayElement = document.getElementById('incomeAmountDisplay');
             if (displayElement) {
                 displayElement.textContent = '$' + clampedValue.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            }
+            const inputElement = document.getElementById('incomeAmountInput');
+            if (inputElement) {
+                inputElement.value = (clampedValue / 1000).toFixed(1);
             }
             updateIncomeFaderVisuals();
             calculate();
@@ -6508,61 +7215,60 @@
             setInterval(updateCountdown, 1000);
         }
 
-        // Scroll animation observer
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const scrollObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, index * 50);
-                    scrollObserver.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        // Observe elements for scroll animations
+        // Scroll animations disabled for smoother scrolling
         function initScrollAnimations() {
-            // Base sections animate with scale-in
-            const elementsToAnimate = document.querySelectorAll('.panel, .summary-card, .chart-container, .instructions-panel, .budget-item, .affordability-banner, .ai-analysis-panel, .footer');
+            // Make all elements visible immediately - no animations for better scroll performance
+            const elementsToAnimate = document.querySelectorAll('.panel, .chart-container, .instructions-panel, .affordability-banner, .ai-analysis-panel');
             elementsToAnimate.forEach((el) => {
-                el.classList.add('scroll-scale-in');
-                scrollObserver.observe(el);
+                // Skip animations - make visible immediately
+                el.style.opacity = '1';
+                el.style.transform = 'none';
             });
 
-            // AI section: staged fade-in for inner parts to enforce flow
+            // AI section: make all parts visible immediately
             const aiStages = [
                 '.ai-analysis-header',
                 '.ai-grade-section',
                 '.ai-insights',
                 '.ai-analysis-footer'
             ];
-            aiStages.forEach((selector, stageIndex) => {
+            aiStages.forEach((selector) => {
                 document.querySelectorAll(selector).forEach((el) => {
-                    el.classList.add('scroll-fade-in');
-                    // Stagger stage reveal via transition delay
-                    el.style.transitionDelay = (stageIndex * 120) + 'ms';
-                    scrollObserver.observe(el);
+                    // Skip animations - make visible immediately
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
                 });
             });
         }
 
-        // Chart resize handler
+        // Chart resize handler - optimized to prevent updates during scroll
         let resizeTimeout;
+        let isScrolling = false;
+        let scrollTimeout;
+        
+        // Track scroll state to prevent chart updates during active scrolling
+        window.addEventListener('scroll', () => {
+            isScrolling = true;
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+            }, 150);
+        }, { passive: true });
+        
         function handleChartResize() {
+            // Don't resize charts while actively scrolling
+            if (isScrolling) {
+                return;
+            }
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                if (savingsChart) {
+                if (savingsChart && !isScrolling) {
                     savingsChart.resize();
                 }
-                if (spendingChart) {
+                if (spendingChart && !isScrolling) {
                     spendingChart.resize();
                 }
-            }, 150);
+            }, 200); // Slightly longer delay to reduce frequency
         }
 
         // Debounced calculate function for input fields
@@ -6578,9 +7284,38 @@
         initStaticSections();
         initBudgetItems();
         // Initialize income fader visuals
-        setTimeout(() => updateIncomeFaderVisuals(), 0);
         // Initialize scroll animations
         setTimeout(() => initScrollAnimations(), 100);
+
+        // Smooth scroll handling for navigation links
+        document.querySelectorAll('.floating-nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Ensure smooth scrolling for all content (disable any scroll snapping)
+        // Remove any scroll-snap properties that might cause sticking
+        const smoothScrollStyle = document.createElement('style');
+        smoothScrollStyle.textContent = `
+            .content, .content * {
+                scroll-snap-type: none !important;
+                scroll-snap-align: none !important;
+                scroll-snap-stop: normal !important;
+            }
+        `;
+        document.head.appendChild(smoothScrollStyle);
         // Initialize countdown timer
         initCountdownTimer();
         // Initialize header banner
@@ -6749,25 +7484,8 @@
                     
                     // Scroll to top of page smoothly
                     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                    // Highlight the email form briefly after scrolling
-                    setTimeout(() => {
-                        const emailSignupForm = document.querySelector('.header-email-signup');
-                        if (emailSignupForm) {
-                            emailSignupForm.style.transition = 'box-shadow 0.3s ease';
-                            emailSignupForm.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.3)';
-                            setTimeout(() => {
-                                emailSignupForm.style.boxShadow = '';
-                            }, 2000);
-                            // Focus on name input after highlighting
-                            setTimeout(() => {
-                                const nameInput = document.getElementById('nameSignupInput');
-                                if (nameInput) {
-                                    nameInput.focus();
-                                }
-                            }, 300);
-                        }
-                    }, 500);
+                    
+                    // Removed highlight effect and focus to prevent visual rectangle
                     return;
                 }
 
@@ -6810,8 +7528,6 @@
 
                     // Call AI analysis API
                     const apiUrl = '/api/ai-analysis';
-                    console.log('Sending financial data to API:', financialData);
-
                     const response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: {
@@ -6975,6 +7691,30 @@
         // The fixed hero approach provides better performance and visual effect
 
     </script>
+
+        <!-- App Stores Section -->
+        <section class="app-stores-section" id="download">
+            <div class="app-stores-container">
+                <h2 class="app-stores-title">Coming to App Stores in 2026</h2>
+                <p class="app-stores-subtitle">Download Black Box Finance on iOS and Android</p>
+                <div class="app-stores-logos">
+                    <a href="#" class="app-store-link" aria-label="Download on the App Store">
+                        <img src="appstore.jpeg" alt="Download on the App Store" class="app-store-logo">
+                    </a>
+                    <a href="#" class="app-store-link" aria-label="Get it on Google Play">
+                        <img src="playstore.svg" alt="Get it on Google Play" class="app-store-logo">
+                    </a>
+                </div>
+                <p class="app-stores-coming-soon">Available 2026</p>
+                <div class="app-stores-stars">
+                    <div class="star">★</div>
+                    <div class="star">★</div>
+                    <div class="star">★</div>
+                    <div class="star">★</div>
+                    <div class="star">★</div>
+                </div>
+            </div>
+        </section>
 
         <!-- Footer -->
         <footer class="footer">
