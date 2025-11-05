@@ -133,8 +133,16 @@
         .content .chart-container,
         .content .summary-card,
         .content .instructions-panel {
-            /* Removed contain property which can cause layout issues */
-            transform: translateZ(0);
+            /* Ensure no scroll containers are created */
+            overflow: visible;
+            /* Prevent nested scrolling on mouse interaction */
+            touch-action: pan-y;
+        }
+        
+        /* Prevent any nested scroll containers from interfering with main scroll */
+        .content * {
+            /* Allow mouse wheel to pass through to main scroll */
+            overscroll-behavior: contain;
         }
         
         /* Prevent layout shifts during scroll */
@@ -158,6 +166,8 @@
 
         html {
             overflow-y: auto;  /* Keep scroll functionality */
+            /* Prevent nested scrolling */
+            overscroll-behavior-y: contain;
         }
 
         body {
@@ -174,6 +184,8 @@
             overflow-y: auto;  /* Keep scroll functionality */
             width: 100%;
             position: relative;
+            /* Prevent nested scrolling */
+            overscroll-behavior-y: contain;
         }
 
         /* Fixed hero section - stays in place while content scrolls over */
@@ -207,10 +219,10 @@
             scroll-behavior: smooth;
             scroll-snap-type: none;
             scroll-padding-top: 0;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-            transform: translateZ(0); /* GPU acceleration */
-            backface-visibility: hidden;
-            perspective: 1000px;
+            /* Ensure content doesn't create scroll containers */
+            position: relative;
+            /* Prevent nested scrolling */
+            touch-action: pan-y;
         }
 
         /* Hero fade effect at bottom for smooth overlap */
@@ -735,6 +747,197 @@
             transform: translateY(0);
         }
 
+        /* Scroll Indicator - Bottom Right Corner */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 200;
+            opacity: 0;
+            animation: fadeInScrollIndicator 2.5s cubic-bezier(0.16, 1, 0.3, 1) 2s forwards;
+            pointer-events: none;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            gap: 0;
+            padding: 0;
+        }
+        
+        /* Hide on smaller screens */
+        @media (max-width: 1024px) {
+            .scroll-indicator {
+                display: none;
+            }
+        }
+
+        .scroll-indicator-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0;
+            margin-right: 0;
+            margin-bottom: 24px;
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        .scroll-indicator-tooltip {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            max-width: 300px;
+            position: relative;
+            box-shadow: 
+                0 4px 20px var(--shadow-md),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+                0 0 0 1px rgba(255, 255, 255, 0.02);
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        .scroll-indicator-tooltip-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .scroll-indicator-inline-arrow {
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+
+        .scroll-indicator-tooltip-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+
+        @keyframes fadeInScrollIndicator {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* As Seen On Section - Bottom Left */
+        .as-seen-on {
+            position: absolute;
+            bottom: 24px;
+            left: 0;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 0;
+            margin-left: 24px;
+            margin-bottom: 24px;
+            pointer-events: auto;
+        }
+        
+        .as-seen-on-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+        
+        .as-seen-on-logos {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .as-seen-on-logo {
+            color: var(--text-secondary);
+            opacity: 0.75;
+            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .as-seen-on-logo:hover {
+            opacity: 1;
+            color: var(--text);
+            transform: translateY(-3px);
+        }
+        
+        .as-seen-on-logo svg {
+            width: 28px;
+            height: 28px;
+        }
+        
+        /* Hide on smaller screens */
+        @media (max-width: 1024px) {
+            .as-seen-on {
+                display: none;
+            }
+        }
+
+        /* Responsive adjustments for scroll indicator */
+        @media (max-width: 768px) {
+            .scroll-indicator-content {
+                margin-right: 16px;
+                margin-bottom: 16px;
+            }
+            
+            .scroll-indicator-tooltip {
+                max-width: 260px;
+                padding: 16px 20px;
+            }
+            
+            .scroll-indicator-tooltip-title {
+                font-size: 0.6875rem;
+            }
+            
+            .scroll-indicator-tooltip-text {
+                font-size: 0.625rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .scroll-indicator-content {
+                margin-right: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .scroll-indicator-tooltip {
+                max-width: 220px;
+                padding: 14px 18px;
+            }
+            
+            .scroll-indicator-tooltip-title {
+                font-size: 0.625rem;
+                margin-bottom: 8px;
+            }
+            
+            .scroll-indicator-tooltip-text {
+                font-size: 0.5625rem;
+                margin-top: 10px;
+            }
+        }
+
         .header-overlay {
             position: absolute;
             top: 0;
@@ -875,10 +1078,6 @@
             border-radius: 0;
             position: relative;
             overflow: visible;
-            /* Performance optimizations */
-            transform: translateZ(0);
-            will-change: auto;
-            contain: layout style paint;
         }
 
         .panel,
@@ -925,9 +1124,6 @@
             transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
                         border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
                         box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            /* Performance optimizations for smooth scrolling */
-            transform: translateZ(0);
-            will-change: auto;
             box-shadow: 
                 inset 0 0 0 1px rgba(255, 255, 255, 0.03),
                 0 4px 20px var(--shadow-md),
@@ -3277,6 +3473,7 @@
 
         .instructions-content.expanded {
             max-height: 1000px;
+            overflow: visible;
             overflow-y: visible;
             opacity: 1;
         }
@@ -3729,7 +3926,8 @@
         /* Footer */
         .footer {
             margin-top: 96px;
-            padding: 64px 48px;
+            margin-bottom: 0;
+            padding: 64px 48px 48px 48px;
             background: var(--bg);
             border-radius: 0;
             border: 1px solid var(--border);
@@ -3804,6 +4002,10 @@
         .footer-content {
             position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
 
         .footer-brand {
@@ -3866,7 +4068,7 @@
             font-weight: 400;
             letter-spacing: 0.05em;
             color: rgba(255, 255, 255, 0.4) !important;
-            margin-top: 32px;
+            margin-top: 0;
             opacity: 1 !important;
             transform: translateY(0) !important;
             transition: none !important;
@@ -4055,11 +4257,13 @@
 
         .footer-social {
             position: absolute;
-            bottom: 24px;
+            bottom: 48px;
             right: 48px;
             display: flex;
             gap: 16px;
             align-items: center;
+            z-index: 10;
+            pointer-events: auto;
         }
 
         .social-link {
@@ -4074,6 +4278,10 @@
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 11;
+            pointer-events: auto;
+            cursor: pointer;
         }
 
         .social-link:hover {
@@ -4089,6 +4297,11 @@
             height: 20px;
             fill: currentColor;
             display: block;
+            pointer-events: none;
+        }
+
+        .social-icon path {
+            pointer-events: none;
         }
 
         /* Modal Styles */
@@ -4208,12 +4421,13 @@
 
             .footer-dev-tag {
                 font-size: 0.625rem;
-                margin-top: 24px;
+                margin-top: 0;
             }
 
 
             .footer {
                 text-align: center;
+                padding: 48px 24px 48px 24px;
             }
 
             .footer-social {
@@ -4223,6 +4437,8 @@
                 justify-content: center;
                 margin-top: 16px;
                 margin-bottom: 0;
+                z-index: 10;
+                pointer-events: auto;
             }
 
             .footer-link {
@@ -4834,6 +5050,9 @@
                     <h1 class="header-banner-title-text">BLACK BOX</h1>
                     <span class="beta-tag">BETA</span>
                 </div>
+                <div class="header-banner-subtitle">
+                    <span class="subtitle-main">LIFESTYLE AFFORDABILITY CALCULATOR</span>
+                </div>
                 <div class="header-banner-countdown" id="countdownTimer">
                     <div class="countdown-item">
                         <div class="countdown-number" id="days">--</div>
@@ -4851,9 +5070,6 @@
                         <div class="countdown-number" id="seconds">--</div>
                         <div class="countdown-label">SECONDS</div>
                     </div>
-                </div>
-                <div class="header-banner-subtitle">
-                    <span class="subtitle-main">LIFESTYLE AFFORDABILITY CALCULATOR</span>
                 </div>
 
                 <!-- Email Signup -->
@@ -4876,6 +5092,43 @@
                         </div>
                         <div class="email-signup-success" id="emailSignupSuccess"></div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator - Outside container for edge positioning -->
+            <div class="scroll-indicator">
+                <div class="scroll-indicator-content">
+                    <div class="scroll-indicator-tooltip">
+                        <div class="scroll-indicator-tooltip-title">
+                            Get Started
+                            <svg class="scroll-indicator-inline-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 2V10M2 7L6 10L10 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="scroll-indicator-tooltip-text">Enter your financial details below to calculate your lifestyle affordability</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- As Seen On Section - Bottom Left -->
+            <div class="as-seen-on">
+                <div class="as-seen-on-label">AS SEEN ON</div>
+                <div class="as-seen-on-logos">
+                    <a href="https://www.reddit.com/r/CalebHammer/comments/1ojvf2r/calebs_videos_inspired_me_to_build_this_can_i/" target="_blank" rel="noopener noreferrer" class="as-seen-on-logo" aria-label="Reddit">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 3.243.913.759 0 2.401-.07 3.243-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.547-1.684.73-2.808.73-1.124 0-2.26-.183-2.808-.73a.326.326 0 0 0-.232-.095z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://x.com/jahflyx/status/1984541125491716534" target="_blank" rel="noopener noreferrer" class="as-seen-on-logo" aria-label="Twitter">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.facebook.com/photo?fbid=10233150381724195&set=a.1591400827469" target="_blank" rel="noopener noreferrer" class="as-seen-on-logo" aria-label="Facebook">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="currentColor"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
@@ -5006,79 +5259,85 @@
             </div>
         </div>
 
-        <div class="main-layout">
-            <!-- Car Purchase Panel -->
-            <div class="panel" id="carPanel">
-                <div class="panel-title">
-                    <span>Dream Car</span>
-                    <div class="u-flex-gap-12">
-                        <div class="panel-title-checkbox">
-                            <input type="checkbox" id="carEnabled" checked onchange="toggleCar()" aria-label="Include Dream Car in calculations">
-                            <label for="carEnabled">Include</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Car Price</label>
-                    <input type="number" id="carPrice" class="form-input" value="40000" step="100" oninput="calculate()">
-                    <div class="form-helper">Total purchase price including taxes and fees</div>
-                </div>
-                <div class="input-group">
-                    <div class="form-group">
-                        <label class="form-label">Interest Rate (%)</label>
-                        <input type="number" id="carInterestRate" class="form-input" value="6" step="0.1" oninput="calculate()">
-                        <div class="form-helper">Annual percentage rate</div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Loan Term (months)</label>
-                        <input type="number" id="carLoanMonths" class="form-input" value="60" step="1" oninput="calculate()">
-                        <div class="form-helper">Payment duration</div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Purchase Year</label>
-                    <select id="carPurchaseYear" class="form-input" data-year-options data-default="0" onchange="calculate()"></select>
-                    <div class="form-helper">When you'll make the purchase</div>
-                </div>
+        <!-- Major Purchases Section -->
+        <div class="panel u-mb-40">
+            <div class="panel-title u-mb-24">
+                <span>Major Purchases</span>
             </div>
-
-            <!-- House Purchase Panel -->
-            <div class="panel" id="housePanel">
-                <div class="panel-title">
-                    <span>Dream House</span>
-                    <div class="u-flex-gap-12">
-                        <div class="panel-title-checkbox">
-                            <input type="checkbox" id="houseEnabled" checked onchange="toggleHouse()" aria-label="Include Dream House in calculations">
-                            <label for="houseEnabled">Include</label>
+            <div class="main-layout">
+                <!-- Car Purchase Panel -->
+                <div class="panel" id="carPanel">
+                    <div class="panel-title">
+                        <span>Dream Car</span>
+                        <div class="u-flex-gap-12">
+                            <div class="panel-title-checkbox">
+                                <input type="checkbox" id="carEnabled" checked onchange="toggleCar()" aria-label="Include Dream Car in calculations">
+                                <label for="carEnabled">Include</label>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">House Price</label>
-                    <input type="number" id="housePrice" class="form-input" value="400000" step="1000" oninput="calculate()">
-                    <div class="form-helper">Total purchase price including closing costs</div>
-                </div>
-                <div class="input-group">
                     <div class="form-group">
-                        <label class="form-label">Interest Rate (%)</label>
-                        <input type="number" id="houseInterestRate" class="form-input" value="6" step="0.1" oninput="calculate()">
-                        <div class="form-helper">Mortgage APR</div>
+                        <label class="form-label">Car Price</label>
+                        <input type="number" id="carPrice" class="form-input" value="40000" step="100" oninput="calculate()">
+                        <div class="form-helper">Total purchase price including taxes and fees</div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-group">
+                            <label class="form-label">Interest Rate (%)</label>
+                            <input type="number" id="carInterestRate" class="form-input" value="6" step="0.1" oninput="calculate()">
+                            <div class="form-helper">Annual percentage rate</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Loan Term (months)</label>
+                            <input type="number" id="carLoanMonths" class="form-input" value="60" step="1" oninput="calculate()">
+                            <div class="form-helper">Payment duration</div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Loan Term (years)</label>
-                        <input type="number" id="houseLoanYears" class="form-input" value="30" step="1" oninput="calculate()">
-                        <div class="form-helper">Typical 15, 20, or 30 years</div>
+                        <label class="form-label">Purchase Year</label>
+                        <select id="carPurchaseYear" class="form-input" data-year-options data-default="0" onchange="calculate()"></select>
+                        <div class="form-helper">When you'll make the purchase</div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Purchase Year</label>
-                    <select id="housePurchaseYear" class="form-input" data-year-options data-default="0" onchange="calculate()"></select>
-                    <div class="form-helper">Down payment uses accumulated savings from previous years</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Additional Monthly Bills (Taxes, etc.)</label>
-                    <input type="number" id="houseAdditionalBills" class="form-input" value="2000" step="100" oninput="calculate()">
-                    <div class="form-helper">Property taxes, insurance, HOA, maintenance</div>
+
+                <!-- House Purchase Panel -->
+                <div class="panel" id="housePanel">
+                    <div class="panel-title">
+                        <span>Dream House</span>
+                        <div class="u-flex-gap-12">
+                            <div class="panel-title-checkbox">
+                                <input type="checkbox" id="houseEnabled" checked onchange="toggleHouse()" aria-label="Include Dream House in calculations">
+                                <label for="houseEnabled">Include</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">House Price</label>
+                        <input type="number" id="housePrice" class="form-input" value="400000" step="1000" oninput="calculate()">
+                        <div class="form-helper">Total purchase price including closing costs</div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-group">
+                            <label class="form-label">Interest Rate (%)</label>
+                            <input type="number" id="houseInterestRate" class="form-input" value="6" step="0.1" oninput="calculate()">
+                            <div class="form-helper">Mortgage APR</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Loan Term (years)</label>
+                            <input type="number" id="houseLoanYears" class="form-input" value="30" step="1" oninput="calculate()">
+                            <div class="form-helper">Typical 15, 20, or 30 years</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Purchase Year</label>
+                        <select id="housePurchaseYear" class="form-input" data-year-options data-default="0" onchange="calculate()"></select>
+                        <div class="form-helper">Down payment uses accumulated savings from previous years</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Additional Monthly Bills (Taxes, etc.)</label>
+                        <input type="number" id="houseAdditionalBills" class="form-input" value="2000" step="100" oninput="calculate()">
+                        <div class="form-helper">Property taxes, insurance, HOA, maintenance</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -7721,7 +7980,7 @@
         <div class="footer-content">
             <div class="footer-brand">BLACK BOX</div>
             <div class="footer-tagline">LIFESTYLE AFFORDABILITY CALCULATOR</div>
-            <div class="footer-dev-tag">Made with &lt;3 by aurablox © 2025</div>
+            <div class="footer-dev-tag">Made with ♥ by aurablox © 2025</div>
         </div>
         <div class="footer-social">
             <a href="#" onclick="showPrivacyPolicy()" class="footer-link">Privacy Policy</a>
