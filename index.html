@@ -26,11 +26,11 @@
         <div class="header">
             <!-- Banner Media -->
             <div class="header-banner-media">
-                <img 
-                    class="header-banner-image" 
+                <img
+                    class="header-banner-image"
                     id="headerBannerImage"
-                    src="/Gemini_Generated_Image_im6r4gim6r4gim6r.png" 
-                    alt="Geometric banner background"
+                    src="/blackboxcinematic.jpg"
+                    alt="Black Box cinematic hero image"
                 />
             </div>
             
@@ -40,7 +40,7 @@
             <!-- Banner Title -->
             <div class="header-banner-title">
                 <div class="header-banner-title-wrapper">
-                    <h1 class="header-banner-title-text">BLACK BOX</h1>
+                    <h1 class="header-banner-title-text">BLACKBOX</h1>
                     <span class="beta-tag">BETA</span>
                 </div>
                 <div class="header-banner-subtitle">
@@ -50,7 +50,7 @@
                 <!-- Email Signup -->
                 <div class="header-email-signup">
                     <div class="email-signup-form">
-                        <div class="email-signup-text">Get more news about the iOS app delivered to your inbox</div>
+                        <div class="email-signup-text">Get more news about the iOS and Android apps delivered to your inbox</div>
                         <div class="email-signup-input-group email-signup-grid">
                             <input
                                 class="email-signup-input" 
@@ -70,22 +70,7 @@
                 </div>
             </div>
             
-            <!-- Scroll Indicator - Outside container for edge positioning -->
-            <div class="scroll-indicator">
-                <div class="scroll-indicator-content">
-                    <div class="scroll-indicator-tooltip">
-                        <div class="scroll-indicator-tooltip-title">
-                            Get Started
-                            <svg class="scroll-indicator-inline-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 2V10M2 7L6 10L10 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="scroll-indicator-tooltip-text">Enter your financial details below to calculate your lifestyle affordability</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- As Seen On Section - Bottom Left -->
+            <!-- As Seen On Section - Bottom Right -->
             <div class="as-seen-on">
                 <div class="as-seen-on-label">AS SEEN ON</div>
                 <div class="as-seen-on-logos">
@@ -147,9 +132,7 @@
                     <div class="core-metric-value" id="financialHealthScore">--</div>
                     <div class="core-metric-status" id="financialHealthScoreStatus">Analyzing</div>
                 </div>
-                
-                <div class="core-metric-divider"></div>
-                
+
                 <div class="core-metric savings-rate-metric">
                     <div class="core-metric-tooltip">
                         <div class="core-metric-tooltip-title">Savings Rate</div>
@@ -159,8 +142,6 @@
                     <div class="core-metric-value" id="savingsRate">--%</div>
                     <div class="core-metric-status" id="savingsRateStatus">Calculating</div>
                 </div>
-
-                <div class="core-metric-divider"></div>
 
                 <div class="core-metric five-year-projection-metric">
                     <div class="core-metric-tooltip">
@@ -184,15 +165,7 @@
                     <div class="mini-metric-value" id="miniMonthlyCashFlow">$0.00</div>
                     <div class="mini-metric-trend" id="miniMonthlyCashFlowTrend">↗ Neutral</div>
                 </div>
-                <div class="mini-metric">
-                    <div class="mini-metric-tooltip">
-                        <div class="mini-metric-tooltip-title">Expense Ratio</div>
-                        <div class="mini-metric-tooltip-text">Percentage of income spent on expenses. Lower ratios (under 60%) indicate healthier financial habits with more savings capacity.</div>
-                    </div>
-                    <div class="mini-metric-label">Expense Ratio</div>
-                    <div class="mini-metric-value" id="miniExpenseRatio">0%</div>
-                    <div class="mini-metric-trend" id="miniExpenseRatioTrend">→ Optimal</div>
-                </div>
+
                 <div class="mini-metric">
                     <div class="mini-metric-tooltip">
                         <div class="mini-metric-tooltip-title">Major Purchases</div>
@@ -202,16 +175,35 @@
                     <div class="mini-metric-value" id="miniMajorPurchases">$0/month</div>
                     <div class="mini-metric-trend" id="miniMajorPurchasesTrend">→ Manageable</div>
                 </div>
+
+                <div class="mini-metric">
+                    <div class="mini-metric-tooltip">
+                        <div class="mini-metric-tooltip-title">Expense Ratio</div>
+                        <div class="mini-metric-tooltip-text">Percentage of income spent on expenses. Lower ratios (under 60%) indicate healthier financial habits with more savings capacity.</div>
+                    </div>
+                    <div class="mini-metric-label">Expense Ratio</div>
+                    <div class="mini-metric-value" id="miniExpenseRatio">0%</div>
+                    <div class="mini-metric-trend" id="miniExpenseRatioTrend">→ Optimal</div>
+                </div>
             </div>
         </div>
 
-        <!-- Combined Income and Budget Panel -->
-        <div class="panel u-mb-40">
-            <div class="panel-title u-mb-24">
-                <span>Income & Monthly Spending</span>
-                <button class="instructions-toggle" id="incomeBudgetToggle" aria-expanded="true" aria-controls="incomeBudgetContent">Hide Income & Budget</button>
+        <!-- Financial Planning Header -->
+        <div class="financial-planning-header">
+            <div class="financial-planning-title-section">
+                <h2 class="financial-planning-title">Financial Planning</h2>
+                <button class="instructions-toggle" id="financialPlanningToggle" aria-expanded="true" aria-controls="financialPlanningContent">Hide Financial Planning</button>
             </div>
-            <div class="income-budget-content expanded" id="incomeBudgetContent">
+        </div>
+
+        <!-- Financial Planning Container -->
+        <div class="financial-planning-container expanded" id="financialPlanningContent">
+            <!-- Combined Income and Budget Panel -->
+            <div class="panel u-mb-40">
+                <div class="panel-title u-mb-24">
+                    <span>Income & Monthly Spending</span>
+                </div>
+                <div class="income-budget-content expanded" id="incomeBudgetContent">
                 <div class="legend u-mb-24">
                     <div class="legend-item">
                         <div class="legend-color income"></div>
@@ -227,26 +219,11 @@
                 </div>
                 <div class="budget-controls-row">
                     <button class="btn btn-secondary budget-control-btn" id="addBudgetItemBtn">
-                        + Add Budget Item
+                        + Add Item
                     </button>
                     <button class="btn btn-secondary budget-control-btn" id="resetAllValuesBtn">
                         Reset All
                     </button>
-                </div>
-
-                <!-- Scenarios Section -->
-                <div class="scenarios-section u-mt-32">
-                    <div class="section-header">
-                        <h3 class="section-title">Save & Load Scenarios</h3>
-                        <span class="section-subtitle">Experiment with different financial situations</span>
-                    </div>
-                    <div class="scenario-controls u-mt-16">
-                        <input type="text" id="scenarioName" class="form-input scenario-input" placeholder="Enter scenario name" maxlength="30">
-                        <button class="btn btn-primary scenario-save-btn" id="saveCurrentScenarioBtn">Save Scenario</button>
-                    </div>
-                    <div id="scenarioList" class="scenario-list u-mt-16">
-                        <div class="no-scenarios">No saved scenarios yet</div>
-                    </div>
                 </div>
 
                 <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593" step="1">
@@ -254,7 +231,7 @@
         </div>
 
         <!-- Major Purchases Section -->
-        <div class="panel u-mb-40">
+        <div class="panel u-mb-20">
             <div class="panel-title u-mb-24">
                 <span>Major Purchases</span>
             </div>
@@ -335,6 +312,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- Scenarios Section -->
+        <div class="panel u-mb-40">
+            <div class="panel-title u-mb-24">
+                <span>Save & Load Scenarios</span>
+            </div>
+            <div class="scenarios-section">
+                <div class="section-header">
+                    <span class="section-subtitle">Experiment with different financial situations</span>
+                </div>
+                <div class="scenario-controls u-mt-16">
+                    <input type="text" id="scenarioName" class="form-input scenario-input" placeholder="Enter scenario name" maxlength="30">
+                    <button class="btn btn-primary scenario-save-btn" id="saveCurrentScenarioBtn">Save Scenario</button>
+                </div>
+                <div id="scenarioList" class="scenario-list u-mt-16">
+                    <div class="no-scenarios">No saved scenarios yet</div>
+                </div>
+            </div>
+        </div>
+        </div> <!-- End Financial Planning Container -->
 
         <div class="summary-grid" id="summaryCards"></div>
 

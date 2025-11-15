@@ -15,7 +15,7 @@ const instructionItems = [
     },
     {
         title: 'Adding Items',
-        text: 'Click "Add Budget Item" to create new spending categories. Click the × button to remove items.'
+        text: 'Click "Add Item" to create new spending categories. Click the × button to remove items.'
     },
     {
         title: 'Major Purchases',
@@ -31,12 +31,7 @@ const instructionItems = [
     }
 ];
 
-const summaryCardConfig = [
-    { id: 'monthlySavings', label: 'Monthly Savings' },
-    { id: 'totalSavings', label: '5-Year Total Savings' },
-    { id: 'carPayment', label: 'Monthly Car Payment' },
-    { id: 'housePayment', label: 'Monthly House Payment' }
-];
+const summaryCardConfig = [];
 
 const purchaseYearOptions = [
     { value: '0', label: 'Year 0 (Before savings start)' },
@@ -284,7 +279,7 @@ function updateMiniDashboard() {
     const miniMajorPurchases = document.getElementById('miniMajorPurchases');
     const miniMajorPurchasesTrend = document.getElementById('miniMajorPurchasesTrend');
 
-    miniMajorPurchases.textContent = '$' + totalMajorPayments.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}) + '/month';
+    miniMajorPurchases.textContent = '$' + totalMajorPayments.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}) + '/mo';
 
     const majorPaymentRatio = monthlyIncome > 0 ? (totalMajorPayments / monthlyIncome) * 100 : 0;
     if (majorPaymentRatio < 20) {
@@ -527,41 +522,40 @@ function renderBudgetItems() {
     
     incomeDiv.innerHTML = `
         <div class="budget-item-top">
-            <input class="form-input budget-item-input budget-name-input budget-name-input--readonly budget-item-name" value="Income"
-                   placeholder="Income"
+            <input class="form-input budget-item-input budget-name-input budget-name-input--readonly budget-item-name" value="Income (in thousands)"
+                   placeholder="Income (in thousands)"
                    readonly
                    ${!incomeEnabled ? 'disabled' : ''}>
         </div>
         <div class="budget-item-amount-row">
             <div class="budget-amount-input-wrapper${!incomeEnabled ? ' is-disabled' : ''}">
-                <input type="number" 
-                       class="budget-amount-input income-amount-input${!incomeEnabled ? ' is-disabled' : ''}" 
-                       id="incomeAmountInput" 
-                       value="${(incomeValue / 1000).toFixed(1)}" 
-                       min="0" 
-                       max="50" 
+                <input type="number"
+                       class="budget-amount-input income-amount-input${!incomeEnabled ? ' is-disabled' : ''}"
+                       id="incomeAmountInput"
+                       value="${(incomeValue / 1000).toFixed(1)}"
+                       min="0"
+                       max="50"
                        step="0.1"
                        oninput="updateIncomeFromThousands(parseFloat(this.value) || 0)"
                        ${!incomeEnabled ? 'disabled' : ''}
                        placeholder="0">
-                <div class="budget-spinner-controls">
-                    <button type="button" class="budget-spinner-btn" onclick="incrementIncome()" ${!incomeEnabled ? 'disabled' : ''} aria-label="Increase income">
-                        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 3 L9 7 L3 7 Z" />
-                        </svg>
-                    </button>
-                    <button type="button" class="budget-spinner-btn" onclick="decrementIncome()" ${!incomeEnabled ? 'disabled' : ''} aria-label="Decrease income">
-                        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 9 L3 5 L9 5 Z" />
-                        </svg>
-                    </button>
-                </div>
             </div>
-            <div class="income-label">In Thousands</div>
-        </div>
-        <div class="budget-item-toggle-row">
-            <div class="toggle-switch ${incomeEnabled ? 'enabled' : ''}" role="switch" aria-checked="${incomeEnabled ? 'true' : 'false'}" onclick="toggleIncome()" title="${incomeEnabled ? 'Disable' : 'Enable'} income">
-                <div class="toggle-thumb"></div>
+            <div class="budget-spinner-controls">
+                <button type="button" class="budget-spinner-btn" onclick="decrementIncome()" ${!incomeEnabled ? 'disabled' : ''} aria-label="Decrease income">
+                    <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6 L7 3 L7 9 Z" />
+                    </svg>
+                </button>
+                <button type="button" class="budget-spinner-btn" onclick="incrementIncome()" ${!incomeEnabled ? 'disabled' : ''} aria-label="Increase income">
+                    <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 6 L5 3 L5 9 Z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="budget-item-toggle-row">
+                <div class="toggle-switch ${incomeEnabled ? 'enabled' : ''}" role="switch" aria-checked="${incomeEnabled ? 'true' : 'false'}" onclick="toggleIncome()" title="${incomeEnabled ? 'Disable' : 'Enable'} income">
+                    <div class="toggle-thumb"></div>
+                </div>
             </div>
         </div>
     `;
@@ -584,37 +578,37 @@ function renderBudgetItems() {
             </div>
             <div class="budget-item-amount-row">
                 <div class="budget-amount-input-wrapper${!isEnabled ? ' is-disabled' : ''}">
-                    <input type="number" 
-                           class="budget-amount-input${!isEnabled ? ' is-disabled' : ''}" 
-                           id="budget-amount-${index}" 
-                           value="${Math.round(parseFloat(item.amount) || 0)}" 
-                           min="0" 
-                           max="5000" 
+                    <input type="number"
+                           class="budget-amount-input${!isEnabled ? ' is-disabled' : ''}"
+                           id="budget-amount-${index}"
+                           value="${Math.round(parseFloat(item.amount) || 0)}"
+                           min="0"
+                           max="5000"
                            step="10"
                            oninput="updateBudgetItem(${index}, 'amount', Math.round(parseFloat(this.value) || 0))"
                            ${!isEnabled ? 'disabled' : ''}
                            placeholder="0">
-                    <div class="budget-spinner-controls">
-                        <button type="button" class="budget-spinner-btn" onclick="incrementBudgetItem(${index})" ${!isEnabled ? 'disabled' : ''} aria-label="Increase amount">
-                            <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 3 L9 7 L3 7 Z" />
-                            </svg>
-                        </button>
-                        <button type="button" class="budget-spinner-btn" onclick="decrementBudgetItem(${index})" ${!isEnabled ? 'disabled' : ''} aria-label="Decrease amount">
-                            <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 9 L3 5 L9 5 Z" />
-                            </svg>
-                        </button>
+                </div>
+                <div class="budget-spinner-controls">
+                    <button type="button" class="budget-spinner-btn" onclick="decrementBudgetItem(${index})" ${!isEnabled ? 'disabled' : ''} aria-label="Decrease amount">
+                        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 6 L7 3 L7 9 Z" />
+                        </svg>
+                    </button>
+                    <button type="button" class="budget-spinner-btn" onclick="incrementBudgetItem(${index})" ${!isEnabled ? 'disabled' : ''} aria-label="Increase amount">
+                        <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 6 L5 3 L5 9 Z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="budget-item-toggle-row">
+                    <div class="toggle-switch ${isEnabled ? 'enabled' : ''}" role="switch" aria-checked="${isEnabled ? 'true' : 'false'}" onclick="toggleBudgetItem(${index})" title="${isEnabled ? 'Disable' : 'Enable'} item">
+                        <div class="toggle-thumb"></div>
                     </div>
+                    <button class="budget-item-delete" onclick="deleteBudgetItem(${index})" title="Delete this budget item" aria-label="Delete budget item">
+                        ×
+                    </button>
                 </div>
-            </div>
-            <div class="budget-item-toggle-row">
-                <div class="toggle-switch ${isEnabled ? 'enabled' : ''}" role="switch" aria-checked="${isEnabled ? 'true' : 'false'}" onclick="toggleBudgetItem(${index})" title="${isEnabled ? 'Disable' : 'Enable'} item">
-                    <div class="toggle-thumb"></div>
-                </div>
-                <button class="budget-item-delete" onclick="deleteBudgetItem(${index})" title="Delete this budget item" aria-label="Delete budget item">
-                    ×
-                </button>
             </div>
         `;
         container.appendChild(div);
@@ -2342,6 +2336,23 @@ function toggleIncomeBudget() {
     }
 }
 
+// Toggle financial planning container
+function toggleFinancialPlanning() {
+    const content = document.getElementById('financialPlanningContent');
+    const toggle = document.getElementById('financialPlanningToggle');
+    const isExpanded = content.classList.contains('expanded');
+
+    if (isExpanded) {
+        content.classList.remove('expanded');
+        toggle.textContent = 'Show Financial Planning';
+        toggle.setAttribute('aria-expanded', 'false');
+    } else {
+        content.classList.add('expanded');
+        toggle.textContent = 'Hide Financial Planning';
+        toggle.setAttribute('aria-expanded', 'true');
+    }
+}
+
 // Initialize header banner image
 function initHeaderBanner() {
     const image = document.getElementById('headerBannerImage');
@@ -3027,6 +3038,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const incomeBudgetToggle = document.getElementById('incomeBudgetToggle');
     if (incomeBudgetToggle) {
         incomeBudgetToggle.addEventListener('click', toggleIncomeBudget);
+    }
+
+    // Financial planning toggle
+    const financialPlanningToggle = document.getElementById('financialPlanningToggle');
+    if (financialPlanningToggle) {
+        financialPlanningToggle.addEventListener('click', toggleFinancialPlanning);
     }
 
     // Add budget item button

@@ -14,6 +14,7 @@
     --border-focus: rgba(255, 255, 255, 0.2);
     --accent: #ffffff;
     --accent-hover: rgba(255, 255, 255, 0.85);
+    --danger: #ff6b6b;
     --shadow-sm: rgba(0, 0, 0, 0.95);
     --shadow-md: rgba(0, 0, 0, 0.85);
     --shadow-lg: rgba(0, 0, 0, 0.75);
@@ -303,12 +304,16 @@ body::before {
 .content .instructions-panel,
 .content .affordability-banner,
 .content .mini-dashboard,
-.content .panel,
-.content .footer {
+.content .panel {
     background: var(--bg);
     position: relative;
     overflow: visible;
     overflow-y: visible;
+}
+
+.content .footer {
+    background: var(--bg);
+    position: relative;
 }
 
 .header {
@@ -417,11 +422,11 @@ body::before {
 }
 
 .header-banner-title-text {
-    font-family: 'Exo 2', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: clamp(4rem, 12vw, 10rem);
     font-weight: 900;
     letter-spacing: 0.12em;
-    color: #ffffff !important;
+    color: var(--text) !important;
     text-transform: uppercase;
     margin: 0;
     line-height: 0.92;
@@ -503,7 +508,7 @@ body::before {
     font-size: clamp(0.875rem, 1.5vw, 1.125rem);
     font-weight: 500;
     letter-spacing: 0.3em;
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: var(--text-secondary) !important;
     text-transform: uppercase;
     margin-top: 20px;
     margin-bottom: 32px;
@@ -513,7 +518,7 @@ body::before {
         0 0 12px rgba(255, 255, 255, 0.2),
         0 2px 4px rgba(0, 0, 0, 0.4) !important;
     filter: none !important;
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
+    -webkit-text-fill-color: var(--text-secondary) !important;
     background: none !important;
     mix-blend-mode: normal !important;
     position: relative;
@@ -533,7 +538,7 @@ body::before {
     font-size: clamp(0.875rem, 1.5vw, 1.125rem);
     font-weight: 500;
     letter-spacing: 0.3em;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text-secondary);
     text-transform: uppercase;
     padding: 0;
     line-height: 1.6;
@@ -610,7 +615,7 @@ body::before {
     font-family: 'JetBrains Mono', monospace;
     font-size: clamp(0.8125rem, 1.1vw, 0.9375rem);
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: var(--text) !important;
     letter-spacing: 0.06em;
     text-transform: none;
     text-align: center;
@@ -717,7 +722,7 @@ body::before {
 }
 
 .email-signup-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
     letter-spacing: 0.03em;
     text-align: left;
 }
@@ -792,7 +797,7 @@ body::before {
 .email-signup-success {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: var(--text-secondary) !important;
     letter-spacing: 0.05em;
     text-align: center;
     margin-top: 8px;
@@ -895,18 +900,18 @@ body::before {
     }
 }
 
-/* As Seen On Section - Bottom Left */
+/* As Seen On Section - Bottom Right */
 .as-seen-on {
     position: absolute;
     bottom: 24px;
-    left: 0;
+    right: 0;
     z-index: 200;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 16px;
     padding: 0;
-    margin-left: 24px;
+    margin-right: 24px;
     margin-bottom: 24px;
     pointer-events: auto;
 }
@@ -1226,19 +1231,6 @@ body::before {
     opacity: 1;
 }
 
-.panel:hover {
-    background: var(--card-hover);
-    border-color: var(--border-light);
-    transform: translateY(-2px);
-    box-shadow: 
-        0 12px 40px var(--shadow-md), 
-        inset 0 1px 0 rgba(255, 255, 255, 0.05),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-}
-
-.panel:hover::before {
-    opacity: 1;
-}
 
 .panel-title {
     font-family: 'Rajdhani', sans-serif;
@@ -1452,10 +1444,10 @@ select.form-input {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 24px;
+    gap: 0;
     padding: 48px 32px;
     border-bottom: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.01);
+    background: #000000;
 }
 
 .core-metric {
@@ -1471,18 +1463,7 @@ select.form-input {
     transition: background-color 0.2s ease;
 }
 
-.core-metric:hover {
-    background: var(--card-hover);
-}
 
-.core-metric-divider {
-    width: 2px;
-    height: 100px;
-    background: var(--border);
-    flex-shrink: 0;
-    opacity: 0.6;
-    border-radius: 1px;
-}
 
 .core-metric-label {
     font-family: 'JetBrains Mono', monospace;
@@ -1517,15 +1498,15 @@ select.form-input {
 }
 
 .core-metric-status.positive {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text);
 }
 
 .core-metric-status.warning {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
 }
 
 .core-metric-status.negative {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-tertiary);
 }
 
 .core-metric-tooltip {
@@ -1574,58 +1555,37 @@ select.form-input {
 .affordability-metrics {
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 0;
-    margin: 0 -48px;
-    padding: 0;
+    padding: 48px 32px;
     border-top: 1px solid var(--border);
-    align-items: stretch;
+    background: #000000;
 }
 
 .affordability-metrics .mini-metric {
-    background: transparent;
-    border: none;
-    border-right: 1px solid var(--border);
-    border-radius: 0;
-    padding: 32px 32px;
-    text-align: center;
-    position: relative;
-    transition: background-color 0.2s ease;
-    cursor: help;
-    min-height: 140px;
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
-}
-
-.affordability-metrics .mini-metric:last-child {
+    justify-content: center;
+    text-align: center;
+    padding: 32px 40px;
+    position: relative;
+    cursor: help;
+    transition: background-color 0.2s ease;
+    border: none;
     border-right: none;
+    border-bottom: none;
 }
 
-.affordability-metrics .mini-metric::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.05) 50%,
-        transparent 100%);
-}
-
-.affordability-metrics .mini-metric:hover {
-    background: var(--card-hover);
-}
 
 .affordability-metrics .mini-metric-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     color: var(--text-tertiary);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     letter-spacing: 0.15em;
     font-weight: 400;
     text-transform: uppercase;
@@ -1634,27 +1594,28 @@ select.form-input {
 
 .affordability-metrics .mini-metric-value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 1.875rem;
-    font-weight: 600;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
     color: var(--text);
     margin-bottom: 12px;
     letter-spacing: 0.05em;
-    line-height: 1.2;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
 }
 
 .affordability-metrics .mini-metric-trend {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-top: auto;
+    text-align: center;
 }
 
 
 .summary-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     margin-bottom: 48px;
     justify-items: stretch;
@@ -1667,10 +1628,15 @@ select.form-input {
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     text-align: center;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-shadow:
         0 12px 40px var(--shadow-md),
         inset 0 1px 0 rgba(255, 255, 255, 0.05),
         inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    position: relative;
 }
 
 .summary-card::after {
@@ -1721,16 +1687,21 @@ select.form-input {
     letter-spacing: 0.08em;
     margin-bottom: 16px;
     text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    line-height: 1.4;
 }
 
 .summary-card-value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    font-size: 2rem;
     font-weight: 700;
     color: var(--text);
     letter-spacing: 0.05em;
     line-height: 1.2;
     font-variant-numeric: tabular-nums;
+    text-align: center;
+    width: 100%;
 }
 
 .summary-card-value.positive {
@@ -1744,48 +1715,31 @@ select.form-input {
 
 .mixing-board-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    padding: 16px;
-    background: var(--bg);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 20px;
+    background: transparent;
     border-radius: 0;
     position: relative;
-    border: 1px solid var(--border);
+    border: none;
     min-height: 120px;
     overflow: visible;
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-        0 4px 16px rgba(0, 0, 0, 0.8);
-}
-
-.mixing-board-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
-    background-size: 24px 24px;
-    pointer-events: none;
-    opacity: 0.3;
+    box-shadow: none;
 }
 
 .budget-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    background: var(--card);
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    justify-content: center;
+    padding: 20px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    transition: all 0.3s ease;
     height: 240px;
     position: relative;
     width: 100%;
-    border: 1px solid var(--border-light);
+    border: 1px solid rgba(0, 0, 0, 0.8);
     gap: 12px;
     touch-action: pan-y pan-x; /* Allow scrolling at all times */
     overflow: visible; /* Prevent any scroll containers */
@@ -1814,7 +1768,7 @@ select.form-input {
     font-size: 0.9rem;
     font-weight: 500;
     padding: 8px 12px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(0, 0, 0, 0.8);
     background: var(--card);
     color: var(--text);
     border-radius: 2px;
@@ -1824,12 +1778,12 @@ select.form-input {
 
 .budget-item-input:focus {
     outline: none;
-    border-color: var(--border-focus);
+    border-color: rgba(0, 0, 0, 1);
     background: var(--card-hover);
 }
 
 .budget-item-input:hover {
-    border-color: var(--border-light);
+    border-color: rgba(0, 0, 0, 0.9);
 }
 
 .budget-toggle-btn {
@@ -1845,7 +1799,7 @@ select.form-input {
 .budget-toggle-btn.enabled {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text);
 }
 
 .budget-toggle-btn.enabled:hover {
@@ -1856,7 +1810,7 @@ select.form-input {
 .budget-toggle-btn.disabled {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-tertiary);
 }
 
 .budget-toggle-btn.disabled:hover {
@@ -1896,7 +1850,7 @@ select.form-input {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     font-size: 14px;
     font-weight: 600;
     line-height: 1;
@@ -1912,7 +1866,7 @@ select.form-input {
         0 4px 16px rgba(0,0,0,0.6),
         0 2px 4px rgba(255, 255, 255, 0.04);
     transform: translateY(-1px);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text);
 }
 
 .budget-item-delete:active {
@@ -1962,7 +1916,16 @@ select.form-input {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-align: center;
-    margin-top: 2px;
+    margin-top: 4px;
+}
+
+.budget-item-amount-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 220px;
 }
 
 .budget-amount-input-wrapper {
@@ -1970,24 +1933,23 @@ select.form-input {
     display: flex;
     align-items: center;
     width: 100%;
-    max-width: 220px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 6px;
+    transition: all 0.3s ease;
     touch-action: pan-y pan-x; /* Allow scrolling */
     overflow: visible; /* Prevent scroll containers */
 }
 
 .budget-amount-input-wrapper:hover:not(.is-disabled) {
-    background: var(--card);
-    border-color: var(--border-light);
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 0, 0, 0.9);
 }
 
 .budget-amount-input-wrapper:focus-within {
-    background: var(--card);
-    border-color: var(--border-light);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 0, 0, 1);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
     touch-action: pan-y pan-x; /* Ensure scrolling works when focused */
 }
 
@@ -1999,7 +1961,7 @@ select.form-input {
     touch-action: pan-y pan-x pinch-zoom; /* Allow scrolling while preventing unwanted zoom */
     font-size: clamp(1.5rem, 2.5vw, 2.25rem);
     font-weight: 400;
-    padding: 12px 44px;
+    padding: 12px 16px;
     border: none;
     border-radius: 4px;
     background: transparent;
@@ -2031,48 +1993,37 @@ select.form-input {
 
 /* Spinner controls */
 .budget-spinner-controls {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
-    flex-direction: column;
-    gap: 1px;
-    z-index: 1;
+    flex-direction: row;
+    gap: 12px;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .budget-spinner-btn {
-    width: 24px;
-    height: 20px;
+    width: 28px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.8);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.3s ease;
     position: relative;
     padding: 0;
     margin: 0;
-}
-
-.budget-spinner-btn:first-child {
-    border-radius: 3px 3px 0 0;
-    border-bottom: none;
-}
-
-.budget-spinner-btn:last-child {
-    border-radius: 0 0 3px 3px;
+    border-radius: 4px;
 }
 
 .budget-spinner-btn:hover:not(:disabled) {
-    background: var(--card-hover);
-    border-color: var(--border-light);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 0, 0, 0.9);
 }
 
 .budget-spinner-btn:active:not(:disabled) {
-    background: var(--card-active);
-    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(0.98);
 }
 
 .budget-spinner-btn:disabled {
@@ -2081,9 +2032,9 @@ select.form-input {
 }
 
 .budget-spinner-btn svg {
-    width: 12px;
-    height: 12px;
-    stroke: var(--text);
+    width: 14px;
+    height: 14px;
+    stroke: rgba(255, 255, 255, 0.7);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -2091,7 +2042,7 @@ select.form-input {
 }
 
 .budget-spinner-btn:hover:not(:disabled) svg {
-    stroke: var(--text);
+    stroke: rgba(255, 255, 255, 0.9);
 }
 
 .budget-item-slider-row {
@@ -2101,15 +2052,16 @@ select.form-input {
 @media (max-width: 480px) {
     .budget-item-amount-row {
         max-width: 180px;
+        gap: 8px;
     }
 
     .budget-amount-input-wrapper {
-        max-width: 180px;
+        width: 100%;
     }
 
     .budget-amount-input {
         font-size: 1.5rem;
-        padding: 10px 40px;
+        padding: 10px 12px;
     }
 
     .budget-spinner-btn {
@@ -2184,7 +2136,11 @@ select.form-input {
 
 
 .toggle-switch.enabled::after {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
+}
+
+.budget-item.income-item .toggle-switch.enabled::after {
+    color: var(--text);
 }
 
 .toggle-switch.enabled:hover {
@@ -2805,15 +2761,9 @@ select.form-input {
     .affordability-core-metrics {
         padding: 32px 24px;
         flex-direction: column;
-        gap: 24px;
+        gap: 0;
     }
 
-    .core-metric-divider {
-        width: 120px;
-        height: 2px;
-        margin: 0;
-        opacity: 0.5;
-    }
 
     .core-metric {
         padding: 24px 20px;
@@ -2860,25 +2810,18 @@ select.form-input {
     }
 
     .affordability-metrics {
-        margin: 0 -24px;
-        padding: 0;
-        border-top: 1px solid var(--border);
-        grid-template-columns: 1fr;
+        padding: 32px 24px;
+        flex-direction: column;
+        gap: 0;
     }
+
 
     .affordability-metrics .mini-metric {
-        padding: 32px 24px;
-        min-height: 140px;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .affordability-metrics .mini-metric:last-child {
-        border-bottom: none;
+        padding: 24px 20px;
     }
 
     .affordability-metrics .mini-metric-value {
-        font-size: 1.5rem;
+        font-size: 2.75rem;
     }
 
 
@@ -2943,15 +2886,23 @@ select.form-input {
     .summary-card {
         padding: 28px 20px;
         max-width: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     .summary-card-label {
         font-size: 0.75rem;
         margin-bottom: 14px;
+        text-align: center;
+        width: 100%;
     }
 
     .summary-card-value {
-        font-size: 1.875rem;
+        font-size: 2rem;
+        text-align: center;
+        width: 100%;
     }
 }
 
@@ -3283,15 +3234,6 @@ select.form-input {
     animation: shimmer 3.5s ease-in-out infinite;
 }
 
-.chart-container:hover {
-    background: var(--card-hover);
-    border-color: var(--border-light);
-    box-shadow: 
-        0 12px 48px var(--shadow-md), 
-        inset 0 1px 0 rgba(255, 255, 255, 0.06),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
-    transform: translateY(-2px);
-}
 
 .chart-title {
     font-family: 'Rajdhani', sans-serif;
@@ -3823,6 +3765,40 @@ tr:hover {
     opacity: 0;
 }
 
+.financial-planning-container {
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+
+.financial-planning-container:not(.expanded) {
+    max-height: 0;
+    overflow: hidden;
+    overflow-y: hidden;
+    opacity: 0;
+}
+
+.financial-planning-header {
+    margin-bottom: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.financial-planning-title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.financial-planning-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.375rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
 .instruction-item {
     padding: 16px;
     background: var(--bg-secondary);
@@ -4028,7 +4004,7 @@ tr:hover {
 
 .signup-notice-icon {
     font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     flex-shrink: 0;
     margin-top: 2px;
 }
@@ -4051,7 +4027,7 @@ tr:hover {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     line-height: 1.6;
 }
 
@@ -4088,7 +4064,7 @@ tr:hover {
     font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     text-transform: uppercase;
     text-align: center;
 }
@@ -4191,7 +4167,7 @@ tr:hover {
     font-size: 0.8125rem;
     font-weight: 400;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     letter-spacing: 0.02em;
 }
 
@@ -4205,7 +4181,7 @@ tr:hover {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-tertiary);
     letter-spacing: 0.05em;
     text-align: center;
     line-height: 1.6;
@@ -4381,7 +4357,7 @@ tr:hover {
     font-size: 0.6875rem;
     font-weight: 400;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.4) !important;
+    color: var(--text-muted) !important;
     margin-top: 0;
     opacity: 1 !important;
     transform: translateY(0) !important;
@@ -4415,7 +4391,7 @@ tr:hover {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.6875rem;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.4) !important;
+    color: var(--text-muted) !important;
     text-decoration: none;
     letter-spacing: 0.05em;
     transition: color 0.2s ease;
@@ -4507,7 +4483,7 @@ tr:hover {
 
 .app-stores-stars .star {
     font-size: clamp(2rem, 4vw, 2.5rem);
-    color: #ffffff;
+    color: var(--text);
     line-height: 1;
     filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
     animation: starGlow 2s ease-in-out infinite;
@@ -4831,7 +4807,7 @@ tr:hover {
 .scenario-save-btn {
     padding: 12px 20px;
     background: var(--accent);
-    color: #000000;
+    color: var(--bg);
     border: 1px solid var(--accent);
     border-radius: 0;
     font-family: 'JetBrains Mono', monospace;
@@ -4865,10 +4841,6 @@ tr:hover {
     transition: all 0.2s ease;
 }
 
-.scenario-item:hover {
-    background: var(--card-hover);
-    border-color: var(--border-light);
-}
 
 .scenario-info {
     flex: 1;
@@ -4916,7 +4888,7 @@ tr:hover {
 }
 
 .delete-btn:hover {
-    color: #ff6b6b;
+    color: var(--danger);
 }
 
 .no-scenarios {
@@ -5028,8 +5000,8 @@ tr:hover {
 .mini-metric {
     background: var(--card);
     border: none;
-    border-right: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-right: 1px solid rgba(0, 0, 0, 0.8);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.8);
     border-radius: 0;
     padding: 24px 20px;
     text-align: center;
@@ -5059,9 +5031,6 @@ tr:hover {
         transparent 100%);
 }
 
-.mini-metric:hover {
-    background: var(--card-hover);
-}
 
 .mini-metric-label {
     font-family: 'JetBrains Mono', monospace;
@@ -5265,11 +5234,6 @@ tr:hover {
     pointer-events: auto;
 }
 
-.floating-nav:hover {
-    background: var(--card-hover);
-    border-color: var(--border-light);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
-}
 
 .floating-nav-link {
     color: var(--text-secondary);
@@ -5447,9 +5411,15 @@ tr:hover {
         padding: 8px 12px;
     }
 
+    /* Budget item amount row */
+    .budget-item-amount-row {
+        max-width: 100%;
+        gap: 8px;
+    }
+
     /* Budget item input wrapper */
     .budget-amount-input-wrapper {
-        max-width: 100%;
+        width: 100%;
     }
 
     /* Budget spinner buttons - ensure tap target */
