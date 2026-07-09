@@ -269,6 +269,10 @@
                         <select id="carPurchaseYear" class="form-input" data-year-options data-default="0"></select>
                         <div class="form-helper">When you'll make the purchase</div>
                     </div>
+                    <div class="payment-estimate">
+                        <span class="payment-estimate-label">Est. monthly payment</span>
+                        <span class="payment-estimate-value" id="carPaymentDisplay">$0</span>
+                    </div>
                 </div>
 
                 <!-- House Purchase Panel -->
@@ -306,8 +310,12 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Additional Monthly Bills (Taxes, etc.)</label>
-                        <input type="number" id="houseAdditionalBills" class="form-input" value="2000" step="100">
+                        <input type="number" id="houseAdditionalBills" class="form-input" value="600" step="50">
                         <div class="form-helper">Property taxes, insurance, HOA, maintenance</div>
+                    </div>
+                    <div class="payment-estimate">
+                        <span class="payment-estimate-label">Est. mortgage + bills</span>
+                        <span class="payment-estimate-value" id="housePaymentDisplay">$0</span>
                     </div>
                 </div>
             </div>
@@ -337,7 +345,7 @@
 
         <div class="chart-container">
             <div class="chart-title">Monthly Budget Breakdown</div>
-            <div class="chart-description">This pie chart shows the distribution of your monthly spending across all budget categories. The chart automatically updates as you adjust budget amounts or toggle categories on/off. Each slice represents a portion of your total monthly expenses, helping you visualize spending priorities.</div>
+            <div class="chart-description">Share of monthly spending by category. Updates live as you adjust amounts or toggle items.</div>
             <div class="budget-pie-container">
                 <div class="budget-pie-chart-wrapper">
                     <canvas id="budgetPieChart" class="budget-pie-canvas"></canvas>
@@ -348,7 +356,7 @@
 
         <div class="chart-container">
             <div class="chart-title">Savings Projection Over 5 Years</div>
-            <div class="chart-description">This line chart displays your cumulative savings projection over a 5-year period. The line shows how your savings accumulate (or deplete) month by month. Values above zero indicate positive savings, while values below zero indicate you're spending more than you earn. Hover over year markers to highlight individual years and see cumulative savings amounts for that specific year.</div>
+            <div class="chart-description">Cumulative savings month by month, including major purchases and a 4% annual return. Hover year markers for details.</div>
             <div class="chart-wrapper">
                 <canvas id="savingsChart"></canvas>
             </div>
@@ -356,7 +364,7 @@
 
         <div class="chart-container">
             <div class="chart-title">Cumulative Spending by Category</div>
-            <div class="chart-description">This chart displays cumulative spending totals for each category at yearly intervals (Year 1 through Year 5). Each bar shows the total amount spent in that category up to that year. Categories are labeled with their cumulative spending amounts, helping you see which categories consume the most of your budget over time.</div>
+            <div class="chart-description">Total spent in each category at yearly checkpoints — useful for spotting what grows fastest.</div>
             <div class="chart-wrapper">
                 <canvas id="spendingChart"></canvas>
             </div>
@@ -364,7 +372,7 @@
 
         <div class="chart-container">
             <div class="chart-title">5-Year Total Spending by Category (Treemap)</div>
-            <div class="chart-description">This treemap visualization shows your total 5-year spending by category, where larger rectangles indicate higher spending. The size and color intensity of each box represents the proportion of your total spending. Click or hover over any box to see detailed category information and exact dollar amounts.</div>
+            <div class="chart-description">Larger tiles = higher 5-year spend. Hover any tile for exact amounts.</div>
             <div class="treemap-container">
                 <svg class="treemap-svg" id="treemapSvg"></svg>
                 <div class="treemap-tooltip" id="treemapTooltip"></div>
@@ -376,21 +384,23 @@
 
         <div class="chart-container">
             <div class="chart-title">Yearly Financial Summary</div>
-            <div class="chart-description">This table provides a comprehensive year-by-year breakdown of your financial situation. It shows annual income, total spending, annual savings (or deficit), cumulative savings over time, and your financial status. Use this to identify trends and see which years may be challenging or favorable based on your planned major purchases.</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Year</th>
-                        <th>Annual Income</th>
-                        <th>Annual Spending</th>
-                        <th>Annual Savings</th>
-                        <th>Cumulative Savings</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="yearlyTable">
-                </tbody>
-            </table>
+            <div class="chart-description">Income, spending, savings, and cumulative balance for each of the next five years.</div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Annual Income</th>
+                            <th>Annual Spending</th>
+                            <th>Annual Savings</th>
+                            <th>Cumulative Savings</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="yearlyTable">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- AI Analysis Section -->
@@ -485,7 +495,7 @@
         <div class="footer-content">
             <div class="footer-brand">BLACK BOX</div>
             <div class="footer-tagline">LIFESTYLE AFFORDABILITY CALCULATOR</div>
-            <div class="footer-dev-tag">Made with ♥ by aurablox © 2025</div>
+            <div class="footer-dev-tag">Made with ♥ by aurablox © 2026</div>
         </div>
         <div class="footer-social">
             <a href="#" id="privacyPolicyLink" class="footer-link">Privacy Policy</a>
@@ -501,8 +511,6 @@
             </a>
         </div>
         </footer>
-
-        </div>
     </main>
 
     <!-- Privacy Policy Modal -->

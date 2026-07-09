@@ -7,31 +7,36 @@ let incomeEnabled = true;
 const instructionItems = [
     {
         title: 'Income Control',
-        text: 'Click the amount to edit directly, or use the up/down arrow buttons to adjust. Maximum income is $50,000/month.'
+        text: 'Edit the income amount directly or use the arrow buttons. Values are in dollars per month (max $50,000). Use the toggle to exclude income from calculations.'
     },
     {
         title: 'Budget Items',
-        text: 'Each category can be adjusted by clicking the amount to edit, using the up/down arrow buttons, or dragging the horizontal fader handle. Maximum per item is $5,000/month.'
+        text: 'Adjust each spending category by editing the amount or using the arrow buttons (max $5,000/item). Toggle items off to exclude them without deleting.'
     },
     {
         title: 'Adding Items',
-        text: 'Click "Add Item" to create new spending categories. Click the × button to remove items.'
+        text: 'Click "Add Item" to create new spending categories. Click the × button to remove items. You must keep at least one category.'
     },
     {
         title: 'Major Purchases',
-        text: 'Toggle Dream Car and Dream House to include/exclude them. Adjust purchase year to see how timing affects your savings.'
+        text: 'Toggle Dream Car and Dream House to include them. Estimated monthly payments update live. Change purchase year to see how timing affects savings.'
     },
     {
         title: 'Charts & Data',
-        text: 'Scroll down to see savings projections, spending breakdowns, and yearly financial summaries. All updates in real-time.'
+        text: 'Scroll down for savings projections, spending breakdowns, treemap, and a yearly financial summary. Everything recalculates in real time.'
     },
     {
         title: 'Affordability',
-        text: 'The banner at the top shows if you can afford your lifestyle. Negative savings are indicated by a darker appearance over 5 years.'
+        text: 'The banner shows whether projected savings stay positive over 5 years. Health score reflects cash flow, expense ratio, debt load, and savings rate.'
     }
 ];
 
-const summaryCardConfig = [];
+const summaryCardConfig = [
+    { id: 'monthlySavings', label: 'Monthly Cash Flow' },
+    { id: 'totalSavings', label: '5-Year Savings' },
+    { id: 'carPayment', label: 'Car Payment / mo' },
+    { id: 'housePayment', label: 'House Payment / mo' }
+];
 
 const purchaseYearOptions = [
     { value: '0', label: 'Year 0 (Before savings start)' },
@@ -115,7 +120,7 @@ function getCurrentState() {
         houseInterestRate: parseFloat(document.getElementById('houseInterestRate').value) || 6,
         houseLoanYears: parseInt(document.getElementById('houseLoanYears').value) || 30,
         housePurchaseYear: parseInt(document.getElementById('housePurchaseYear').value) || 0,
-        houseAdditionalBills: parseFloat(document.getElementById('houseAdditionalBills').value) || 2000,
+        houseAdditionalBills: parseFloat(document.getElementById('houseAdditionalBills').value) || 600,
         timestamp: new Date().toISOString()
     };
 }
@@ -522,8 +527,8 @@ function renderBudgetItems() {
     
     incomeDiv.innerHTML = `
         <div class="budget-item-top">
-            <input class="form-input budget-item-input budget-name-input budget-name-input--readonly budget-item-name" value="Income (in thousands)"
-                   placeholder="Income (in thousands)"
+            <input class="form-input budget-item-input budget-name-input budget-name-input--readonly budget-item-name" value="Monthly Income"
+                   placeholder="Monthly Income"
                    readonly
                    ${!incomeEnabled ? 'disabled' : ''}>
         </div>
@@ -532,11 +537,11 @@ function renderBudgetItems() {
                 <input type="number"
                        class="budget-amount-input income-amount-input${!incomeEnabled ? ' is-disabled' : ''}"
                        id="incomeAmountInput"
-                       value="${(incomeValue / 1000).toFixed(1)}"
+                       value="${incomeValue}"
                        min="0"
-                       max="50"
-                       step="0.1"
-                       oninput="updateIncomeFromThousands(parseFloat(this.value) || 0)"
+                       max="50000"
+                       step="100"
+                       oninput="updateIncome(parseFloat(this.value) || 0)"
                        ${!incomeEnabled ? 'disabled' : ''}
                        placeholder="0">
             </div>
@@ -699,12 +704,13 @@ function updateIncome(value) {
     document.getElementById('monthlyIncome').value = clampedValue;
     const inputElement = document.getElementById('incomeAmountInput');
     if (inputElement) {
-        inputElement.value = (clampedValue / 1000).toFixed(1);
+        inputElement.value = clampedValue;
     }
     calculate();
 }
 
 function updateIncomeFromThousands(thousandsValue) {
+    // Legacy helper kept for compatibility; convert thousands → dollars
     const dollarValue = Math.round(thousandsValue * 1000);
     updateIncome(dollarValue);
 }
@@ -712,18 +718,18 @@ function updateIncomeFromThousands(thousandsValue) {
 function incrementIncome() {
     const input = document.getElementById('incomeAmountInput');
     if (input && !input.disabled) {
-        const currentValue = parseFloat(input.value) || 0;
-        const newValue = Math.min(50, currentValue + 0.1);
-        updateIncomeFromThousands(newValue);
+        const currentValue = Math.round(parseFloat(input.value) || 0);
+        const newValue = Math.min(50000, currentValue + 100);
+        updateIncome(newValue);
     }
 }
 
 function decrementIncome() {
     const input = document.getElementById('incomeAmountInput');
     if (input && !input.disabled) {
-        const currentValue = parseFloat(input.value) || 0;
-        const newValue = Math.max(0, currentValue - 0.1);
-        updateIncomeFromThousands(newValue);
+        const currentValue = Math.round(parseFloat(input.value) || 0);
+        const newValue = Math.max(0, currentValue - 100);
+        updateIncome(newValue);
     }
 }
 
@@ -1325,15 +1331,31 @@ function calculate() {
     const houseLoanAmount = Math.max(0, housePrice - houseDownPayment);
     const houseMonthlyPayment = houseEnabled && houseLoanAmount > 0 ? calculateLoanPayment(houseLoanAmount, houseInterestRate, houseLoanMonths) : 0;
 
-    // Update displays
+    // Update payment displays (summary cards + in-panel estimates)
+    const carPaymentText = carEnabled
+        ? ('$' + Math.round(carMonthlyPayment).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }))
+        : '$0';
+    const houseTotalMonthly = houseEnabled ? (houseMonthlyPayment + houseAdditionalBills) : 0;
+    const housePaymentText = houseEnabled
+        ? ('$' + Math.round(houseMonthlyPayment).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }))
+        : '$0';
+    const houseEstimateText = houseEnabled
+        ? ('$' + Math.round(houseTotalMonthly).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }))
+        : '$0';
+
     const carPaymentEl = document.getElementById('carPayment');
     const housePaymentEl = document.getElementById('housePayment');
     if (carPaymentEl) {
-        carPaymentEl.textContent = '$' + Math.round(carMonthlyPayment).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+        carPaymentEl.textContent = carPaymentText;
+        carPaymentEl.className = 'summary-card-value' + (carEnabled && carMonthlyPayment > 0 ? '' : '');
     }
     if (housePaymentEl) {
-        housePaymentEl.textContent = '$' + Math.round(houseMonthlyPayment).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+        housePaymentEl.textContent = housePaymentText;
     }
+    const carPaymentDisplay = document.getElementById('carPaymentDisplay');
+    const housePaymentDisplay = document.getElementById('housePaymentDisplay');
+    if (carPaymentDisplay) carPaymentDisplay.textContent = carPaymentText;
+    if (housePaymentDisplay) housePaymentDisplay.textContent = houseEstimateText;
 
     // Calculate 5-year projection using shared function
     const years = 5;
@@ -1398,7 +1420,10 @@ function calculate() {
     const banner = document.getElementById('affordabilityBanner');
     const bannerTitle = document.getElementById('affordabilityTitle');
     const bannerText = document.getElementById('affordabilityDesc');
-    const monthlySavingsAfterLoans = baseMonthlySavings - (carMonthlyPayment > 0 && months > carPurchaseMonth && months <= carPurchaseMonth + carLoanMonths ? carMonthlyPayment : 0) - (houseMonthlyPayment > 0 && months > housePurchaseMonth ? houseMonthlyPayment + houseAdditionalBills : 0);
+    // Steady-state monthly cash flow with currently enabled major purchases
+    const monthlySavingsAfterLoans = baseMonthlySavings
+        - (carEnabled ? carMonthlyPayment : 0)
+        - (houseEnabled ? houseMonthlyPayment + houseAdditionalBills : 0);
 
     if (banner && bannerTitle && bannerText) {
         if (finalSavings < 0 || monthlySavingsAfterLoans < 0) {
@@ -2289,13 +2314,17 @@ function updateYearlyTable(income, baseSavings, carPayment, carMonth, carMonths,
             savingsBalance = savingsBalance * (1 + monthlyRate);
         }
 
+        const annualIncome = income * 12;
+        // Annual spending = income − cash-flow savings (not the broken baseSavings formula)
+        const annualSpending = annualIncome - annualSavings;
+
         const row = document.createElement('tr');
         row.innerHTML = `
             <td><strong>Year ${year}</strong></td>
-            <td>$${(income * 12).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-            <td>$${(baseSavings * 12 - annualSavings + income * 12).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-            <td>$${annualSavings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-            <td><strong>$${savingsBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
+            <td>$${annualIncome.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
+            <td>$${annualSpending.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
+            <td class="${annualSavings >= 0 ? 'positive' : 'negative'}">$${annualSavings.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
+            <td><strong class="${savingsBalance >= 0 ? 'positive' : 'negative'}">$${savingsBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong></td>
             <td><span class="badge ${savingsBalance >= 0 ? 'badge-success' : 'badge-danger'}">${savingsBalance >= 0 ? 'On Track' : 'Over Budget'}</span></td>
         `;
         tableBody.appendChild(row);
@@ -2470,28 +2499,11 @@ document.addEventListener('focusin', function(event) {
     }
 });
 
-// Ensure scrolling is unlocked when inputs lose focus
+// Clean up drag state when inputs lose focus (do not rewrite html/body overflow)
 document.addEventListener('focusout', function(event) {
     if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
-        // Small delay to ensure focus has moved
-        setTimeout(() => {
-            const container = event.target.closest('.budget-item, .income-item');
-            if (container) {
-                container.style.touchAction = 'pan-y pan-x';
-                container.style.overflow = 'visible';
-                container.style.position = ''; // Reset any position that might lock scroll
-            }
-            
-            // Force scroll unlock by ensuring body/html allow scrolling
-            document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.documentElement.style.overflow = '';
-            document.documentElement.style.position = '';
-            
-            // Ensure touch handlers are cleaned up
-            stopIncomeFaderDrag();
-            stopFaderDrag();
-        }, 100);
+        stopIncomeFaderDrag();
+        stopFaderDrag();
     }
 });
 
@@ -2559,57 +2571,26 @@ document.addEventListener('input', function() {
     stopFaderDrag();
 }, { passive: true });
 
-// Detect WebView/in-app browsers (Reddit, Twitter, Facebook, etc.)
+// True in-app browsers only (do NOT match normal mobile Safari/Chrome —
+// the old check treated almost all phones as WebViews and forced dual scroll roots)
 function isWebView() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    // Check for common in-app browser patterns
-    return /FBAN|FBAV|Twitter|LinkedInApp|Instagram|Snapchat|Line|KakaoTalk|Slack|Discord|Reddit|Pinterest|tumblr/i.test(ua) ||
-           (window.navigator.standalone === false) ||
-           (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches === false && window.navigator.userAgent.includes('Mobile'));
+    const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+    return /FBAN|FBAV|FBIOS|Twitter|LinkedInApp|Instagram|Snapchat|Line\/|KakaoTalk|Slack|Discord|Reddit|Pinterest|tumblr/i.test(ua);
 }
 
-// Apply WebView-specific fixes
 if (isWebView()) {
-    // Force body/html to allow scrolling in WebViews
-    document.documentElement.style.overflow = 'auto';
+    // Keep a single scroll root; only unlock any accidental locks
+    document.documentElement.style.overflowY = 'scroll';
     document.documentElement.style.height = 'auto';
-    document.documentElement.style.minHeight = '100%';
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = 'visible';
     document.body.style.height = 'auto';
-    document.body.style.minHeight = '100%';
     document.body.style.position = 'relative';
-    
-    // Ensure content container allows scrolling
+
     const content = document.querySelector('.content');
     if (content) {
         content.style.overflow = 'visible';
-        content.style.overflowY = 'visible';
-        content.style.touchAction = 'pan-y pan-x';
     }
-    
-    // Prevent WebView from blocking touch events
-    document.addEventListener('touchstart', function(e) {
-        // Allow all touch events to propagate in WebView
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && 
-            !e.target.closest('input') && !e.target.closest('textarea')) {
-            // Don't prevent default for scrolling
-        }
-    }, { passive: true });
-    
-    // Force scroll unlock on any touch
-    document.addEventListener('touchmove', function(e) {
-        // In WebViews, ensure scrolling is never blocked
-        const target = e.target;
-        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || 
-            target.closest('input') || target.closest('textarea')) {
-            // Allow scrolling even when inputs are focused
-            stopIncomeFaderDrag();
-            stopFaderDrag();
-            return; // Allow default scroll behavior
-        }
-    }, { passive: true });
-    
-    // Fix viewport height issues in WebViews
+
     function setViewportHeight() {
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -2644,17 +2625,6 @@ document.querySelectorAll('.floating-nav-link').forEach(link => {
     });
 });
 
-// Ensure smooth scrolling for all content (disable any scroll snapping)
-// Remove any scroll-snap properties that might cause sticking
-const smoothScrollStyle = document.createElement('style');
-smoothScrollStyle.textContent = `
-    .content, .content * {
-        scroll-snap-type: none !important;
-        scroll-snap-align: none !important;
-        scroll-snap-stop: normal !important;
-    }
-`;
-document.head.appendChild(smoothScrollStyle);
 // Initialize header banner
 initHeaderBanner();
 // Add window resize listener for charts
@@ -2831,38 +2801,53 @@ function initAIAnalysis() {
         rerunButton.classList.add('loading');
 
         try {
-            // Collect all financial data
-            const income = parseFloat(document.getElementById('monthlyIncome').value) || 9593.42;
-            const finalSavings = parseFloat(document.getElementById('finalSavings').textContent.replace(/[^0-9.-]/g, '')) || 0;
-            const monthlySavings = parseFloat(document.getElementById('monthlySavings').textContent.replace(/[^0-9.-]/g, '')) || 0;
+            // Collect financial data from live state (not fragile DOM text)
+            const income = incomeEnabled === false
+                ? 0
+                : (parseFloat(document.getElementById('monthlyIncome').value) || 0);
             const carEnabled = document.getElementById('carEnabled')?.checked || false;
             const houseEnabled = document.getElementById('houseEnabled')?.checked || false;
-            const carPaymentEl = document.getElementById('carPayment');
-            const housePaymentEl = document.getElementById('housePayment');
-            const carPayment = carPaymentEl ? parseFloat(carPaymentEl.textContent.replace(/[^0-9.-]/g, '')) || 0 : 0;
-            const housePayment = housePaymentEl ? parseFloat(housePaymentEl.textContent.replace(/[^0-9.-]/g, '')) || 0 : 0;
-            
-            // Get car and house details
-            const carLoanMonthsEl = document.getElementById('carLoanMonths');
-            const carLoanMonths = carEnabled && carLoanMonthsEl ? parseInt(carLoanMonthsEl.value) || 60 : 0;
-            const houseAdditionalBillsEl = document.getElementById('houseAdditionalBills');
-            const houseBills = houseEnabled && houseAdditionalBillsEl ? parseFloat(houseAdditionalBillsEl.value) || 0 : 0;
+            const carPayment = carEnabled ? calculateCarPayment() : 0;
+            const housePayment = houseEnabled ? calculateHousePayment() : 0;
+            const carLoanMonths = carEnabled
+                ? (parseInt(document.getElementById('carLoanMonths')?.value, 10) || 60)
+                : 0;
+            const houseBills = houseEnabled
+                ? (parseFloat(document.getElementById('houseAdditionalBills')?.value) || 0)
+                : 0;
 
-            // Prepare financial data for API (filter disabled items, include incomeEnabled)
+            const parseMoney = (id) => {
+                const el = document.getElementById(id);
+                if (!el) return null;
+                const n = parseFloat(String(el.textContent).replace(/[^0-9.-]/g, ''));
+                return Number.isFinite(n) ? n : null;
+            };
+
+            const monthlySpending = budgetItems.reduce((sum, item) => {
+                if (item.enabled === false) return sum;
+                return sum + (parseFloat(item.amount) || 0);
+            }, 0);
+            const computedMonthly = income - monthlySpending - carPayment - housePayment - houseBills;
+            const monthlySavings = parseMoney('monthlySavings') ?? computedMonthly;
+            const finalSavings = parseMoney('totalSavings')
+                ?? parseMoney('topRightSavings')
+                ?? parseMoney('finalSavings')
+                ?? 0;
+
             const financialData = {
                 incomeEnabled: incomeEnabled !== undefined ? incomeEnabled : true,
-                income: incomeEnabled === false ? 0 : income,
+                income,
                 budgetItems: budgetItems
                     .filter(item => item.enabled !== false)
                     .map(item => ({ name: item.name, amount: item.amount })),
-                finalSavings: finalSavings,
-                monthlySavings: monthlySavings,
-                carEnabled: carEnabled,
-                carPayment: carPayment,
-                carLoanMonths: carLoanMonths,
-                houseEnabled: houseEnabled,
-                housePayment: housePayment,
-                houseBills: houseBills
+                finalSavings,
+                monthlySavings,
+                carEnabled,
+                carPayment,
+                carLoanMonths,
+                houseEnabled,
+                housePayment,
+                houseBills
             };
 
             // Call AI analysis API
@@ -2878,13 +2863,7 @@ function initAIAnalysis() {
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('AI Analysis API error:', response.status, errorText);
-                
-                // Check if it's a 405 Method Not Allowed - likely wrong server (only show on localhost)
-                if (response.status === 405 && window.location.hostname === 'localhost' && window.location.port !== '8888') {
-                    alert('⚠️ API Error: Please use the Vercel dev server on port 8888.\n\nRun: npx vercel dev --listen 8888\nThen access: http://localhost:8888\n\nThe current server (port ' + window.location.port + ') does not support serverless functions.');
-                    throw new Error('Please use Vercel dev server on port 8888');
-                }
-                
+                // Fall back to local analysis instead of blocking the user
                 throw new Error(`AI analysis failed: ${response.status} ${errorText}`);
             }
 
@@ -2993,13 +2972,16 @@ function runAIAnalysis() {
 function showPrivacyPolicy() {
     const modal = document.getElementById('privacyModal');
     modal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    // Lock page scroll while modal is open (html is the only scroll root)
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
 }
 
 function closePrivacyPolicy() {
     const modal = document.getElementById('privacyModal');
     modal.style.display = 'none';
-    document.body.style.overflow = 'auto'; // Restore scrolling
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
 }
 
 // Close modal when clicking outside

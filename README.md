@@ -53,9 +53,14 @@ git clone https://github.com/murderszn/blackbox.git
 cd blackbox
 ```
 
-2. Open `index.html` in your web browser
+2. Start the local server (serves the app + API routes):
+```bash
+npm start
+```
 
-That's it! No build process or dependencies required - it's a fully standalone HTML file.
+3. Open [http://localhost:8080](http://localhost:8080)
+
+Requires Node.js 18+. Static files work without a server, but email signup and AI analysis need `npm start` (or `vercel dev`) so `/api/*` routes respond.
 
 ## How to Use
 

@@ -102,79 +102,24 @@
     opacity: 1 !important;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-    max-width: 100%;
-    scroll-snap-type: none;
-    /* Optimize for smooth scrolling */
-    -webkit-overflow-scrolling: touch;
-    scroll-padding-top: 0;
-    /* WebView/in-app browser fixes */
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    /* Prevent WebView scroll issues */
-    position: relative;
-    height: auto;
-    min-height: 100%;
-}
-
-/* Ensure all content sections have smooth scrolling */
-.content * {
-    scroll-snap-align: none;
-    scroll-snap-stop: normal;
-}
-
-/* Performance optimizations for smooth scrolling */
-.content .panel,
-.content .chart-container,
-.content .summary-card,
-.content .instructions-panel {
-    /* Ensure no scroll containers are created */
-    overflow: visible;
-    /* Prevent nested scrolling on mouse interaction */
-    touch-action: pan-y;
-}
-
-/* Prevent any nested scroll containers from interfering with main scroll */
-.content * {
-    /* Allow mouse wheel to pass through to main scroll */
-    overscroll-behavior: contain;
-}
-
-/* Prevent layout shifts during scroll */
-canvas {
-    display: block;
-    max-width: 100%;
-    height: auto;
-}
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -ms-overflow-style: none;  /* IE and Edge - hide scrollbars */
-    scrollbar-width: none;  /* Firefox - hide scrollbars */
 }
 
-*::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari, Opera - hide scrollbars */
-}
-
+/* Single scroll root only — dual html+body scrolling causes sticky/janky scroll */
 html {
-    overflow-y: auto;  /* Keep scroll functionality */
-    /* Prevent nested scrolling */
-    overscroll-behavior-y: contain;
-    /* Smooth scrolling optimization */
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-    /* WebView/in-app browser fixes */
-    height: 100%;
+    /* clip (not hidden) avoids forcing overflow-y:auto via the CSS overflow pairing rule */
+    overflow-x: clip;
+    overflow-y: scroll;
+    /* instant wheel/trackpad response; smooth scroll is JS-only for nav clicks */
+    scroll-behavior: auto;
+    scroll-snap-type: none;
     -webkit-text-size-adjust: 100%;
-    /* Prevent WebView from blocking scroll */
-    touch-action: pan-y pan-x;
+    -webkit-tap-highlight-color: transparent;
+    height: auto;
+    max-width: 100%;
 }
 
 body {
@@ -183,23 +128,33 @@ body {
     color: var(--text);
     line-height: 1.5;
     min-height: 100vh;
-    min-height: -webkit-fill-available; /* WebView fix for viewport height */
+    min-height: -webkit-fill-available;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.015em;
-    overflow-x: hidden;
-    overflow-y: auto;  /* Keep scroll functionality */
+    /*
+     * Body must NOT be a scroll container.
+     * Do not use overflow-x: hidden here — with overflow-y: visible, CSS
+     * computes overflow-y to auto and creates a second sticky scroller.
+     * Horizontal clipping is handled on html instead.
+     */
+    overflow: visible;
     width: 100%;
+    max-width: 100%;
     position: relative;
-    /* Prevent nested scrolling */
-    overscroll-behavior-y: contain;
-    /* Smooth scrolling optimization */
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-    /* WebView/in-app browser fixes */
+    height: auto;
     -webkit-text-size-adjust: 100%;
-    touch-action: pan-y pan-x;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+}
+
+/* Prevent layout shifts during scroll */
+canvas {
+    display: block;
+    max-width: 100%;
 }
 
 /* Fixed hero section - stays in place while content scrolls over */
@@ -207,6 +162,7 @@ body {
     position: fixed;
     inset: 0;
     height: 100vh;
+    height: 100dvh;
     width: 100%;
     max-width: 100%;
     z-index: 0;
@@ -219,26 +175,31 @@ body {
     pointer-events: auto;
 }
 
-/* Content scrolls over the hero - optimized for smooth scrolling */
+/* Interactive hero controls only — not the full header (avoids blocking scroll over empty hero areas) */
+.hero .floating-nav,
+.hero .header-email-signup,
+.hero .as-seen-on,
+.hero .header-banner-title {
+    pointer-events: auto;
+}
+
+.hero .header {
+    pointer-events: none;
+}
+
+/* Content scrolls over the hero */
 .content {
     position: relative;
     z-index: 1;
     margin-top: 100vh;
+    margin-top: 100dvh;
     background: var(--bg);
     min-height: 100vh;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: visible;
-    scroll-behavior: smooth;
+    /* visible on both axes — never pair overflow-x:hidden with overflow-y:visible */
+    overflow: visible;
     scroll-snap-type: none;
-    scroll-padding-top: 0;
-    /* Prevent nested scrolling */
-    touch-action: pan-y pan-x; /* Allow both directions for WebViews */
-    /* Smooth scrolling optimization */
-    -webkit-overflow-scrolling: touch;
-    /* Optimize rendering for smooth scrolling */
-    will-change: scroll-position;
 }
 
 /* Hero fade effect at bottom for smooth overlap */
@@ -258,10 +219,12 @@ body {
 @media (max-width: 768px) {
     .hero {
         height: 100vh;
+        height: 100dvh;
     }
 
     .content {
         margin-top: 100vh;
+        margin-top: 100dvh;
     }
     
     .header-banner-title {
@@ -327,6 +290,7 @@ body::before {
     overflow: hidden;
     box-shadow: none;
     height: 100vh;
+    height: 100dvh;
     width: 100%;
     max-width: 100%;
     display: flex;
@@ -1615,10 +1579,52 @@ select.form-input {
 
 .summary-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 48px;
     justify-items: stretch;
+}
+
+@media (max-width: 1024px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* In-panel loan payment estimate */
+.payment-estimate {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 8px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.payment-estimate-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.payment-estimate-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
 }
 
 .summary-card {
@@ -2224,7 +2230,7 @@ select.form-input {
     cursor: ew-resize;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
-    touch-action: pan-x pinch-zoom; /* Allow horizontal drag, prevent interference with vertical scroll */
+    touch-action: pan-y pan-x; /* Prefer vertical page scroll; horizontal still works for faders */
     margin: 8px 0;
 }
 
@@ -2301,7 +2307,7 @@ select.form-input {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
-    touch-action: pan-x pinch-zoom; /* Allow horizontal drag, prevent interference with vertical scroll */
+    touch-action: pan-y pan-x; /* Prefer vertical page scroll; horizontal still works for faders */
     z-index: 10;
 }
 
@@ -2510,7 +2516,7 @@ select.form-input {
     margin: 0 auto;
     display: none; /* Horizontal fader is the primary control */
     -webkit-tap-highlight-color: transparent;
-    touch-action: pan-x pinch-zoom; /* Allow horizontal drag, prevent interference with vertical scroll */
+    touch-action: pan-y pan-x; /* Prefer vertical page scroll; horizontal still works for faders */
 }
 
 .budget-amount-display {
@@ -3191,15 +3197,23 @@ select.form-input {
     box-sizing: border-box;
 }
 
-/* Allow horizontal scroll only for table within chart-container */
-.chart-container:has(table) {
+/*
+ * IMPORTANT: never set overflow-x: auto on chart-container itself.
+ * CSS computes overflow-y: visible → auto when the other axis is not visible,
+ * which creates a nested vertical scroller that "sticks" page scroll.
+ */
+.table-scroll {
+    width: 100%;
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
 }
 
-/* Fallback for browsers that don't support :has() - ensure table doesn't overflow */
 .chart-container table {
-    max-width: 100%;
+    width: 100%;
+    max-width: none;
 }
 
 .chart-container::after {
@@ -3261,6 +3275,7 @@ select.form-input {
     position: relative;
     z-index: 1;
     padding-bottom: 0;
+    max-width: 62ch;
 }
 
 .chart-wrapper {
@@ -4825,8 +4840,9 @@ tr:hover {
 }
 
 .scenario-list {
-    max-height: 300px;
-    overflow-y: auto;
+    /* Prefer growing with content — nested scroll here feels sticky while paging */
+    max-height: none;
+    overflow: visible;
 }
 
 .scenario-item {
@@ -5275,24 +5291,28 @@ tr:hover {
     .floating-nav {
         top: 16px;
         padding: 10px 16px;
-        gap: 20px;
+        gap: 16px;
         font-size: 12px;
+        max-width: calc(100vw - 32px);
+        flex-wrap: nowrap;
     }
 
     .floating-nav-link {
-        font-size: 12px;
+        font-size: 11px;
+        white-space: nowrap;
+        letter-spacing: 0.3px;
     }
 }
 
 @media (max-width: 480px) {
     .floating-nav {
-        gap: 12px;
+        gap: 10px;
         padding: 8px 12px;
     }
 
     .floating-nav-link {
-        font-size: 11px;
-        letter-spacing: 0.3px;
+        font-size: 10px;
+        letter-spacing: 0.2px;
     }
 }
 
@@ -5317,15 +5337,19 @@ tr:hover {
         margin-bottom: 32px;
     }
 
-    /* Table overflow fixes */
-    .chart-container:has(table) {
+    /* Table overflow fixes — scroll the inner wrapper, not the section */
+    .table-scroll {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
-    table {
+    .table-scroll table {
         width: 100%;
         min-width: 600px; /* Ensure minimum width for readability */
+    }
+
+    table {
+        width: 100%;
     }
 
     th, td {

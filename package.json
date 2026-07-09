@@ -1,11 +1,12 @@
 {
-  "name": "vercel-api-functions",
+  "name": "blackbox",
   "version": "1.0.0",
   "type": "module",
+  "description": "Lifestyle Affordability Calculator",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'No build step required for Vercel functions'",
-    "deploy": "vercel --prod"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "vercel": "vercel dev --listen 8080"
   },
   "dependencies": {},
   "devDependencies": {},
@@ -13,5 +14,3 @@
     "node": ">=18.0.0"
   }
 }
-
-
