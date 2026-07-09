@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Local development server for Black Box.
+ * Local development server for BLACKBOX.
  * Serves static files and provides /api/signup + /api/ai-analysis handlers
  * so the full app works on http://localhost:8080 without Vercel CLI.
  */
@@ -38,7 +38,7 @@ function sendJson(res, status, body) {
         'Content-Type': 'application/json; charset=utf-8',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-goog-api-key',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-goog-api-key, X-Api-Key',
         'Cache-Control': 'no-store',
     });
     res.end(payload);
@@ -206,11 +206,104 @@ async function handleAIAnalysis(req, res) {
             return sendJson(res, 400, { error: 'Financial data is required' });
         }
 
-        // Local analysis always works; set GEMINI_API_KEY + use Vercel for live Gemini
+        // Local heuristic fallback (client prefers /api/pollinations-text with user key)
         return sendJson(res, 200, localAIAnalysis(financialData));
     } catch (error) {
         console.error('AI Analysis error:', error);
         return sendJson(res, 500, { error: 'Internal server error', message: error.message });
+    }
+}
+
+/**
+ * Proxy Pollinations text generation. Forwards user's Bearer key so
+ * analysis spends their Pollen (BYOP), matching /motion.
+ */
+async function handlePollinationsText(req, res) {
+    if (req.method === 'OPTIONS') {
+        return sendJson(res, 204, {});
+    }
+    if (req.method !== 'POST') {
+        return sendJson(res, 405, { error: 'Method not allowed. Use POST.' });
+    }
+
+    try {
+        const body = await readBody(req);
+        const authHeader = req.headers.authorization || req.headers.Authorization || '';
+        const keyFromBody = typeof body.apiKey === 'string' ? body.apiKey.trim() : '';
+        const bearer = authHeader.startsWith('Bearer ')
+            ? authHeader.slice(7).trim()
+            : (authHeader.trim() || keyFromBody);
+
+        const messages = Array.isArray(body.messages) ? body.messages : null;
+        if (!messages || messages.length === 0) {
+            return sendJson(res, 400, { error: 'messages array is required' });
+        }
+
+        const model = body.model || 'openai';
+        const payload = {
+            model,
+            messages,
+            temperature: body.temperature ?? 0.3,
+            max_tokens: body.max_tokens ?? 1024,
+        };
+
+        const headers = { 'Content-Type': 'application/json' };
+        if (bearer) {
+            headers.Authorization = `Bearer ${bearer}`;
+        }
+
+        let upstream = await fetch('https://gen.pollinations.ai/v1/chat/completions', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload),
+        });
+
+        if (!upstream.ok) {
+            upstream = await fetch('https://text.pollinations.ai/openai', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ messages, model }),
+            });
+        }
+
+        const text = await upstream.text();
+        const contentType = upstream.headers.get('content-type') || '';
+
+        if (!upstream.ok) {
+            console.error('Pollinations upstream error:', upstream.status, text.slice(0, 400));
+            return sendJson(res, upstream.status, {
+                error: 'Pollinations request failed',
+                status: upstream.status,
+                details: text.slice(0, 800),
+            });
+        }
+
+        let content = text;
+        if (contentType.includes('application/json')) {
+            try {
+                const data = JSON.parse(text);
+                content =
+                    data.choices?.[0]?.message?.content ||
+                    data.choices?.[0]?.text ||
+                    data.content ||
+                    data.text ||
+                    text;
+            } catch {
+                content = text;
+            }
+        }
+
+        return sendJson(res, 200, {
+            success: true,
+            content: typeof content === 'string' ? content : JSON.stringify(content),
+            provider: 'pollinations',
+        });
+    } catch (error) {
+        console.error('Pollinations proxy error:', error);
+        return sendJson(res, 500, {
+            error: 'Internal server error',
+            message: error.message,
+        });
     }
 }
 
@@ -272,6 +365,9 @@ const server = http.createServer(async (req, res) => {
     if (url.startsWith('/api/ai-analysis')) {
         return handleAIAnalysis(req, res);
     }
+    if (url.startsWith('/api/pollinations-text')) {
+        return handlePollinationsText(req, res);
+    }
 
     if (req.method !== 'GET' && req.method !== 'HEAD') {
         res.writeHead(405);
@@ -282,5 +378,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`\n  Black Box running at http://localhost:${PORT}\n`);
+    console.log(`\n  BLACKBOX running at http://localhost:${PORT}\n`);
 });

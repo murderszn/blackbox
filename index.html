@@ -3,10 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>BLACKBOX — Lifestyle Affordability Calculator</title>
+    <meta name="description" content="BLACKBOX is a lifestyle affordability calculator. Model income, spending, taxes, and major purchases — then stress-test your plan with AI powered by your Pollinations key.">
+    <meta name="keywords" content="BLACKBOX, lifestyle affordability calculator, financial planning, savings projection, budget calculator, AI financial analysis, Pollinations, major purchases, car loan, mortgage">
+    <meta name="author" content="aurablox">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
+    <meta name="robots" content="index, follow">
+    <meta name="application-name" content="BLACKBOX">
+    <meta name="apple-mobile-web-app-title" content="BLACKBOX">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/png" href="/blackbox.png">
-    <title>Black Box - Lifestyle Affordability Calculator</title>
+    <link rel="apple-touch-icon" href="/blackbox.png">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="BLACKBOX">
+    <meta property="og:title" content="BLACKBOX — Lifestyle Affordability Calculator">
+    <meta property="og:description" content="Model income, spending, taxes, and major purchases in one place. Stress-test your lifestyle with AI. Built for clarity — not noise.">
+    <meta property="og:image" content="/blackbox.png">
+    <meta property="og:image:alt" content="BLACKBOX lifestyle affordability calculator">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@jahflyx">
+    <meta name="twitter:creator" content="@jahflyx">
+    <meta name="twitter:title" content="BLACKBOX — Lifestyle Affordability Calculator">
+    <meta name="twitter:description" content="Model income, spending, taxes, and major purchases. Stress-test your plan with AI.">
+    <meta name="twitter:image" content="/blackbox.png">
+    <meta name="twitter:image:alt" content="BLACKBOX lifestyle affordability calculator">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "BLACKBOX",
+      "alternateName": ["Blackbox", "BLACKBOX Calculator"],
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "browserRequirements": "Requires JavaScript",
+      "description": "BLACKBOX is a lifestyle affordability calculator that models income, spending, taxes, and major purchases, then stress-tests your plan with AI.",
+      "image": "/blackbox.png",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Person",
+        "name": "aurablox",
+        "url": "https://x.com/jahflyx"
+      },
+      "featureList": [
+        "Interactive budget modeling",
+        "5-year savings projections",
+        "Major purchase planning (car, house)",
+        "AI financial viability analysis via Pollinations"
+      ]
+    }
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
@@ -16,80 +85,52 @@
     <div id="notification" class="notification"></div>
 
     <!-- Fixed Hero Section -->
-    <header class="hero">
-        <!-- Floating Navigation Bar -->
-        <nav class="floating-nav">
-            <a href="#get-started" class="floating-nav-link">Get Started</a>
-            <a href="#analysis" class="floating-nav-link">AI Analysis</a>
-            <a href="#download" class="floating-nav-link">Download the App</a>
+    <header class="hero" id="top">
+        <nav class="floating-nav" aria-label="Primary">
+            <a href="#get-started" class="floating-nav-link">Model</a>
+            <a href="#analysis" class="floating-nav-link">AI</a>
+            <a href="#download" class="floating-nav-link">App</a>
         </nav>
+
         <div class="header">
-            <!-- Banner Media -->
-            <div class="header-banner-media">
-                <img
-                    class="header-banner-image"
-                    id="headerBannerImage"
-                    src="/blackboxcinematic.jpg"
-                    alt="Black Box cinematic hero image"
-                />
-            </div>
-            
-            <!-- Minimal overlay for subtle depth -->
-            <div class="header-overlay"></div>
-            
-            <!-- Banner Title -->
+            <!-- Three.js onyx glass cube -->
+            <div class="header-banner-media hero-tesseract-wrap" id="heroTesseract" aria-hidden="true"></div>
+            <div class="header-overlay" aria-hidden="true"></div>
+
             <div class="header-banner-title">
                 <div class="header-banner-title-wrapper">
                     <h1 class="header-banner-title-text">BLACKBOX</h1>
-                    <span class="beta-tag">BETA</span>
+                    <p class="header-banner-subtitle">Personal budgeting, demystified</p>
                 </div>
-                <div class="header-banner-subtitle">
-                    <span class="subtitle-main">LIFESTYLE AFFORDABILITY CALCULATOR</span>
-                </div>
-
-                <!-- Email Signup -->
-                <div class="header-email-signup">
-                    <div class="email-signup-form">
-                        <div class="email-signup-text">Get more news about the iOS and Android apps delivered to your inbox</div>
-                        <div class="email-signup-input-group email-signup-grid">
-                            <input
-                                class="email-signup-input" 
-                                id="nameSignupInput"
-                                placeholder="Your name"
-                            />
-                            <input 
-                                type="email" 
-                                class="email-signup-input" 
-                                id="emailSignupInput"
-                                placeholder="Enter your email"
-                            />
-                            <button class="email-signup-button" id="emailSignupButton">Sign Up</button>
-                        </div>
-                        <div class="email-signup-success" id="emailSignupSuccess"></div>
-                    </div>
+                <div class="hero-cta-row">
+                    <a href="#get-started" class="hero-cta-primary">Start calculating</a>
+                    <a href="#download" class="hero-cta-secondary">Download the app</a>
                 </div>
             </div>
-            
-            <!-- As Seen On Section - Bottom Right -->
-            <div class="as-seen-on">
-                <div class="as-seen-on-label">AS SEEN ON</div>
-                <div class="as-seen-on-logos">
-                    <a href="https://www.reddit.com/r/CalebHammer/comments/1ojvf2r/calebs_videos_inspired_me_to_build_this_can_i/" target="_blank" rel="noopener noreferrer" class="as-seen-on-logo" aria-label="Reddit">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 3.243.913.759 0 2.401-.07 3.243-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.547-1.684.73-2.808.73-1.124 0-2.26-.183-2.808-.73a.326.326 0 0 0-.232-.095z" fill="currentColor"/>
+
+            <div class="hero-as-seen" aria-label="As seen on">
+                <span class="hero-as-seen-label">As seen on</span>
+                <div class="hero-as-seen-logos">
+                    <span class="hero-as-seen-logo" title="Reddit" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+                            <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
                         </svg>
-                    </a>
-                    <a href="https://x.com/jahflyx/status/1984541125491716534" target="_blank" rel="noopener noreferrer" class="as-seen-on-logo" aria-label="Twitter">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
+                    </span>
+                    <span class="hero-as-seen-logo" title="X" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" focusable="false">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                         </svg>
-                    </a>
-                    <a href="https://www.facebook.com/photo?fbid=10233150381724195&set=a.1591400827469" target="_blank" rel="noopener noreferrer" class="as-seen-on-logo" aria-label="Facebook">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="currentColor"/>
+                    </span>
+                    <span class="hero-as-seen-logo" title="Facebook" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
-                    </a>
+                    </span>
                 </div>
+            </div>
+
+            <div class="hero-scroll-hint" aria-hidden="true">
+                <span class="hero-scroll-hint-line"></span>
             </div>
         </div>
     </header>
@@ -348,7 +389,9 @@
             <div class="chart-description">Share of monthly spending by category. Updates live as you adjust amounts or toggle items.</div>
             <div class="budget-pie-container">
                 <div class="budget-pie-chart-wrapper">
-                    <canvas id="budgetPieChart" class="budget-pie-canvas"></canvas>
+                    <div class="budget-pie-chart-stage">
+                        <canvas id="budgetPieChart" class="budget-pie-canvas"></canvas>
+                    </div>
                     <div id="budgetPieLegend" class="budget-pie-legend"></div>
                 </div>
             </div>
@@ -409,7 +452,7 @@
                 <div class="ai-analysis-title-wrapper">
                     <h2 class="ai-analysis-title">AI Financial Viability Analysis</h2>
                     <div class="ai-analysis-actions">
-                        <span class="coming-soon-badge">BETA</span>
+                        <span class="coming-soon-badge" id="aiProviderBadge">POLLINATIONS</span>
                         <button class="ai-rerun-button" id="aiRerunButton">
                             <span class="ai-rerun-text">RERUN ANALYSIS</span>
                             <span class="ai-rerun-loading u-hidden">ANALYZING...</span>
@@ -417,6 +460,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pollinations / Pollen API key (BYOP — same pattern as /motion) -->
+            <div class="pollinations-key-panel">
+                <div class="pollinations-key-header">
+                    <div class="pollinations-key-title">Pollinations API Key</div>
+                    <a class="pollinations-key-link" href="https://enter.pollinations.ai" target="_blank" rel="noopener noreferrer">Get a key at enter.pollinations.ai</a>
+                </div>
+                <div class="pollinations-key-row">
+                    <input
+                        type="password"
+                        class="form-input pollinations-key-input"
+                        id="pollinationsApiKey"
+                        placeholder="pk_... or sk_... (your Pollinations key)"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <button type="button" class="btn btn-secondary pollinations-key-toggle" id="pollinationsKeyToggle" aria-label="Show API key">Show</button>
+                    <button type="button" class="btn btn-primary pollinations-key-save" id="pollinationsKeySave">Save Key</button>
+                </div>
+                <div class="pollinations-key-status" id="pollinationsKeyStatus">Paste your key to run AI analysis with your own Pollen balance (BYOP).</div>
+            </div>
+
             <div class="ai-analysis-preview">
                 <div class="ai-grade-section">
                     <div class="ai-grade-label">Viability Grade</div>
@@ -459,58 +524,124 @@
                     </div>
                 </div>
                 <div class="ai-analysis-footer">
-                    <div class="ai-analysis-note">AI-powered financial analysis will provide personalized insights and actionable recommendations based on your complete financial profile.</div>
+                    <div class="ai-analysis-note" id="aiAnalysisNote">Powered by <a href="https://pollinations.ai" target="_blank" rel="noopener noreferrer">Pollinations.ai</a> — analysis runs on your Pollen. Without a key, a local heuristic estimate is used.</div>
                 </div>
             </div>
         </div>
-    </div>
 
-
-        <!-- App Stores Section -->
-        <section class="app-stores-section" id="download">
-            <div class="app-stores-container">
-                <h2 class="app-stores-title">Coming to App Stores in 2026</h2>
-                <p class="app-stores-subtitle">Download Black Box Finance on iOS and Android</p>
-                <div class="app-stores-logos">
-                    <a href="#" class="app-store-link" aria-label="Download on the App Store">
-                        <img src="/appstore.jpeg" alt="Download on the App Store" class="app-store-logo">
-                    </a>
-                    <a href="#" class="app-store-link" aria-label="Get it on Google Play">
-                        <img src="/playstore.svg" alt="Get it on Google Play" class="app-store-logo">
-                    </a>
+        <!-- Mobile app — same rail as dashboard panels -->
+        <section class="app-launch-section" id="download">
+            <div class="app-launch-inner">
+                <div class="app-launch-copy">
+                    <span class="app-launch-badge">Mobile · Flutter</span>
+                    <h2 class="app-launch-title">Same AI. On your phone.</h2>
+                    <p class="app-launch-lede">
+                        We’re building a Flutter app that brings this lifestyle model — and the same AI stress-tests —
+                        to iOS and Android. BLACKBOX for your money, wherever you are.
+                    </p>
+                    <ul class="app-launch-points">
+                        <li>Full affordability model on mobile</li>
+                        <li>AI analysis powered by your Pollinations key</li>
+                        <li>Built with Flutter for iOS &amp; Android</li>
+                    </ul>
+                    <p class="app-launch-release">
+                        <strong>Target release: August 2026</strong>
+                        <span>Join the waitlist for launch updates on iOS &amp; Android.</span>
+                    </p>
+                    <div class="app-launch-signup" id="heroEmailBar">
+                        <div class="email-signup-input-group email-signup-grid app-launch-signup-form">
+                            <input class="email-signup-input" id="nameSignupInput" placeholder="Name" autocomplete="name" />
+                            <input type="email" class="email-signup-input" id="emailSignupInput" placeholder="Email" autocomplete="email" />
+                            <button type="button" class="email-signup-button" id="emailSignupButton">Join waitlist</button>
+                        </div>
+                        <div class="email-signup-success" id="emailSignupSuccess"></div>
+                    </div>
                 </div>
-                <p class="app-stores-coming-soon">Available 2026</p>
-                <div class="app-stores-stars">
-                    <div class="star">★</div>
-                    <div class="star">★</div>
-                    <div class="star">★</div>
-                    <div class="star">★</div>
-                    <div class="star">★</div>
+                <div class="app-launch-visual" aria-hidden="true">
+                    <div class="app-launch-phone">
+                        <div class="app-launch-phone-notch"></div>
+                        <div class="app-launch-phone-screen">
+                            <div class="app-launch-phone-brand">BLACKBOX</div>
+                            <div class="app-launch-phone-metric">
+                                <span>5-year projection</span>
+                                <strong>$146k</strong>
+                            </div>
+                            <div class="app-launch-phone-metric">
+                                <span>AI grade</span>
+                                <strong>B+</strong>
+                            </div>
+                            <div class="app-launch-phone-bar"></div>
+                            <div class="app-launch-phone-bar short"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-launch-stores">
+                    <span class="app-launch-stores-label">Coming soon</span>
+                    <div class="app-launch-stores-row">
+                        <a href="#heroEmailBar" class="footer-store-link" aria-label="App Store — join waitlist">
+                            <img src="/appstore.jpeg" alt="Download on the App Store" class="footer-store-logo" width="140" height="42">
+                        </a>
+                        <a href="#heroEmailBar" class="footer-store-link" aria-label="Google Play — join waitlist">
+                            <img src="/playstore.svg" alt="Get it on Google Play" class="footer-store-logo" width="140" height="42">
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-brand">BLACK BOX</div>
-            <div class="footer-tagline">LIFESTYLE AFFORDABILITY CALCULATOR</div>
-            <div class="footer-dev-tag">Made with ♥ by aurablox © 2026</div>
-        </div>
-        <div class="footer-social">
-            <a href="#" id="privacyPolicyLink" class="footer-link">Privacy Policy</a>
-            <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Follow on X (Twitter)">
-                <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
-                </svg>
-            </a>
-            <a href="https://www.linkedin.com/in/jjohnso75/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Connect on LinkedIn">
-                <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/>
-                </svg>
-            </a>
-        </div>
+        <!-- Site footer — same rail -->
+        <footer class="site-footer">
+            <div class="site-footer-inner">
+                <div class="footer-grid">
+                    <div class="footer-col footer-col-brand">
+                        <div class="footer-brand">BLACKBOX</div>
+                        <p class="footer-pitch">Income, spending, taxes, and major purchases — modeled clearly, then stress-tested with AI.</p>
+                    </div>
+
+                    <div class="footer-col">
+                        <div class="footer-col-title">Product</div>
+                        <nav class="footer-nav" aria-label="Product">
+                            <a href="#get-started">Calculator</a>
+                            <a href="#analysis">AI analysis</a>
+                            <a href="#download">Mobile app</a>
+                        </nav>
+                    </div>
+
+                    <div class="footer-col">
+                        <div class="footer-col-title">Resources</div>
+                        <nav class="footer-nav" aria-label="Resources">
+                            <a href="https://pollinations.ai" target="_blank" rel="noopener noreferrer">Pollinations AI</a>
+                            <a href="https://enter.pollinations.ai" target="_blank" rel="noopener noreferrer">Get API key</a>
+                            <a href="#" id="privacyPolicyLink">Privacy policy</a>
+                        </nav>
+                    </div>
+
+                    <div class="footer-col">
+                        <div class="footer-col-title">Connect</div>
+                        <div class="footer-social-row">
+                            <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="X (Twitter)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                </svg>
+                                <span>X</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/jjohnso75/" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="LinkedIn">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                                <span>LinkedIn</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <span class="footer-copy">© 2026 BLACKBOX · by <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer">aurablox</a></span>
+                    <span class="footer-meta">Runs in your browser · AI via your Pollinations key</span>
+                </div>
+            </div>
         </footer>
+        </div><!-- /.app-container -->
     </main>
 
     <!-- Privacy Policy Modal -->
@@ -522,19 +653,20 @@
             </div>
             <div class="modal-body">
                 <h3>Information We Collect</h3>
-                <p>We only collect the email addresses and names that you voluntarily provide when signing up for our newsletter. No other personal information is collected or stored.</p>
+                <p>BLACKBOX only collects the email addresses and names that you voluntarily provide when joining the waitlist or newsletter. No other personal information is collected or stored by default.</p>
 
                 <h3>How We Use Your Information</h3>
-                <p>The email addresses and names collected are used solely to send you updates about our tools and calculators. We do not sell, rent, or share this information with any third parties.</p>
+                <p>Names and emails are used solely to send you updates about BLACKBOX (including the mobile app). We do not sell, rent, or share this information with third parties for marketing.</p>
 
                 <h3>Data Security</h3>
-                <p>All data sent to our AI analysis models is processed securely and is not stored, shared, or marketed. The information you input into our calculators (such as financial data, income, expenses, etc.) is processed in real-time for analysis purposes only and is not retained after your session.</p>
+                <p>Calculator inputs (income, expenses, and similar financial figures) stay in your browser for modeling. If you run AI analysis with your Pollinations key, request data is sent to that provider under your account and is not stored by BLACKBOX after the response. Pollinations API keys you paste are kept only in your browser’s local storage.</p>
 
                 <h3>Contact</h3>
-                <p>If you have any questions about this privacy policy, please contact us through our website.</p>
+                <p>Questions about this privacy policy? Reach out via <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer">@jahflyx</a>.</p>
             </div>
         </div>
     </div>
+    <script type="module" src="/hero-tesseract.js"></script>
     <script src="/script.js"></script>
 </body>
 </html>

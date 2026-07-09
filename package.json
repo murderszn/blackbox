@@ -2,7 +2,7 @@
   "name": "blackbox",
   "version": "1.0.0",
   "type": "module",
-  "description": "Lifestyle Affordability Calculator",
+  "description": "BLACKBOX — lifestyle affordability calculator",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",

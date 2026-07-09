@@ -1,12 +1,12 @@
-# Black Box - Lifestyle Affordability Calculator
+# BLACKBOX — Lifestyle Affordability Calculator
 
 A sophisticated financial planning tool that helps you visualize and understand how your lifestyle choices impact your savings over a 5-year period.
 
-![Black Box](blackbox.png)
+![BLACKBOX](blackbox.png)
 
 ## Overview
 
-Black Box is an interactive financial calculator that provides comprehensive analysis of your income, spending, and savings projections. With a modern, monochromatic design and real-time visualizations, it helps you make informed decisions about major purchases like cars and houses, and understand their long-term financial impact.
+**BLACKBOX** is an interactive financial calculator that provides comprehensive analysis of your income, spending, and savings projections. With a modern, monochromatic design and real-time visualizations, it helps you make informed decisions about major purchases like cars and houses, and understand their long-term financial impact.
 
 ## Features
 
@@ -27,11 +27,11 @@ Black Box is an interactive financial calculator that provides comprehensive ana
 - **Treemap Visualization**: Interactive view of total spending by category
 - **Yearly Financial Summary Table**: Comprehensive year-by-year breakdown
 
-### 🤖 **AI Analysis** (Coming Soon)
-- AI-powered financial viability assessment
-- Personalized grade rating system
-- Actionable insights and recommendations
-- Optimization suggestions
+### 🤖 **AI Analysis** (Pollinations / Pollen)
+- Live analysis via [Pollinations.ai](https://pollinations.ai) using **your** API key (BYOP)
+- Paste a `pk_…` or `sk_…` key from [enter.pollinations.ai](https://enter.pollinations.ai)
+- Personalized grade, score, and actionable insights
+- Falls back to a local heuristic if no key is set
 
 ### 🎨 **Design**
 - Monochromatic, grid-based aesthetic
@@ -60,7 +60,14 @@ npm start
 
 3. Open [http://localhost:8080](http://localhost:8080)
 
-Requires Node.js 18+. Static files work without a server, but email signup and AI analysis need `npm start` (or `vercel dev`) so `/api/*` routes respond.
+Requires Node.js 18+. Static files work without a server, but email signup and **Pollinations AI** need `npm start` (or `vercel dev`) so `/api/*` proxies respond.
+
+### Pollinations API key (Pollen)
+
+1. Create a key at [enter.pollinations.ai](https://enter.pollinations.ai)
+2. Open BLACKBOX → **AI Financial Viability Analysis**
+3. Paste the key → **Save Key** (stored only in your browser’s `localStorage`)
+4. Click **Rerun Analysis** — requests go through `/api/pollinations-text` with your Bearer token so usage spends **your** Pollen, same idea as `/motion`
 
 ## How to Use
 

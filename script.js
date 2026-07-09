@@ -1568,6 +1568,9 @@ function updateSavingsChart(labels, data) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: window.innerWidth < 480 ? 4 : 8
+            },
             interaction: {
                 intersect: false,
                 mode: 'index'
@@ -1578,8 +1581,9 @@ function updateSavingsChart(labels, data) {
                     position: 'top',
                     labels: {
                         color: '#ffffff',
+                        boxWidth: window.innerWidth < 480 ? 10 : 12,
                         font: {
-                            size: 12,
+                            size: window.innerWidth < 480 ? 10 : 12,
                             weight: 500
                         }
                     }
@@ -1607,10 +1611,8 @@ function updateSavingsChart(labels, data) {
                         label: function(context) {
                             const value = context.parsed.y;
                             const dataIndex = context.dataIndex;
-                            const year = Math.floor(dataIndex / 12);
 
                             if (dataIndex % 12 === 0) {
-                                // This is a year marker - show cumulative savings for this year
                                 return `Cumulative Savings: $${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
                             } else {
                                 return `Savings Balance: $${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
@@ -1622,7 +1624,7 @@ function updateSavingsChart(labels, data) {
             scales: {
                 x: {
                     title: { 
-                        display: true, 
+                        display: window.innerWidth >= 480, 
                         text: 'Time (Years)',
                         color: '#ffffff',
                         font: {
@@ -1636,14 +1638,17 @@ function updateSavingsChart(labels, data) {
                     },
                     ticks: {
                         color: '#b0b0b0',
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: window.innerWidth < 480 ? 6 : 12,
                         font: {
-                            size: 11
+                            size: window.innerWidth < 480 ? 9 : 11
                         }
                     }
                 },
                 y: {
                     title: { 
-                        display: true, 
+                        display: window.innerWidth >= 480, 
                         text: 'Savings ($)',
                         color: '#ffffff',
                         font: {
@@ -1657,10 +1662,14 @@ function updateSavingsChart(labels, data) {
                     },
                     ticks: {
                         color: '#b0b0b0',
+                        maxTicksLimit: window.innerWidth < 480 ? 5 : 8,
                         font: {
-                            size: 11
+                            size: window.innerWidth < 480 ? 9 : 11
                         },
                         callback: function(value) {
+                            if (Math.abs(value) >= 1000) {
+                                return '$' + (value / 1000).toFixed(value % 1000 === 0 ? 0 : 1) + 'k';
+                            }
                             return '$' + value.toLocaleString();
                         }
                     }
@@ -1773,6 +1782,9 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: window.innerWidth < 480 ? 4 : 8
+            },
             interaction: {
                 mode: 'index',
                 intersect: false,
@@ -1780,13 +1792,13 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
             plugins: {
                 legend: {
                     display: true,
-                    position: 'top',
+                    position: window.innerWidth < 480 ? 'bottom' : 'top',
                     labels: { 
                         color: '#ffffff',
-                        font: { size: 11, weight: 500 }, 
-                        boxWidth: 12,
+                        font: { size: window.innerWidth < 480 ? 9 : 11, weight: 500 }, 
+                        boxWidth: window.innerWidth < 480 ? 8 : 12,
                         usePointStyle: true,
-                        padding: 12
+                        padding: window.innerWidth < 480 ? 8 : 12
                     }
                 },
                 tooltip: {
@@ -1837,7 +1849,7 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
                 x: {
                     stacked: false,
                     title: { 
-                        display: true, 
+                        display: window.innerWidth >= 480, 
                         text: 'Year Interval',
                         color: '#ffffff',
                         font: {
@@ -1852,9 +1864,11 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
                     },
                     ticks: {
                         color: '#b0b0b0',
+                        maxRotation: 0,
+                        autoSkip: true,
                         font: {
                             family: 'JetBrains Mono',
-                            size: 11
+                            size: window.innerWidth < 480 ? 9 : 11
                         }
                     }
                 },
@@ -1862,7 +1876,7 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
                     stacked: false,
                     beginAtZero: true,
                     title: { 
-                        display: true, 
+                        display: window.innerWidth >= 480, 
                         text: 'Cumulative Spending ($)',
                         color: '#ffffff',
                         font: {
@@ -1877,10 +1891,14 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
                     },
                     ticks: {
                         color: '#b0b0b0',
+                        maxTicksLimit: window.innerWidth < 480 ? 5 : 8,
                         font: {
-                            size: 11
+                            size: window.innerWidth < 480 ? 9 : 11
                         },
                         callback: function(value) {
+                            if (Math.abs(value) >= 1000) {
+                                return '$' + (value / 1000).toFixed(value % 1000 === 0 ? 0 : 1) + 'k';
+                            }
                             return '$' + value.toLocaleString();
                         }
                     }
@@ -1970,10 +1988,22 @@ function updateBentoBox(budgetItems, carPayment, carMonth, carMonths, carEnabled
         category.percentage = (category.value / totalSpending) * 100;
     });
 
-    // Get container dimensions
+    // Get container dimensions (must match current layout width)
     const container = document.querySelector('.treemap-container');
-    const width = container.clientWidth - 16; // Account for padding
-    const height = container.clientHeight - 16; // Account for padding
+    if (!container) return;
+    const cs = getComputedStyle(container);
+    const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+    const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+    const width = Math.max(120, Math.floor(container.clientWidth - padX));
+    const height = Math.max(120, Math.floor(container.clientHeight - padY));
+
+    // Lock SVG coordinate system to container so content never overflows the page
+    svg
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .style('overflow', 'hidden');
 
     // Create hierarchy for D3 treemap
     const root = {
@@ -1989,7 +2019,7 @@ function updateBentoBox(budgetItems, carPayment, carMonth, carMonths, carEnabled
     // Create treemap layout
     const treemap = d3.treemap()
         .size([width, height])
-        .padding(4)
+        .padding(width < 400 ? 2 : 4)
         .round(true);
 
     const hierarchy = d3.hierarchy(root)
@@ -2070,22 +2100,23 @@ function updateBentoBox(budgetItems, carPayment, carMonth, carMonths, carEnabled
         const boxWidth = d.x1 - d.x0;
         const boxHeight = d.y1 - d.y0;
         
-        // Higher minimum size thresholds for better readability
-        const minWidth = 140; // Minimum width to show labels
-        const minHeight = 70; // Minimum height to show labels
-        const minArea = 12000; // Minimum area (width * height)
+        // Lower thresholds on narrow screens so labels still appear in small cells
+        const isNarrow = width < 480;
+        const minWidth = isNarrow ? 72 : 140;
+        const minHeight = isNarrow ? 48 : 70;
+        const minArea = isNarrow ? 4000 : 12000;
         
         // Calculate area
         const area = boxWidth * boxHeight;
         
         // Only show labels if box meets all size requirements
         if (boxWidth >= minWidth && boxHeight >= minHeight && area >= minArea) {
-            const padding = 16;
-            const textAreaWidth = boxWidth - (padding * 2);
-            const lineHeight = 18;
-            const labelFontSize = boxWidth < 200 ? '11px' : '12px';
-            const amountFontSize = boxWidth < 200 ? '15px' : '17px';
-            const percentageFontSize = boxWidth < 200 ? '9px' : '10px';
+            const padding = isNarrow ? 8 : 16;
+            const textAreaWidth = Math.max(24, boxWidth - (padding * 2));
+            const lineHeight = isNarrow ? 14 : 18;
+            const labelFontSize = isNarrow || boxWidth < 200 ? '10px' : '12px';
+            const amountFontSize = isNarrow || boxWidth < 200 ? '12px' : '17px';
+            const percentageFontSize = isNarrow || boxWidth < 200 ? '9px' : '10px';
 
             // Category name with wrapping - centered vertically in available space
             const labelText = cell.append('text')
@@ -2214,10 +2245,11 @@ function updateBudgetPieChart(budgetItems) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
+            aspectRatio: 1, // keep donut perfectly circular — never squeeze
             plugins: {
                 legend: {
-                    display: false // We'll use custom legend
+                    display: false // custom HTML legend
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
@@ -2248,7 +2280,7 @@ function updateBudgetPieChart(budgetItems) {
                     }
                 }
             },
-            cutout: '65%', // Larger cutout for more modern look
+            cutout: '62%',
             animation: {
                 animateRotate: true,
                 animateScale: true,
@@ -2382,22 +2414,9 @@ function toggleFinancialPlanning() {
     }
 }
 
-// Initialize header banner image
+// Header media is now the Three.js tesseract (hero-tesseract.js)
 function initHeaderBanner() {
-    const image = document.getElementById('headerBannerImage');
-
-    if (image) {
-        if (image.complete && image.naturalWidth > 0) {
-            image.classList.add('loaded');
-        } else {
-            image.addEventListener('load', function() {
-                image.classList.add('loaded');
-            });
-            image.addEventListener('error', function() {
-                image.style.display = 'none';
-            });
-        }
-    }
+    // no-op: tesseract canvas self-initializes
 }
 
 // Scroll animations disabled for smoother scrolling
@@ -2433,12 +2452,23 @@ let scrollTimeout;
 
 // Combined scroll event handler for chart updates and drag cleanup
 let lastScrollY = window.scrollY;
+const heroEl = document.querySelector('.hero');
+
+function updateHeroOffscreen() {
+    if (!heroEl) return;
+    // Once dashboard fully covers the viewport, hide fixed hero (stops bottom bleed)
+    const pastHero = window.scrollY >= window.innerHeight - 2;
+    heroEl.classList.toggle('hero-offscreen', pastHero);
+}
+
 window.addEventListener('scroll', function() {
     isScrolling = true;
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(() => {
         isScrolling = false;
     }, 150);
+
+    updateHeroOffscreen();
 
     // Handle drag cleanup on scroll
     const currentScrollY = window.scrollY;
@@ -2459,6 +2489,8 @@ window.addEventListener('scroll', function() {
     }, 200);
 }, { passive: true });
 
+updateHeroOffscreen();
+
 function handleChartResize() {
     // Don't resize charts while actively scrolling
     if (isScrolling) {
@@ -2466,13 +2498,19 @@ function handleChartResize() {
     }
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-        if (savingsChart && !isScrolling) {
-            savingsChart.resize();
+        if (isScrolling) return;
+        // Chart.js canvases
+        if (savingsChart) savingsChart.resize();
+        if (spendingChart) spendingChart.resize();
+        if (budgetPieChart) budgetPieChart.resize();
+        // D3 treemap must re-layout to the current container width
+        // (viewBox alone is not enough if first paint used a wide layout)
+        try {
+            calculate();
+        } catch (e) {
+            console.warn('Chart resize recalculate failed', e);
         }
-        if (spendingChart && !isScrolling) {
-            spendingChart.resize();
-        }
-    }, 200); // Slightly longer delay to reduce frequency
+    }, 220);
 }
 
 // Debounced calculate function for input fields
@@ -2607,19 +2645,20 @@ initBudgetItems();
 // Initialize scroll animations
 setTimeout(() => initScrollAnimations(), 100);
 
-// Smooth scroll handling for navigation links
-document.querySelectorAll('.floating-nav-link').forEach(link => {
+// Smooth scroll for nav + hero CTAs (hash links only)
+document.querySelectorAll('.floating-nav-link, .hero-cta-primary, .hero-cta-secondary, .footer-nav a[href^="#"], .footer-store-link[href^="#"], .app-launch-cta, .app-launch-stores a[href^="#"]').forEach(link => {
     link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
-        if (href.startsWith('#')) {
+        if (href && href.startsWith('#') && href.length > 1) {
             e.preventDefault();
-            const targetId = href.substring(1);
-            const targetElement = document.getElementById(targetId);
+            const targetElement = document.getElementById(href.slice(1));
             if (targetElement) {
                 targetElement.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
+                // Keep URL in sync without jump
+                history.pushState(null, '', href);
             }
         }
     });
@@ -2746,142 +2785,281 @@ function initEmailSignup() {
 // Initialize email signup
 initEmailSignup();
 
+// ── Pollinations / Pollen (BYOP — same pattern as /motion) ──
+const POLLINATIONS_KEY_STORAGE = 'blackbox-pollinations-key';
+
+function getPollinationsApiKey() {
+    const input = document.getElementById('pollinationsApiKey');
+    const fromInput = input?.value?.trim() || '';
+    if (fromInput) return fromInput;
+    return localStorage.getItem(POLLINATIONS_KEY_STORAGE) || '';
+}
+
+function setPollinationsKeyStatus(message, kind = '') {
+    const el = document.getElementById('pollinationsKeyStatus');
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove('is-ready', 'is-error');
+    if (kind) el.classList.add(kind);
+}
+
+function initPollinationsKeyUI() {
+    const input = document.getElementById('pollinationsApiKey');
+    const saveBtn = document.getElementById('pollinationsKeySave');
+    const toggleBtn = document.getElementById('pollinationsKeyToggle');
+    if (!input) return;
+
+    const saved = localStorage.getItem(POLLINATIONS_KEY_STORAGE) || '';
+    if (saved) {
+        input.value = saved;
+        setPollinationsKeyStatus('Key saved locally. AI analysis will spend from your Pollinations Pollen.', 'is-ready');
+    }
+
+    const persist = () => {
+        const key = input.value.trim();
+        if (key) {
+            localStorage.setItem(POLLINATIONS_KEY_STORAGE, key);
+            setPollinationsKeyStatus('Key saved. Run analysis to use your Pollen balance.', 'is-ready');
+        } else {
+            localStorage.removeItem(POLLINATIONS_KEY_STORAGE);
+            setPollinationsKeyStatus('Key cleared. Without a key, analysis falls back to a local heuristic.', '');
+        }
+        updateAIRerunAvailability();
+    };
+
+    saveBtn?.addEventListener('click', persist);
+    input.addEventListener('change', persist);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            persist();
+        }
+    });
+
+    toggleBtn?.addEventListener('click', () => {
+        const showing = input.type === 'text';
+        input.type = showing ? 'password' : 'text';
+        toggleBtn.textContent = showing ? 'Show' : 'Hide';
+    });
+}
+
+function updateAIRerunAvailability() {
+    const rerunButton = document.getElementById('aiRerunButton');
+    if (!rerunButton) return;
+    // Always allow runs — key uses Pollinations; no key uses local heuristic
+    rerunButton.classList.remove('disabled');
+}
+
+function collectFinancialDataForAI() {
+    const income = incomeEnabled === false
+        ? 0
+        : (parseFloat(document.getElementById('monthlyIncome').value) || 0);
+    const carEnabled = document.getElementById('carEnabled')?.checked || false;
+    const houseEnabled = document.getElementById('houseEnabled')?.checked || false;
+    const carPayment = carEnabled ? calculateCarPayment() : 0;
+    const housePayment = houseEnabled ? calculateHousePayment() : 0;
+    const carLoanMonths = carEnabled
+        ? (parseInt(document.getElementById('carLoanMonths')?.value, 10) || 60)
+        : 0;
+    const houseBills = houseEnabled
+        ? (parseFloat(document.getElementById('houseAdditionalBills')?.value) || 0)
+        : 0;
+
+    const parseMoney = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        const n = parseFloat(String(el.textContent).replace(/[^0-9.-]/g, ''));
+        return Number.isFinite(n) ? n : null;
+    };
+
+    const monthlySpending = budgetItems.reduce((sum, item) => {
+        if (item.enabled === false) return sum;
+        return sum + (parseFloat(item.amount) || 0);
+    }, 0);
+    const computedMonthly = income - monthlySpending - carPayment - housePayment - houseBills;
+    const monthlySavings = parseMoney('monthlySavings') ?? computedMonthly;
+    const finalSavings = parseMoney('totalSavings')
+        ?? parseMoney('topRightSavings')
+        ?? parseMoney('finalSavings')
+        ?? 0;
+
+    return {
+        incomeEnabled: incomeEnabled !== undefined ? incomeEnabled : true,
+        income,
+        budgetItems: budgetItems
+            .filter(item => item.enabled !== false)
+            .map(item => ({ name: item.name, amount: item.amount })),
+        finalSavings,
+        monthlySavings,
+        carEnabled,
+        carPayment,
+        carLoanMonths,
+        houseEnabled,
+        housePayment,
+        houseBills,
+        monthlySpending,
+    };
+}
+
+function buildPollinationsAnalysisPrompt(data) {
+    const totalOut = (data.monthlySpending || 0)
+        + (data.carEnabled ? data.carPayment : 0)
+        + (data.houseEnabled ? data.housePayment + data.houseBills : 0);
+    const spendingRatio = data.income > 0 ? totalOut / data.income : 0;
+    const savingsRatio = data.income > 0 ? data.monthlySavings / data.income : 0;
+
+    return `You are a financial advisor analyzing a 5-year lifestyle affordability plan.
+
+Financial Summary:
+- Monthly Income: $${Number(data.income).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+- Monthly Budget Spending: $${Number(data.monthlySpending || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+- Monthly Cash Flow (after major purchases): $${Number(data.monthlySavings).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+- 5-Year Final Savings: $${Number(data.finalSavings).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+- Spending-to-Income Ratio: ${(spendingRatio * 100).toFixed(1)}%
+- Savings Rate: ${(savingsRatio * 100).toFixed(1)}%
+
+Budget Breakdown:
+${(data.budgetItems || []).map(item => `- ${item.name}: $${Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/month`).join('\n') || '- (none)'}
+
+${data.carEnabled ? `Car Payment: $${Number(data.carPayment || 0).toLocaleString()}/month for ${data.carLoanMonths || 0} months` : 'No car purchase planned'}
+${data.houseEnabled ? `House Payment: $${Number(data.housePayment || 0).toLocaleString()}/month + $${Number(data.houseBills || 0).toLocaleString()}/month in additional bills` : 'No house purchase planned'}
+
+Provide a comprehensive financial viability analysis in JSON format with this exact structure:
+{
+  "grade": "A|B+|B|C+|C|D|F",
+  "score": 0-100,
+  "insights": [
+    { "icon": "✓|⚠|→|!", "title": "Short title", "text": "2-3 sentence actionable insight" },
+    { "icon": "✓|⚠|→|!", "title": "Short title", "text": "2-3 sentence actionable insight" },
+    { "icon": "✓|⚠|→|!", "title": "Short title", "text": "2-3 sentence actionable insight" },
+    { "icon": "✓|⚠|→|!", "title": "Short title", "text": "2-3 sentence actionable insight" }
+  ]
+}
+
+Be professional and concise. Return ONLY valid JSON — no markdown fences, no preamble.`;
+}
+
+function parseAIAnalysisContent(content) {
+    if (!content || typeof content !== 'string') {
+        throw new Error('Empty AI response');
+    }
+    let text = content.trim();
+    if (text.startsWith('```')) {
+        text = text.replace(/^```[a-zA-Z]*\n?/, '').replace(/```$/, '').trim();
+    }
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+        throw new Error('No JSON found in AI response');
+    }
+    const parsed = JSON.parse(jsonMatch[0]);
+    const grade = parsed.grade || 'B+';
+    const score = Math.max(0, Math.min(100, parseInt(parsed.score, 10) || 78));
+    const insights = Array.isArray(parsed.insights) ? parsed.insights.slice(0, 4) : [];
+    return { grade, score, insights };
+}
+
+/**
+ * Call Pollinations via local/Vercel proxy with the user's key (Pollen).
+ * Mirrors /motion: Authorization Bearer + openai-compatible messages.
+ */
+async function runPollinationsAnalysis(financialData, apiKey) {
+    const messages = [
+        {
+            role: 'system',
+            content: 'You are a concise financial advisor. Reply with valid JSON only.',
+        },
+        {
+            role: 'user',
+            content: buildPollinationsAnalysisPrompt(financialData),
+        },
+    ];
+
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    if (apiKey) {
+        headers.Authorization = `Bearer ${apiKey}`;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 45000);
+
+    let response;
+    try {
+        response = await fetch('/api/pollinations-text', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                model: 'openai',
+                messages,
+                temperature: 0.25,
+                max_tokens: 1024,
+                apiKey: apiKey || undefined,
+            }),
+            signal: controller.signal,
+        });
+    } catch (err) {
+        if (err?.name === 'AbortError') {
+            throw new Error('Pollinations request timed out after 45s');
+        }
+        throw err;
+    } finally {
+        clearTimeout(timeoutId);
+    }
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Pollinations failed (${response.status}): ${errorText.slice(0, 200)}`);
+    }
+
+    const result = await response.json();
+    if (!result.success && !result.content) {
+        throw new Error(result.error || 'Unknown Pollinations error');
+    }
+
+    return parseAIAnalysisContent(result.content || '');
+}
+
 // AI Analysis Rerun
 function initAIAnalysis() {
     const rerunButton = document.getElementById('aiRerunButton');
-    
     if (!rerunButton) return;
 
-    // Check if user has signed up on page load
-    const hasSignedUp = localStorage.getItem('emailSignupComplete') === 'true';
-    if (!hasSignedUp) {
-        rerunButton.classList.add('disabled');
-    }
+    initPollinationsKeyUI();
+    updateAIRerunAvailability();
 
     rerunButton.addEventListener('click', async function() {
-        // Check if user has signed up
-        const hasSignedUp = localStorage.getItem('emailSignupComplete') === 'true';
-        
-        if (!hasSignedUp) {
-            // Show friendly notification in AI panel
-            const aiPanel = document.querySelector('.ai-analysis-panel');
-            const existingNotice = aiPanel.querySelector('.signup-notice');
-            
-            if (existingNotice) {
-                existingNotice.remove();
-            }
-            
-            const signupNotice = document.createElement('div');
-            signupNotice.className = 'signup-notice';
-            signupNotice.innerHTML = `
-                <div class="signup-notice-icon">⚠</div>
-                <div class="signup-notice-content">
-                    <div class="signup-notice-title">Email Signup Required</div>
-                    <div class="signup-notice-text">Please sign up with your email at the top of the page to access AI Analysis. This helps us provide you with updates and improvements.</div>
-                </div>
-            `;
-            
-            // Insert notice at the top of the AI panel content
-            const aiHeader = aiPanel.querySelector('.ai-analysis-header');
-            if (aiHeader && aiHeader.nextSibling) {
-                aiPanel.insertBefore(signupNotice, aiHeader.nextSibling);
-            } else {
-                aiPanel.insertBefore(signupNotice, aiPanel.firstChild);
-            }
-            
-            // Scroll to top of page smoothly
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Removed highlight effect and focus to prevent visual rectangle
-            return;
-        }
-
-        // Disable button and show loading state
         rerunButton.disabled = true;
         rerunButton.classList.add('loading');
 
+        const financialData = collectFinancialDataForAI();
+        const apiKey = getPollinationsApiKey();
+
         try {
-            // Collect financial data from live state (not fragile DOM text)
-            const income = incomeEnabled === false
-                ? 0
-                : (parseFloat(document.getElementById('monthlyIncome').value) || 0);
-            const carEnabled = document.getElementById('carEnabled')?.checked || false;
-            const houseEnabled = document.getElementById('houseEnabled')?.checked || false;
-            const carPayment = carEnabled ? calculateCarPayment() : 0;
-            const housePayment = houseEnabled ? calculateHousePayment() : 0;
-            const carLoanMonths = carEnabled
-                ? (parseInt(document.getElementById('carLoanMonths')?.value, 10) || 60)
-                : 0;
-            const houseBills = houseEnabled
-                ? (parseFloat(document.getElementById('houseAdditionalBills')?.value) || 0)
-                : 0;
-
-            const parseMoney = (id) => {
-                const el = document.getElementById(id);
-                if (!el) return null;
-                const n = parseFloat(String(el.textContent).replace(/[^0-9.-]/g, ''));
-                return Number.isFinite(n) ? n : null;
-            };
-
-            const monthlySpending = budgetItems.reduce((sum, item) => {
-                if (item.enabled === false) return sum;
-                return sum + (parseFloat(item.amount) || 0);
-            }, 0);
-            const computedMonthly = income - monthlySpending - carPayment - housePayment - houseBills;
-            const monthlySavings = parseMoney('monthlySavings') ?? computedMonthly;
-            const finalSavings = parseMoney('totalSavings')
-                ?? parseMoney('topRightSavings')
-                ?? parseMoney('finalSavings')
-                ?? 0;
-
-            const financialData = {
-                incomeEnabled: incomeEnabled !== undefined ? incomeEnabled : true,
-                income,
-                budgetItems: budgetItems
-                    .filter(item => item.enabled !== false)
-                    .map(item => ({ name: item.name, amount: item.amount })),
-                finalSavings,
-                monthlySavings,
-                carEnabled,
-                carPayment,
-                carLoanMonths,
-                houseEnabled,
-                housePayment,
-                houseBills
-            };
-
-            // Call AI analysis API
-            const apiUrl = '/api/ai-analysis';
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(financialData)
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('AI Analysis API error:', response.status, errorText);
-                // Fall back to local analysis instead of blocking the user
-                throw new Error(`AI analysis failed: ${response.status} ${errorText}`);
-            }
-
-            const result = await response.json();
-            
-            // Update UI with AI results
-            if (result.success) {
-                updateAIDisplay(result.grade, result.score, result.insights);
+            if (apiKey) {
+                setPollinationsKeyStatus('Running analysis via Pollinations…', '');
+                const analysis = await runPollinationsAnalysis(financialData, apiKey);
+                updateAIDisplay(analysis.grade, analysis.score, analysis.insights);
+                setPollinationsKeyStatus('Analysis complete (Pollinations / your Pollen).', 'is-ready');
+                const badge = document.getElementById('aiProviderBadge');
+                if (badge) badge.textContent = 'POLLINATIONS';
             } else {
-                throw new Error(result.error || 'Unknown error');
+                // No key: local heuristic
+                setPollinationsKeyStatus('No API key — using local estimate. Add a Pollinations key for live AI.', '');
+                runAIAnalysis();
+                const badge = document.getElementById('aiProviderBadge');
+                if (badge) badge.textContent = 'LOCAL';
             }
-
         } catch (error) {
             console.error('AI Analysis error:', error);
-            // Fallback to local analysis if API fails
+            setPollinationsKeyStatus(
+                ('Pollinations error — fell back to local estimate. ' + (error.message || '')).trim(),
+                'is-error'
+            );
             runAIAnalysis();
+            const badge = document.getElementById('aiProviderBadge');
+            if (badge) badge.textContent = 'LOCAL';
         } finally {
-            // Re-enable button and remove loading state
             rerunButton.disabled = false;
             rerunButton.classList.remove('loading');
         }
