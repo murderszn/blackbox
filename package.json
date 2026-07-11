@@ -5,11 +5,14 @@
   "description": "BLACKBOX — lifestyle affordability calculator",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "vercel": "vercel dev --listen 8080"
+    "dev": "node scripts/dev.mjs",
+    "dev:raw": "node server.js",
+    "vercel": "vercel dev --listen 8080",
+    "test": "node tests/finance-core.test.mjs"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  },
   "engines": {
     "node": ">=18.0.0"
   }

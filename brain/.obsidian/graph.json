@@ -1,0 +1,43 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:04 Tools",
+      "color": { "a": 1, "rgb": 201168108 }
+    },
+    {
+      "query": "path:05 Skills",
+      "color": { "a": 1, "rgb": 141147160 }
+    },
+    {
+      "query": "path:06 Links",
+      "color": { "a": 1, "rgb": 110147160 }
+    },
+    {
+      "query": "path:07 Stages",
+      "color": { "a": 1, "rgb": 232213163 }
+    },
+    {
+      "query": "path:08 Finance",
+      "color": { "a": 1, "rgb": 18414990 }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": true,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 1.1,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": false,
+  "centerStrength": 0.4,
+  "repelStrength": 12,
+  "linkStrength": 0.85,
+  "linkDistance": 180,
+  "scale": 1,
+  "close": false
+}

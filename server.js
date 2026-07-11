@@ -230,9 +230,10 @@ async function handlePollinationsText(req, res) {
         const body = await readBody(req);
         const authHeader = req.headers.authorization || req.headers.Authorization || '';
         const keyFromBody = typeof body.apiKey === 'string' ? body.apiKey.trim() : '';
-        const bearer = authHeader.startsWith('Bearer ')
+        const callerBearer = authHeader.startsWith('Bearer ')
             ? authHeader.slice(7).trim()
             : (authHeader.trim() || keyFromBody);
+        const bearer = process.env.POLLINATIONS_API_KEY || process.env.POLLINATIONS_KEY || callerBearer;
 
         const messages = Array.isArray(body.messages) ? body.messages : null;
         if (!messages || messages.length === 0) {
@@ -240,11 +241,13 @@ async function handlePollinationsText(req, res) {
         }
 
         const model = body.model || 'openai';
+        const wantStream = body.stream === true;
         const payload = {
             model,
             messages,
             temperature: body.temperature ?? 0.3,
             max_tokens: body.max_tokens ?? 1024,
+            stream: wantStream,
         };
 
         const headers = { 'Content-Type': 'application/json' };
@@ -259,6 +262,15 @@ async function handlePollinationsText(req, res) {
         });
 
         if (!upstream.ok) {
+            // Retry without stream, then legacy endpoint
+            upstream = await fetch('https://gen.pollinations.ai/v1/chat/completions', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ ...payload, stream: false }),
+            });
+        }
+
+        if (!upstream.ok) {
             upstream = await fetch('https://text.pollinations.ai/openai', {
                 method: 'POST',
                 headers,
@@ -266,20 +278,43 @@ async function handlePollinationsText(req, res) {
             });
         }
 
-        const text = await upstream.text();
         const contentType = upstream.headers.get('content-type') || '';
 
         if (!upstream.ok) {
-            console.error('Pollinations upstream error:', upstream.status, text.slice(0, 400));
+            const errText = await upstream.text();
+            console.error('Pollinations upstream error:', upstream.status, errText.slice(0, 400));
             return sendJson(res, upstream.status, {
                 error: 'Pollinations request failed',
                 status: upstream.status,
-                details: text.slice(0, 800),
+                details: errText.slice(0, 800),
             });
         }
 
+        // Stream SSE when client asked for stream and upstream is streaming
+        if (wantStream && contentType.includes('text/event-stream') && upstream.body) {
+            res.writeHead(200, {
+                'Content-Type': 'text/event-stream; charset=utf-8',
+                'Cache-Control': 'no-cache, no-transform',
+                Connection: 'keep-alive',
+                'Access-Control-Allow-Origin': '*',
+            });
+            const reader = upstream.body.getReader();
+            try {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    res.write(Buffer.from(value));
+                }
+            } catch (e) {
+                console.error('stream pipe error', e);
+            }
+            return res.end();
+        }
+
+        const text = await upstream.text();
+
         let content = text;
-        if (contentType.includes('application/json')) {
+        if (contentType.includes('application/json') || text.trim().startsWith('{')) {
             try {
                 const data = JSON.parse(text);
                 content =
@@ -291,6 +326,32 @@ async function handlePollinationsText(req, res) {
             } catch {
                 content = text;
             }
+        }
+
+        // Client requested stream but upstream returned full JSON — pseudo-stream as SSE chunks
+        if (wantStream) {
+            res.writeHead(200, {
+                'Content-Type': 'text/event-stream; charset=utf-8',
+                'Cache-Control': 'no-cache, no-transform',
+                Connection: 'keep-alive',
+                'Access-Control-Allow-Origin': '*',
+            });
+            const full = typeof content === 'string' ? content : JSON.stringify(content);
+            // Word-ish chunks for progressive UI
+            const parts = full.split(/(\s+)/).filter(Boolean);
+            let buf = '';
+            for (let i = 0; i < parts.length; i++) {
+                buf += parts[i];
+                if (buf.length >= 12 || i === parts.length - 1) {
+                    const chunk = {
+                        choices: [{ delta: { content: buf } }],
+                    };
+                    res.write(`data: ${JSON.stringify(chunk)}\n\n`);
+                    buf = '';
+                }
+            }
+            res.write('data: [DONE]\n\n');
+            return res.end();
         }
 
         return sendJson(res, 200, {
@@ -377,6 +438,18 @@ const server = http.createServer(async (req, res) => {
     serveStatic(req, res);
 });
 
-server.listen(PORT, () => {
-    console.log(`\n  BLACKBOX running at http://localhost:${PORT}\n`);
+server.on('error', (err) => {
+    if (err && err.code === 'EADDRINUSE') {
+        console.error(`\n  Port ${PORT} is already in use.`);
+        console.error(`  Free it with:  lsof -ti:${PORT} | xargs kill -9`);
+        console.error(`  Or run:        PORT=8081 npm run dev\n`);
+        process.exit(1);
+    }
+    console.error('Server error:', err);
+    process.exit(1);
+});
+
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n  BLACKBOX running at http://localhost:${PORT}`);
+    console.log(`  (also http://127.0.0.1:${PORT})\n`);
 });

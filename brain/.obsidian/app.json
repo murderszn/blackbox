@@ -1,0 +1,11 @@
+{
+  "alwaysUpdateLinks": true,
+  "newFileLocation": "folder",
+  "newFileFolderPath": "09 Decisions",
+  "attachmentFolderPath": "assets",
+  "showLineNumber": false,
+  "strictLineBreaks": false,
+  "useMarkdownLinks": false,
+  "newLinkFormat": "shortest",
+  "defaultViewMode": "source"
+}

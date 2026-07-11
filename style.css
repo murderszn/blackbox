@@ -171,7 +171,8 @@ canvas {
     z-index: 0;
     overflow: hidden;
     pointer-events: none; /* Allow content to scroll through */
-    transition: opacity 0.25s ease, visibility 0.25s ease;
+    /* No opacity transition — hard cut when past hero (perf + no phase-out) */
+    transition: none;
 }
 
 /* Fully hide hero once the dashboard covers it — prevents bleed at page bottom */
@@ -179,6 +180,18 @@ canvas {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+}
+
+/* Hero copy stays fully opaque while on-screen — never scroll-fades */
+.hero .header-banner-title,
+.hero .header-banner-title-text,
+.hero .header-banner-subtitle,
+.hero .beta-tag,
+.hero .hero-cta-row,
+.hero .hero-scroll-hint,
+.hero .hero-as-seen {
+    opacity: 1 !important;
+    animation: none !important;
 }
 
 /* Make interactive elements in hero clickable while allowing scroll through background */
@@ -500,8 +513,7 @@ body::before {
     color: rgba(255, 255, 255, 0.58);
     text-align: center;
     line-height: 1.5;
-    opacity: 0;
-    animation: fadeInTitle 1.1s ease-out 0.35s forwards;
+    opacity: 1;
     text-shadow: 0 1px 16px rgba(0, 0, 0, 0.55);
     max-width: 48ch;
     position: relative;
@@ -547,8 +559,7 @@ body::before {
     border: 1px solid var(--border-light);
     padding: 8px 18px;
     border-radius: 8px;
-    opacity: 0;
-    animation: fadeInTitle 1.4s ease-out 0.5s forwards;
+    opacity: 1;
     mix-blend-mode: normal !important;
     white-space: nowrap;
     position: relative;
@@ -586,8 +597,7 @@ body::before {
     gap: 12px;
     justify-content: center;
     margin: 0;
-    opacity: 0;
-    animation: fadeInSignup 1.1s ease-out 0.7s forwards;
+    opacity: 1;
     pointer-events: auto;
 }
 
@@ -638,8 +648,7 @@ body::before {
     flex-direction: column;
     align-items: center;
     pointer-events: none;
-    opacity: 0;
-    animation: fadeInSignup 1.2s ease-out 1.2s forwards;
+    opacity: 1;
 }
 
 .hero-scroll-hint-line {
@@ -648,18 +657,18 @@ body::before {
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), transparent);
 }
 
-/* As seen on — bottom-right of hero */
+/* As seen on — bottom-left of hero (scroll hint stays centered) */
 .hero-as-seen {
     position: absolute;
-    right: clamp(16px, 3vw, 40px);
+    left: clamp(16px, 3vw, 40px);
+    right: auto;
     bottom: clamp(20px, 3.5vw, 40px);
     z-index: 220;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 14px;
-    opacity: 0;
-    animation: fadeInSignup 1.1s ease-out 0.9s forwards;
+    opacity: 1;
     pointer-events: none;
     user-select: none;
 }
@@ -678,7 +687,7 @@ body::before {
 .hero-as-seen-logos {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 18px;
 }
 
@@ -705,7 +714,8 @@ body::before {
 
 @media (max-width: 640px) {
     .hero-as-seen {
-        right: 14px;
+        left: 14px;
+        right: auto;
         bottom: 16px;
         gap: 10px;
     }
@@ -844,8 +854,7 @@ body::before {
     margin-top: 8px;
     width: 100%;
     max-width: 520px;
-    opacity: 0;
-    animation: fadeInSignup 1.2s ease-out 1.1s forwards;
+    opacity: 1;
     pointer-events: auto;
     position: relative;
     padding-top: 20px;
@@ -4585,17 +4594,7 @@ tr:hover {
     line-height: 1.6;
 }
 
-.ai-rerun-loading {
-    display: none;
-}
-
-.ai-rerun-button.loading .ai-rerun-text {
-    display: none;
-}
-
-.ai-rerun-button.loading .ai-rerun-loading {
-    display: inline-block;
-}
+/* Loading feedback is the terminal console + bar — not a button spinner */
 
 .ai-analysis-preview {
     display: flex;
@@ -4631,6 +4630,14 @@ tr:hover {
     flex-wrap: wrap;
 }
 
+.ai-grade-mark {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 112px;
+}
+
 .ai-grade-letter {
     font-family: 'JetBrains Mono', monospace;
     font-size: clamp(3.5rem, 8vw, 5rem);
@@ -4641,6 +4648,183 @@ tr:hover {
     text-align: center;
     letter-spacing: 0.04em;
     font-variant-numeric: tabular-nums;
+}
+
+/* Hollow grade frame — shown before any analysis has run */
+.ai-grade-idle {
+    display: none;
+    position: relative;
+    width: clamp(4.25rem, 9vw, 5.5rem);
+    height: clamp(4.25rem, 9vw, 5.5rem);
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ai-grade-section.is-pending .ai-grade-idle {
+    display: grid;
+    place-items: center;
+}
+
+.ai-grade-section.is-pending .ai-grade-letter {
+    display: none;
+}
+
+.ai-grade-idle-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    border: 1px solid rgba(201, 168, 108, 0.28);
+    background:
+        linear-gradient(165deg, rgba(201, 168, 108, 0.06), transparent 55%),
+        rgba(0, 0, 0, 0.25);
+    box-shadow:
+        inset 0 1px 0 rgba(232, 213, 163, 0.08),
+        0 0 24px rgba(201, 168, 108, 0.06);
+}
+
+.ai-grade-idle-ring::before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    border-radius: 9px;
+    border: 1px dashed rgba(201, 168, 108, 0.18);
+}
+
+.ai-grade-idle-diamond {
+    position: relative;
+    z-index: 1;
+    width: 10px;
+    height: 10px;
+    border: 1px solid rgba(232, 213, 163, 0.55);
+    transform: rotate(45deg);
+    background: rgba(201, 168, 108, 0.12);
+    box-shadow: 0 0 12px rgba(201, 168, 108, 0.2);
+}
+
+.ai-grade-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(244, 239, 230, 0.42);
+    text-align: center;
+    line-height: 1.3;
+    max-width: 14ch;
+}
+
+/* During run: keep grade quiet — progress lives in the terminal console */
+.ai-grade-section.is-calculating .ai-grade-status {
+    color: rgba(232, 213, 163, 0.75);
+}
+
+/* ── Terminal console (always on stage) + loading bar ───── */
+.ai-run-console {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 12px;
+    padding: 10px 12px 12px;
+    border: 1px solid rgba(201, 168, 108, 0.18);
+    background:
+        linear-gradient(180deg, rgba(12, 10, 8, 0.95), rgba(5, 4, 3, 0.98));
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    box-shadow: inset 0 1px 0 rgba(232, 213, 163, 0.05);
+    min-height: 7.5rem;
+}
+
+.ai-run-console.is-idle {
+    border-color: rgba(201, 168, 108, 0.12);
+}
+
+.ai-run-console.is-active {
+    border-color: rgba(201, 168, 108, 0.28);
+}
+
+.ai-run-console-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(201, 168, 108, 0.12);
+}
+
+.ai-run-console-title {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(232, 213, 163, 0.7);
+}
+
+.ai-run-console-pct {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--gold-soft, #e8d5a3);
+    font-variant-numeric: tabular-nums;
+    min-width: 3em;
+    text-align: right;
+}
+
+.ai-run-console-log {
+    max-height: 7.5rem;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 2px 0;
+    scrollbar-width: thin;
+}
+
+.ai-run-console-line {
+    font-size: 0.7rem;
+    line-height: 1.45;
+    letter-spacing: 0.02em;
+    color: rgba(244, 239, 230, 0.58);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.ai-run-console-line.is-meta {
+    color: rgba(244, 239, 230, 0.38);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.ai-run-console-line.is-ok {
+    color: rgba(232, 213, 163, 0.9);
+}
+
+.ai-run-console-line.is-warn {
+    color: rgba(224, 160, 120, 0.9);
+}
+
+.ai-run-bar {
+    height: 3px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(201, 168, 108, 0.12);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.ai-run-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #a8894f, #e8d5a3 55%, #c9a86c);
+    box-shadow: 0 0 10px rgba(201, 168, 108, 0.35);
+    transition: width 0.12s linear;
+}
+
+.ai-rerun-button.is-running {
+    opacity: 0.55;
+    cursor: wait;
+    pointer-events: none;
 }
 
 .ai-grade-meter {
@@ -4658,7 +4842,7 @@ tr:hover {
     height: 100%;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.6) 100%);
     transition: width 0.5s ease;
-    width: 78%;
+    width: 0%;
 }
 
 .ai-grade-score {
@@ -4669,6 +4853,10 @@ tr:hover {
     letter-spacing: 0.05em;
     min-width: 80px;
     text-align: center;
+}
+
+.ai-grade-section.is-pending .ai-grade-score {
+    color: rgba(244, 239, 230, 0.4) !important;
 }
 
 .ai-insights {
@@ -5360,24 +5548,21 @@ tr:hover {
 }
 
 .scenario-save-btn {
-    padding: 12px 20px;
-    background: var(--accent);
-    color: var(--bg);
-    border: 1px solid var(--accent);
-    border-radius: 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    grid-column: auto !important;
+    height: 40px !important;
+    padding: 0 16px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-.scenario-save-btn:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
-    transform: translateY(-1px);
+.btn-primary.btn-success {
+    background: linear-gradient(135deg, #a3e8b3, #7dba8a) !important;
+    border-color: rgba(125, 232, 163, 0.4) !important;
+    color: #0c1a10 !important;
 }
+
 
 .scenario-list {
     /* Prefer growing with content — nested scroll here feels sticky while paging */
@@ -7473,21 +7658,21 @@ table strong.negative {
     align-items: center;
     gap: 10px;
     width: fit-content;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.02);
+    padding: 4px 0;
+    border: none;
+    background: transparent;
     color: var(--text-secondary);
     text-decoration: none;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     letter-spacing: 0.06em;
-    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    transition: color 0.15s ease, opacity 0.15s ease;
 }
 
 .footer-social-btn:hover {
     color: #fff;
-    border-color: rgba(255, 255, 255, 0.35);
-    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    background: transparent;
 }
 
 .footer-social-btn svg {

@@ -33,11 +33,31 @@ A sophisticated financial planning tool that helps you visualize and understand 
 - Personalized grade, score, and actionable insights
 - Falls back to a local heuristic if no key is set
 
-### 🎨 **Design**
-- Monochromatic, grid-based aesthetic
-- Futuristic typography with Exo 2 and JetBrains Mono fonts
-- Responsive design for all devices
-- Smooth animations and transitions
+### 🎨 **Design — Obsidian Atelier**
+- Private-vault aesthetic: deep black, champagne gold, film grain
+- Editorial display type (Cormorant Garamond) + Syne UI + JetBrains Mono data
+- Real atmosphere photography + champagne SVG financial iconography
+- Advanced motion: chart scrub HUD, magnetic CTAs, scroll reveals, affordability state morph
+- Three.js onyx glass hero cube
+
+## Knowledge brain (Obsidian)
+
+Product second brain lives in [`brain/`](./brain/) — tools, skills, links, stages, finance, and ADRs as interlinked markdown.
+
+```bash
+# Open folder as vault in Obsidian:
+#   blackbox/brain
+# Start at: 00 Maps/Home.md
+```
+
+See [brain/README.md](./brain/README.md).
+
+## Awwwards / craft plan
+
+Site review + phased upgrade plan (smoothness, ledger fit, analytics clarity):
+
+- [docs/AWWWARDS_REVIEW_PLAN.md](./docs/AWWWARDS_REVIEW_PLAN.md)
+- [docs/VECTRFL_MIGRATION_PLAN.md](./docs/VECTRFL_MIGRATION_PLAN.md)
 
 ## Getting Started
 
@@ -61,6 +81,13 @@ npm start
 3. Open [http://localhost:8080](http://localhost:8080)
 
 Requires Node.js 18+. Static files work without a server, but email signup and **Pollinations AI** need `npm start` (or `vercel dev`) so `/api/*` proxies respond.
+
+For shared AI access, configure `POLLINATIONS_API_KEY` in the server or Vercel environment. The key remains server-side and is never delivered to visitors.
+
+```bash
+# Smoke test (server must already be running on :8080)
+npm test
+```
 
 ### Pollinations API key (Pollen)
 
@@ -153,4 +180,3 @@ For questions or feedback, please open an issue on GitHub.
 **Made with <3 by aurablox**
 
 Est. 2025
-

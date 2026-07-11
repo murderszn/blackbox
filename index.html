@@ -7,7 +7,7 @@
     <meta name="description" content="BLACKBOX is a lifestyle affordability calculator. Model income, spending, taxes, and major purchases — then stress-test your plan with AI powered by your Pollinations key.">
     <meta name="keywords" content="BLACKBOX, lifestyle affordability calculator, financial planning, savings projection, budget calculator, AI financial analysis, Pollinations, major purchases, car loan, mortgage">
     <meta name="author" content="aurablox">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#030303">
     <meta name="color-scheme" content="dark">
     <meta name="robots" content="index, follow">
     <meta name="application-name" content="BLACKBOX">
@@ -76,23 +76,45 @@
       }
     }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/atelier.css">
 </head>
-<body>
+<body class="atelier">
     <!-- Notification -->
     <div id="notification" class="notification"></div>
 
+    <!-- Persistent journey WebGL (behind content, above pure black) -->
+    <div id="journeyWebgl" class="journey-webgl" aria-hidden="true"></div>
+
+    <!-- Global chrome (outside hero so it survives scroll/hide) -->
+    <nav class="stage-rail journey-spine" id="stageRail" aria-label="Journey nodes">
+        <!-- filled by experience.js: track + node dots -->
+    </nav>
+    <!-- Vectrfl-style film chapter HUD (updates as you travel the model) -->
+    <div class="journey-film" id="journeyFilm" aria-live="polite" aria-atomic="true" hidden>
+        <div class="journey-film-inner">
+            <span class="journey-film-idx" id="journeyFilmIdx">00</span>
+            <span class="journey-film-rule" aria-hidden="true"></span>
+            <span class="journey-film-title" id="journeyFilmTitle">Intro</span>
+            <span class="journey-film-meta" id="journeyFilmMeta">scroll to enter the model</span>
+        </div>
+        <div class="journey-film-progress" aria-hidden="true">
+            <i class="journey-film-progress-fill" id="journeyFilmBar"></i>
+        </div>
+    </div>
+    <nav class="floating-nav floating-nav--fixed" aria-label="Primary">
+        <a href="#stage-planning" class="floating-nav-link">Model</a>
+        <a href="#stage-ai" class="floating-nav-link">AI</a>
+        <a href="#stage-app" class="floating-nav-link">App</a>
+    </nav>
+
     <!-- Fixed Hero Section -->
     <header class="hero" id="top">
-        <nav class="floating-nav" aria-label="Primary">
-            <a href="#get-started" class="floating-nav-link">Model</a>
-            <a href="#analysis" class="floating-nav-link">AI</a>
-            <a href="#download" class="floating-nav-link">App</a>
-        </nav>
-
         <div class="header">
+            <div class="hero-atmosphere" aria-hidden="true"></div>
             <!-- Three.js onyx glass cube -->
             <div class="header-banner-media hero-tesseract-wrap" id="heroTesseract" aria-hidden="true"></div>
             <div class="header-overlay" aria-hidden="true"></div>
@@ -100,11 +122,11 @@
             <div class="header-banner-title">
                 <div class="header-banner-title-wrapper">
                     <h1 class="header-banner-title-text">BLACKBOX</h1>
-                    <p class="header-banner-subtitle">Personal budgeting, demystified</p>
+                    <p class="header-banner-subtitle">Model the life you want — then see if income, spending, and major plans can hold up over time.</p>
                 </div>
                 <div class="hero-cta-row">
-                    <a href="#get-started" class="hero-cta-primary">Start calculating</a>
-                    <a href="#download" class="hero-cta-secondary">Download the app</a>
+                    <a href="#stage-planning" class="hero-cta-primary">Enter the model</a>
+                    <a href="#stage-app" class="hero-cta-secondary">Mobile waitlist</a>
                 </div>
             </div>
 
@@ -129,8 +151,9 @@
                 </div>
             </div>
 
-            <div class="hero-scroll-hint" aria-hidden="true">
-                <span class="hero-scroll-hint-line"></span>
+            <div class="hero-scroll-hint" role="note">
+                <span class="hero-scroll-hint-copy">scroll to enter the model</span>
+                <span class="hero-scroll-hint-line" aria-hidden="true"></span>
             </div>
         </div>
     </header>
@@ -148,274 +171,503 @@
                         <div class="tooltip-content">Click to expand or collapse instructions</div>
                     </div>
                 </div>
-                <button class="instructions-toggle" id="instructionsToggle" aria-expanded="false" aria-controls="instructionsContent">Show Instructions</button>
+                <button class="instructions-toggle" id="instructionsToggle" aria-expanded="true" aria-controls="instructionsContent">Hide Instructions</button>
             </div>
-            <div class="instructions-content" id="instructionsContent" data-auto-render="instructions"></div>
+            <div class="instructions-content expanded" id="instructionsContent" data-auto-render="instructions"></div>
         </div>
 
-        <div id="affordabilityBanner" class="affordability-banner">
-            <!-- Header Section -->
-            <div class="affordability-header">
-                <div class="affordability-title-section">
-                    <h2 id="affordabilityTitle" class="affordability-title">You Can Afford This Lifestyle</h2>
-                    <p id="affordabilityDesc" class="affordability-subtitle">Your projected savings remain positive over 5 years</p>
-                </div>
-            </div>
-            
-            <!-- Core Financial Metrics: Health Score & Savings Rate -->
-            <div class="affordability-core-metrics">
-                <div class="core-metric health-score-metric">
-                    <div class="core-metric-tooltip">
-                        <div class="core-metric-tooltip-title">Financial Health Score</div>
-                        <div class="core-metric-tooltip-text">Comprehensive assessment based on cash flow, expense ratio, debt load, and savings capacity. Scores range from 0-100.</div>
-                    </div>
-                    <div class="core-metric-label">Financial Health Score</div>
-                    <div class="core-metric-value" id="financialHealthScore">--</div>
-                    <div class="core-metric-status" id="financialHealthScoreStatus">Analyzing</div>
-                </div>
 
-                <div class="core-metric savings-rate-metric">
-                    <div class="core-metric-tooltip">
-                        <div class="core-metric-tooltip-title">Savings Rate</div>
-                        <div class="core-metric-tooltip-text">Percentage of income saved after all expenses. Higher rates indicate better financial health and future security.</div>
-                    </div>
-                    <div class="core-metric-label">Savings Rate</div>
-                    <div class="core-metric-value" id="savingsRate">--%</div>
-                    <div class="core-metric-status" id="savingsRateStatus">Calculating</div>
-                </div>
-
-                <div class="core-metric five-year-projection-metric">
-                    <div class="core-metric-tooltip">
-                        <div class="core-metric-tooltip-title">5-Year Savings Projection</div>
-                        <div class="core-metric-tooltip-text">Total projected savings after 5 years, accounting for all income, expenses, major purchases, and compound interest.</div>
-                    </div>
-                    <div class="core-metric-label">5-Year Projection</div>
-                    <div class="core-metric-value" id="topRightSavings">--</div>
-                    <div class="core-metric-status" id="fiveYearProjectionStatus">Calculating</div>
-                </div>
-            </div>
-            
-            <!-- Supporting Metrics Grid -->
-            <div class="affordability-metrics">
-                <div class="mini-metric">
-                    <div class="mini-metric-tooltip">
-                        <div class="mini-metric-tooltip-title">Monthly Cash Flow</div>
-                        <div class="mini-metric-tooltip-text">Your income minus total monthly expenses. Positive values indicate money left after bills, negative values show a monthly deficit.</div>
-                    </div>
-                    <div class="mini-metric-label">Monthly Cash Flow</div>
-                    <div class="mini-metric-value" id="miniMonthlyCashFlow">$0.00</div>
-                    <div class="mini-metric-trend" id="miniMonthlyCashFlowTrend">↗ Neutral</div>
-                </div>
-
-                <div class="mini-metric">
-                    <div class="mini-metric-tooltip">
-                        <div class="mini-metric-tooltip-title">Major Purchases</div>
-                        <div class="mini-metric-tooltip-text">Combined monthly payments for car and house purchases. Includes loan payments, insurance, taxes, and other associated costs.</div>
-                    </div>
-                    <div class="mini-metric-label">Major Purchases</div>
-                    <div class="mini-metric-value" id="miniMajorPurchases">$0/month</div>
-                    <div class="mini-metric-trend" id="miniMajorPurchasesTrend">→ Manageable</div>
-                </div>
-
-                <div class="mini-metric">
-                    <div class="mini-metric-tooltip">
-                        <div class="mini-metric-tooltip-title">Expense Ratio</div>
-                        <div class="mini-metric-tooltip-text">Percentage of income spent on expenses. Lower ratios (under 60%) indicate healthier financial habits with more savings capacity.</div>
-                    </div>
-                    <div class="mini-metric-label">Expense Ratio</div>
-                    <div class="mini-metric-value" id="miniExpenseRatio">0%</div>
-                    <div class="mini-metric-trend" id="miniExpenseRatioTrend">→ Optimal</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Financial Planning Header -->
-        <div class="financial-planning-header">
-            <div class="financial-planning-title-section">
-                <h2 class="financial-planning-title">Financial Planning</h2>
-                <button class="instructions-toggle" id="financialPlanningToggle" aria-expanded="true" aria-controls="financialPlanningContent">Hide Financial Planning</button>
-            </div>
-        </div>
-
-        <!-- Financial Planning Container -->
+        <!-- Financial Planning stages -->
         <div class="financial-planning-container expanded" id="financialPlanningContent">
-            <!-- Combined Income and Budget Panel -->
-            <div class="panel u-mb-40">
-                <div class="panel-title u-mb-24">
-                    <span>Income & Monthly Spending</span>
+                        <section class="stage-panel stage-snap" id="stage-planning" data-stage="Planning" data-act="1" data-act-title="Load">
+            <div class="panel stage-panel-card planning-stage-card">
+                <header class="planning-topbar">
+                    <div class="planning-topbar-title">
+                        <h2 class="planning-heading">Income &amp; Monthly Spending</h2>
+                    </div>
+                    <div class="planning-scenario-bar" aria-label="Save and load scenarios">
+                        <label class="planning-scenario-label" for="scenarioName">Scenario</label>
+                        <input type="text" id="scenarioName" class="form-input scenario-input planning-scenario-input" placeholder="Name this plan…" maxlength="30">
+                        <button type="button" class="btn btn-primary scenario-save-btn planning-scenario-save" id="saveCurrentScenarioBtn">Save</button>
+                    </div>
+                </header>
+
+                <div class="planning-toolbar">
+                    <div class="legend planning-legend">
+                        <div class="legend-item">
+                            <div class="legend-color income"></div>
+                            <span>Income (max $50k/mo)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color budget"></div>
+                            <span>Spending (max $5k/item)</span>
+                        </div>
+                    </div>
+                    <div id="scenarioList" class="scenario-list planning-scenario-list">
+                        <div class="no-scenarios">No saved scenarios yet</div>
+                    </div>
                 </div>
+
                 <div class="income-budget-content expanded" id="incomeBudgetContent">
-                <div class="legend u-mb-24">
-                    <div class="legend-item">
-                        <div class="legend-color income"></div>
-                        <span>Income (Max: $50,000/month)</span>
+                    <div id="budgetItems" class="mixing-board-container">
+                        <!-- Income and budget items will be added here -->
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-color budget"></div>
-                        <span>Spending (Max: $5,000/item/month)</span>
+                    <div class="budget-controls-row">
+                        <button type="button" class="btn btn-secondary budget-control-btn budget-control-btn--compact" id="addBudgetItemBtn">+ Add item</button>
+                        <button type="button" class="btn btn-secondary budget-control-btn budget-control-btn--compact" id="resetAllValuesBtn">Reset</button>
                     </div>
+                    <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593" step="1">
                 </div>
-                <div id="budgetItems" class="mixing-board-container">
-                    <!-- Income and budget items will be added here -->
-                </div>
-                <div class="budget-controls-row">
-                    <button class="btn btn-secondary budget-control-btn" id="addBudgetItemBtn">
-                        + Add Item
-                    </button>
-                    <button class="btn btn-secondary budget-control-btn" id="resetAllValuesBtn">
-                        Reset All
-                    </button>
-                </div>
-
-                <input type="number" id="monthlyIncome" class="form-input u-hidden" value="9593" step="1">
             </div>
-        </div>
+            </section>
 
-        <!-- Major Purchases Section -->
-        <div class="panel u-mb-20">
-            <div class="panel-title u-mb-24">
-                <span>Major Purchases</span>
-            </div>
-            <div class="main-layout">
-                <!-- Car Purchase Panel -->
-                <div class="panel" id="carPanel">
-                    <div class="panel-title">
-                        <span>Dream Car</span>
-                        <div class="u-flex-gap-12">
-                            <div class="panel-title-checkbox">
-                                <input type="checkbox" id="carEnabled" checked aria-label="Include Dream Car in calculations">
-                                <label for="carEnabled">Include</label>
+        <section class="stage-panel stage-snap" id="stage-purchases" data-stage="Purchases" data-act="1" data-act-title="Load">
+        <div class="panel stage-panel-card purchases-stage-card bento-shell">
+            <header class="stage-dash-head">
+                <h2 class="stage-dash-title">Major Purchases</h2>
+                <p class="stage-dash-lede">Four fixed obligations layered on lifestyle spend. Toggle on to stress the plan.</p>
+            </header>
+            <div class="main-layout purchases-sym-grid">
+                <!-- Car -->
+                <article class="purchase-tile panel purchase-tile--car" id="carPanel"
+                    data-vd-tip
+                    data-tip-title="Dream Car · floor blocker"
+                    data-tip-body="Auto payment is a fixed monthly obligation. Guideline: 20/4/10 — ≥20% down, ≤4-year term, total auto costs under 10% of gross income. Longer terms and zero-down inflate payment drag.">
+                    <span class="purchase-tile-corners" aria-hidden="true"></span>
+                    <span class="purchase-tile-glyph" aria-hidden="true">
+                        <img src="/assets/icons/car.svg" alt="" width="28" height="28" decoding="async">
+                    </span>
+                    <header class="purchase-tile-head">
+                        <span class="purchase-tile-index">01</span>
+                        <span class="purchase-tile-name">Dream Car</span>
+                        <button type="button" class="vd-tip-btn purchase-tip-btn" aria-label="Explain car purchase rule" tabindex="0">?</button>
+                        <label class="purchase-tile-switch">
+                            <input type="checkbox" id="carEnabled" checked aria-label="Include Dream Car">
+                            <span class="purchase-tile-switch-ui" aria-hidden="true"></span>
+                            <span class="purchase-tile-switch-label">On</span>
+                        </label>
+                    </header>
+                    <div class="purchase-tile-hero">
+                        <span class="purchase-tile-hero-label">Est. monthly</span>
+                        <span class="payment-estimate-value purchase-tile-hero-value" id="carPaymentDisplay">$0</span>
+                        <span class="purchase-tile-rule">20 / 4 / 10</span>
+                    </div>
+                    <div class="purchase-tile-fields">
+                        <div class="form-group">
+                            <label class="form-label" for="carPrice">Price</label>
+                            <input type="number" id="carPrice" class="form-input" value="40000" step="100">
+                        </div>
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label class="form-label" for="carInterestRate">APR %</label>
+                                <input type="number" id="carInterestRate" class="form-input" value="6" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="carLoanMonths">Term mo</label>
+                                <input type="number" id="carLoanMonths" class="form-input" value="60" step="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="carPurchaseYear">Year</label>
+                            <select id="carPurchaseYear" class="form-input" data-year-options data-default="0"></select>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- House -->
+                <article class="purchase-tile panel purchase-tile--house" id="housePanel"
+                    data-vd-tip
+                    data-tip-title="Dream House · floor blocker"
+                    data-tip-body="Housing locks cash flow for decades. Guideline: 28/36 — PITI under 28% of gross; total debt under 36%. Aim for ~20% down to avoid PMI and preserve monthly margin.">
+                    <span class="purchase-tile-corners" aria-hidden="true"></span>
+                    <span class="purchase-tile-glyph" aria-hidden="true">
+                        <img src="/assets/icons/house.svg" alt="" width="28" height="28" decoding="async">
+                    </span>
+                    <header class="purchase-tile-head">
+                        <span class="purchase-tile-index">02</span>
+                        <span class="purchase-tile-name">Dream House</span>
+                        <button type="button" class="vd-tip-btn purchase-tip-btn" aria-label="Explain housing purchase rule" tabindex="0">?</button>
+                        <label class="purchase-tile-switch">
+                            <input type="checkbox" id="houseEnabled" checked aria-label="Include Dream House">
+                            <span class="purchase-tile-switch-ui" aria-hidden="true"></span>
+                            <span class="purchase-tile-switch-label">On</span>
+                        </label>
+                    </header>
+                    <div class="purchase-tile-hero">
+                        <span class="purchase-tile-hero-label">Mortgage + bills</span>
+                        <span class="payment-estimate-value purchase-tile-hero-value" id="housePaymentDisplay">$0</span>
+                        <span class="purchase-tile-rule">28 / 36</span>
+                    </div>
+                    <div class="purchase-tile-fields">
+                        <div class="form-group">
+                            <label class="form-label" for="housePrice">Price</label>
+                            <input type="number" id="housePrice" class="form-input" value="400000" step="1000">
+                        </div>
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label class="form-label" for="houseInterestRate">APR %</label>
+                                <input type="number" id="houseInterestRate" class="form-input" value="6" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="houseLoanYears">Term yr</label>
+                                <input type="number" id="houseLoanYears" class="form-input" value="30" step="1">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label class="form-label" for="housePurchaseYear">Year</label>
+                                <select id="housePurchaseYear" class="form-input" data-year-options data-default="0"></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="houseAdditionalBills">Bills /mo</label>
+                                <input type="number" id="houseAdditionalBills" class="form-input" value="600" step="50">
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Car Price</label>
-                        <input type="number" id="carPrice" class="form-input" value="40000" step="100">
-                        <div class="form-helper">Total purchase price including taxes and fees</div>
-                    </div>
-                    <div class="input-group">
-                        <div class="form-group">
-                            <label class="form-label">Interest Rate (%)</label>
-                            <input type="number" id="carInterestRate" class="form-input" value="6" step="0.1">
-                            <div class="form-helper">Annual percentage rate</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Loan Term (months)</label>
-                            <input type="number" id="carLoanMonths" class="form-input" value="60" step="1">
-                            <div class="form-helper">Payment duration</div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Purchase Year</label>
-                        <select id="carPurchaseYear" class="form-input" data-year-options data-default="0"></select>
-                        <div class="form-helper">When you'll make the purchase</div>
-                    </div>
-                    <div class="payment-estimate">
-                        <span class="payment-estimate-label">Est. monthly payment</span>
-                        <span class="payment-estimate-value" id="carPaymentDisplay">$0</span>
-                    </div>
-                </div>
+                </article>
 
-                <!-- House Purchase Panel -->
-                <div class="panel" id="housePanel">
-                    <div class="panel-title">
-                        <span>Dream House</span>
-                        <div class="u-flex-gap-12">
-                            <div class="panel-title-checkbox">
-                                <input type="checkbox" id="houseEnabled" checked aria-label="Include Dream House in calculations">
-                                <label for="houseEnabled">Include</label>
+                <!-- College -->
+                <article class="purchase-tile panel purchase-tile--college" id="collegePanel"
+                    data-vd-tip
+                    data-tip-title="College / Tuition · floor blocker"
+                    data-tip-body="Education debt is a multi-year payment floor. Model total cost, rate, and start year so the ledger shows when cash flow tightens — and when the obligation finally drops off.">
+                    <span class="purchase-tile-corners" aria-hidden="true"></span>
+                    <span class="purchase-tile-glyph" aria-hidden="true">
+                        <svg viewBox="0 0 64 64" width="28" height="28" fill="none" aria-hidden="true">
+                            <path d="M8 28L32 16l24 12-24 12L8 28z" stroke="#C9A86C" stroke-width="1.5" stroke-linejoin="round"/>
+                            <path d="M16 32v10c0 4 7 8 16 8s16-4 16-8V32" stroke="#E8D5A3" stroke-width="1.5" stroke-linejoin="round"/>
+                            <path d="M52 28v14" stroke="#C9A86C" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <header class="purchase-tile-head">
+                        <span class="purchase-tile-index">03</span>
+                        <span class="purchase-tile-name">College / Tuition</span>
+                        <button type="button" class="vd-tip-btn purchase-tip-btn" aria-label="Explain college purchase rule" tabindex="0">?</button>
+                        <label class="purchase-tile-switch">
+                            <input type="checkbox" id="collegeEnabled" aria-label="Include College or Tuition">
+                            <span class="purchase-tile-switch-ui" aria-hidden="true"></span>
+                            <span class="purchase-tile-switch-label">Off</span>
+                        </label>
+                    </header>
+                    <div class="purchase-tile-hero">
+                        <span class="purchase-tile-hero-label">Est. monthly</span>
+                        <span class="payment-estimate-value purchase-tile-hero-value" id="collegePaymentDisplay">$0</span>
+                        <span class="purchase-tile-rule">Finite term</span>
+                    </div>
+                    <div class="purchase-tile-fields">
+                        <div class="form-group">
+                            <label class="form-label" for="collegeCost">Total cost</label>
+                            <input type="number" id="collegeCost" class="form-input" value="80000" step="1000">
+                        </div>
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label class="form-label" for="collegeInterestRate">APR %</label>
+                                <input type="number" id="collegeInterestRate" class="form-input" value="5.5" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="collegeLoanMonths">Term mo</label>
+                                <input type="number" id="collegeLoanMonths" class="form-input" value="120" step="1">
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">House Price</label>
-                        <input type="number" id="housePrice" class="form-input" value="400000" step="1000">
-                        <div class="form-helper">Total purchase price including closing costs</div>
-                    </div>
-                    <div class="input-group">
                         <div class="form-group">
-                            <label class="form-label">Interest Rate (%)</label>
-                            <input type="number" id="houseInterestRate" class="form-input" value="6" step="0.1">
-                            <div class="form-helper">Mortgage APR</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Loan Term (years)</label>
-                            <input type="number" id="houseLoanYears" class="form-input" value="30" step="1">
-                            <div class="form-helper">Typical 15, 20, or 30 years</div>
+                            <label class="form-label" for="collegeStartYear">Start year</label>
+                            <select id="collegeStartYear" class="form-input" data-year-options data-default="0"></select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Purchase Year</label>
-                        <select id="housePurchaseYear" class="form-input" data-year-options data-default="0"></select>
-                        <div class="form-helper">Down payment uses accumulated savings from previous years</div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Additional Monthly Bills (Taxes, etc.)</label>
-                        <input type="number" id="houseAdditionalBills" class="form-input" value="600" step="50">
-                        <div class="form-helper">Property taxes, insurance, HOA, maintenance</div>
-                    </div>
-                    <div class="payment-estimate">
-                        <span class="payment-estimate-label">Est. mortgage + bills</span>
-                        <span class="payment-estimate-value" id="housePaymentDisplay">$0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </article>
 
-        <!-- Scenarios Section -->
-        <div class="panel u-mb-40">
-            <div class="panel-title u-mb-24">
-                <span>Save & Load Scenarios</span>
-            </div>
-            <div class="scenarios-section">
-                <div class="section-header">
-                    <span class="section-subtitle">Experiment with different financial situations</span>
-                </div>
-                <div class="scenario-controls u-mt-16">
-                    <input type="text" id="scenarioName" class="form-input scenario-input" placeholder="Enter scenario name" maxlength="30">
-                    <button class="btn btn-primary scenario-save-btn" id="saveCurrentScenarioBtn">Save Scenario</button>
-                </div>
-                <div id="scenarioList" class="scenario-list u-mt-16">
-                    <div class="no-scenarios">No saved scenarios yet</div>
-                </div>
+                <!-- Medical -->
+                <article class="purchase-tile panel purchase-tile--medical" id="medicalPanel"
+                    data-vd-tip
+                    data-tip-title="Hospital / Medical · floor blocker"
+                    data-tip-body="Medical plans are unplanned payment drag. Model the bill total and term so viability sees the shock — keep a reserve so one event does not force new high-interest debt.">
+                    <span class="purchase-tile-corners" aria-hidden="true"></span>
+                    <span class="purchase-tile-glyph" aria-hidden="true">
+                        <svg viewBox="0 0 64 64" width="28" height="28" fill="none" aria-hidden="true">
+                            <rect x="12" y="12" width="40" height="40" rx="4" stroke="#C9A86C" stroke-width="1.5"/>
+                            <path d="M32 20v24M20 32h24" stroke="#E8D5A3" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <header class="purchase-tile-head">
+                        <span class="purchase-tile-index">04</span>
+                        <span class="purchase-tile-name">Hospital / Medical</span>
+                        <button type="button" class="vd-tip-btn purchase-tip-btn" aria-label="Explain medical purchase rule" tabindex="0">?</button>
+                        <label class="purchase-tile-switch">
+                            <input type="checkbox" id="medicalEnabled" aria-label="Include Hospital or Medical">
+                            <span class="purchase-tile-switch-ui" aria-hidden="true"></span>
+                            <span class="purchase-tile-switch-label">Off</span>
+                        </label>
+                    </header>
+                    <div class="purchase-tile-hero">
+                        <span class="purchase-tile-hero-label">Est. monthly</span>
+                        <span class="payment-estimate-value purchase-tile-hero-value" id="medicalPaymentDisplay">$0</span>
+                        <span class="purchase-tile-rule">Reserve first</span>
+                    </div>
+                    <div class="purchase-tile-fields">
+                        <div class="form-group">
+                            <label class="form-label" for="medicalCost">Bill total</label>
+                            <input type="number" id="medicalCost" class="form-input" value="25000" step="500">
+                        </div>
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label class="form-label" for="medicalInterestRate">APR %</label>
+                                <input type="number" id="medicalInterestRate" class="form-input" value="7" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="medicalLoanMonths">Plan mo</label>
+                                <input type="number" id="medicalLoanMonths" class="form-input" value="48" step="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="medicalStartYear">Event year</label>
+                            <select id="medicalStartYear" class="form-input" data-year-options data-default="0"></select>
+                        </div>
+                    </div>
+                </article>
+
             </div>
         </div>
+        </section>
         </div> <!-- End Financial Planning Container -->
 
-        <div class="summary-grid" id="summaryCards"></div>
+        <section class="stage-panel stage-snap" id="stage-viability" data-stage="Viability" data-act="2" data-act-title="Stress">
+        <div id="affordabilityBanner" class="affordability-banner viability-dashboard bento-shell vd-dash" data-vd-state="healthy">
+            <!-- Compact dashboard header -->
+            <header class="vd-header">
+                <div class="vd-header-main">
+                    <h2 id="affordabilityTitle" class="affordability-title viability-verdict vd-title">You Can Afford This Lifestyle</h2>
+                    <p id="affordabilityDesc" class="affordability-subtitle viability-verdict-sub vd-sub">
+                        Positive cash flow · 5-year mark holds on a 20-year path
+                    </p>
+                </div>
+                <p class="vd-live-hint" id="viabilityNextStep">Updates live from Planning &amp; Purchases</p>
+            </header>
 
-        <div class="chart-container">
-            <div class="chart-title">Monthly Budget Breakdown</div>
-            <div class="chart-description">Share of monthly spending by category. Updates live as you adjust amounts or toggle items.</div>
-            <div class="budget-pie-container">
-                <div class="budget-pie-chart-wrapper">
-                    <div class="budget-pie-chart-stage">
-                        <canvas id="budgetPieChart" class="budget-pie-canvas"></canvas>
+            <!-- Bento board -->
+            <div class="vd-board" aria-label="Affordability dashboard">
+                <!-- Hero: reserve target -->
+                <article class="vd-tile vd-tile--hero" data-vd-tip
+                    data-tip-title="6-month reserve target"
+                    data-tip-body="Six months of current lifestyle spending plus every enabled major obligation. This is the liquid emergency reserve to build before directing surplus toward longer-term investing.">
+                    <div class="vd-tile-top">
+                        <span class="vd-tile-label">6-month reserve target</span>
+                        <button type="button" class="vd-tip-btn" aria-label="Explain reserve target" tabindex="0">?</button>
                     </div>
-                    <div id="budgetPieLegend" class="budget-pie-legend"></div>
+                    <div class="vd-tile-value viability-mega-value" id="reserveTarget">--</div>
+                    <div class="vd-tile-foot">
+                        <span class="vd-tile-hint">Six months · all current outflows</span>
+                        <span class="vd-chip core-metric-status" id="reserveTargetStatus">Calculating</span>
+                    </div>
+                </article>
+
+                <!-- Hero: 5-year -->
+                <article class="vd-tile vd-tile--hero" data-vd-tip
+                    data-tip-title="5-year projection"
+                    data-tip-body="Cumulative savings balance after 60 months, including loan payments, down payments, and a modest 4% annual growth rate. This is the headline viability checkpoint.">
+                    <div class="vd-tile-top">
+                        <span class="vd-tile-label">5-year projection</span>
+                        <button type="button" class="vd-tip-btn" aria-label="Explain 5-year projection" tabindex="0">?</button>
+                    </div>
+                    <div class="vd-tile-value viability-mega-value" id="topRightSavings">--</div>
+                    <div class="vd-tile-foot">
+                        <span class="vd-tile-hint">Cumulative balance · yr 5</span>
+                        <span class="vd-chip core-metric-status" id="fiveYearProjectionStatus">Calculating</span>
+                    </div>
+                </article>
+
+                <!-- KPI lattice -->
+                <div class="affordability-core-metrics viability-kpi-primary vd-kpi-row" id="affordabilityCoreMetrics">
+                    <article class="core-metric savings-rate-metric vd-tile vd-tile--kpi" data-vd-tip
+                        data-tip-title="Savings rate"
+                        data-tip-body="Share of monthly income left after lifestyle spend and major purchases. 20%+ is excellent; under 5% leaves little buffer for shocks.">
+                        <div class="vd-tile-top">
+                            <span class="core-metric-label vd-tile-label">Savings rate</span>
+                            <button type="button" class="vd-tip-btn" aria-label="Explain savings rate">?</button>
+                        </div>
+                        <div class="core-metric-value vd-tile-value" id="savingsRate">--%</div>
+                        <div class="core-metric-status vd-chip" id="savingsRateStatus">Calculating</div>
+                    </article>
+
+                    <article class="core-metric monthly-cash-flow-metric vd-tile vd-tile--kpi" data-vd-tip
+                        data-tip-title="Monthly cash flow"
+                        data-tip-body="Income minus lifestyle categories and every enabled major purchase (car, house, college, medical). This is your steady-state surplus each month after those payments.">
+                        <div class="vd-tile-top">
+                            <span class="core-metric-label vd-tile-label">Monthly cash flow</span>
+                            <button type="button" class="vd-tip-btn" aria-label="Explain monthly cash flow">?</button>
+                        </div>
+                        <div class="core-metric-value vd-tile-value" id="miniMonthlyCashFlow">$0</div>
+                        <div class="core-metric-status mini-metric-trend vd-chip" id="miniMonthlyCashFlowTrend">→ Neutral</div>
+                    </article>
+
+                    <article class="core-metric expense-ratio-metric vd-tile vd-tile--kpi" data-vd-tip
+                        data-tip-title="Expense ratio"
+                        data-tip-body="Total monthly outflows (lifestyle categories + majors) divided by income. Under 60% is lean; over 80% leaves little room for savings or surprises.">
+                        <div class="vd-tile-top">
+                            <span class="core-metric-label vd-tile-label">Expense ratio</span>
+                            <button type="button" class="vd-tip-btn" aria-label="Explain expense ratio">?</button>
+                        </div>
+                        <div class="core-metric-value vd-tile-value" id="miniExpenseRatio">0%</div>
+                        <div class="core-metric-status mini-metric-trend vd-chip" id="miniExpenseRatioTrend">→ Optimal</div>
+                    </article>
+                </div>
+
+                <div class="affordability-metrics viability-kpi-secondary vd-kpi-row" id="affordabilityMiniMetrics">
+                    <article class="mini-metric vd-tile vd-tile--kpi" data-vd-tip
+                        data-tip-title="Floor blockers"
+                        data-tip-body="Combined monthly payments from enabled major purchases: car, house (plus bills), college/tuition, and hospital/medical. These are the fixed floors under your cash flow.">
+                        <div class="vd-tile-top">
+                            <span class="mini-metric-label vd-tile-label">Floor blockers</span>
+                            <button type="button" class="vd-tip-btn" aria-label="Explain floor blockers">?</button>
+                        </div>
+                        <div class="mini-metric-value vd-tile-value" id="miniMajorPurchases">$0/mo</div>
+                        <div class="mini-metric-trend vd-chip" id="miniMajorPurchasesTrend">→ Manageable</div>
+                    </article>
+
+                    <article class="mini-metric vd-tile vd-tile--kpi" data-vd-tip
+                        data-tip-title="Major load %"
+                        data-tip-body="Major-purchase payments as a percent of income (DTI-style). Under 20% is light; 36%+ is stretched for most household plans.">
+                        <div class="vd-tile-top">
+                            <span class="mini-metric-label vd-tile-label">Major load %</span>
+                            <button type="button" class="vd-tip-btn" aria-label="Explain major load">?</button>
+                        </div>
+                        <div class="mini-metric-value vd-tile-value" id="miniDtiRatio">0%</div>
+                        <div class="mini-metric-trend vd-chip" id="miniDtiRatioTrend">→ Light</div>
+                    </article>
+
+                    <article class="mini-metric vd-tile vd-tile--kpi" data-vd-tip
+                        data-tip-title="Runway"
+                        data-tip-body="How many months of current lifestyle spend your 5-year savings balance could cover if income stopped. 12+ months is solid; 24+ is deep reserves.">
+                        <div class="vd-tile-top">
+                            <span class="mini-metric-label vd-tile-label">Runway</span>
+                            <button type="button" class="vd-tip-btn" aria-label="Explain runway">?</button>
+                        </div>
+                        <div class="mini-metric-value vd-tile-value" id="miniRunway">—</div>
+                        <div class="mini-metric-trend vd-chip" id="miniRunwayTrend">→ Calc</div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Legacy insight hooks (hidden) -->
+            <div class="viability-insight-row u-hidden" id="viabilityInsightRow" hidden>
+                <div class="viability-insight-card">
+                    <div class="viability-insight-label">How to read this</div>
+                    <p class="viability-insight-text" id="viabilityHowToRead"></p>
+                </div>
+                <div class="viability-insight-card">
+                    <div class="viability-insight-label">What healthy means</div>
+                    <p class="viability-insight-text" id="viabilityHealthyMeans"></p>
                 </div>
             </div>
         </div>
+        </section>
 
-        <div class="chart-container">
-            <div class="chart-title">Savings Projection Over 5 Years</div>
-            <div class="chart-description">Cumulative savings month by month, including major purchases and a 4% annual return. Hover year markers for details.</div>
+        <!-- Portal tooltip for viability dashboard (escapes overflow:hidden) -->
+        <div id="vdTooltip" class="vd-tooltip" role="tooltip" hidden>
+            <div class="vd-tooltip-title" id="vdTooltipTitle"></div>
+            <div class="vd-tooltip-body" id="vdTooltipBody"></div>
+        </div>
+
+        <section class="stage-panel stage-snap" id="stage-budget" data-stage="Budget" data-act="3" data-act-title="Signal">
+        <div class="chart-container stage-panel-card bento-shell budget-dash">
+            <header class="budget-dash-head">
+                <div class="budget-dash-head-main">
+                    <h2 class="chart-title budget-dash-title">Monthly Budget Breakdown</h2>
+                    <p class="chart-description budget-dash-lede">How enabled categories share your monthly lifestyle spend (majors are separate floor blockers).</p>
+                </div>
+                <div class="budget-dash-totals" aria-label="Lifestyle spend summary">
+                    <div class="budget-stat">
+                        <span class="budget-stat-label">Lifestyle total</span>
+                        <span class="budget-stat-value" id="budgetPieTotal">—</span>
+                    </div>
+                    <div class="budget-stat">
+                        <span class="budget-stat-label">Categories</span>
+                        <span class="budget-stat-value" id="budgetPieCount">—</span>
+                    </div>
+                    <div class="budget-stat">
+                        <span class="budget-stat-label">Top share</span>
+                        <span class="budget-stat-value" id="budgetPieTopShare">—</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="budget-pie-container budget-pie-split budget-dash-body">
+                <div class="budget-pie-chart-wrapper budget-pie-split-grid budget-dash-grid">
+                    <div class="budget-pie-chart-stage budget-dash-donut">
+                        <div class="budget-donut-frame">
+                            <canvas id="budgetPieChart" class="budget-pie-canvas"></canvas>
+                            <div class="budget-donut-center" aria-hidden="true">
+                                <span class="budget-donut-center-kicker">Lifestyle / mo</span>
+                                <span class="budget-donut-center-value" id="budgetPieCenterTotal">—</span>
+                                <span class="budget-donut-center-meta" id="budgetPieCenterMeta">categories off</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="budget-dash-side">
+                        <div class="budget-dash-insight" id="budgetPieInsight">
+                            <span class="budget-dash-insight-kicker">Read</span>
+                            <p class="budget-dash-insight-text" id="budgetPieInsightText">Enable categories in Planning to compose this chart.</p>
+                        </div>
+                        <div class="budget-dash-board">
+                            <div class="budget-dash-board-head">
+                                <span class="budget-dash-board-title">Category board</span>
+                                <span class="budget-dash-board-meta" id="budgetPieBoardMeta">0 items</span>
+                            </div>
+                            <div id="budgetPieLegend" class="budget-pie-legend budget-pie-legend--panel budget-pie-key budget-cat-board" aria-label="Category shares"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="chart-walkthrough u-hidden" id="walkBudget" aria-hidden="true" hidden>
+                <div class="chart-walkthrough-kicker">Walkthrough</div>
+                <div class="chart-walkthrough-body">Calculating insights from your plan…</div>
+            </aside>
+        </div>
+        </section>
+
+        <section class="stage-panel stage-snap" id="stage-savings" data-stage="Savings" data-act="3" data-act-title="Signal">
+        <div class="chart-container stage-panel-card bento-shell">
+            <div class="chart-title">Savings Projection</div>
+            <div class="chart-description">Full 20-year path · 5-year mark is the viability headline · 4% annual return · scrub any month</div>
+            <aside class="chart-walkthrough" id="walkSavings" aria-live="polite">
+                <div class="chart-walkthrough-kicker">Walkthrough</div>
+                <div class="chart-walkthrough-body">Calculating insights from your plan…</div>
+            </aside>
             <div class="chart-wrapper">
                 <canvas id="savingsChart"></canvas>
             </div>
         </div>
+        </section>
 
-        <div class="chart-container">
-            <div class="chart-title">Cumulative Spending by Category</div>
-            <div class="chart-description">Total spent in each category at yearly checkpoints — useful for spotting what grows fastest.</div>
+        <section class="stage-panel stage-snap" id="stage-spending" data-stage="Spending" data-act="3" data-act-title="Signal">
+        <div class="chart-container stage-panel-card bento-shell">
+            <div class="chart-header-row">
+                <div>
+                    <div class="chart-title">Cumulative Spending by Category</div>
+                    <div class="chart-description">Total spent in each category at yearly checkpoints — useful for spotting what grows fastest.</div>
+                </div>
+                <div class="chart-scale-toggle" role="group" aria-label="Chart scale">
+                    <button type="button" class="scale-toggle-btn active" id="btnScaleLinear" onclick="setSpendingChartScale('linear')">Linear</button>
+                    <button type="button" class="scale-toggle-btn" id="btnScaleLog" onclick="setSpendingChartScale('logarithmic')">Log</button>
+                </div>
+            </div>
+            <aside class="chart-walkthrough" id="walkSpending" aria-live="polite">
+                <div class="chart-walkthrough-kicker">Walkthrough</div>
+                <div class="chart-walkthrough-body">Calculating insights from your plan…</div>
+            </aside>
             <div class="chart-wrapper">
                 <canvas id="spendingChart"></canvas>
             </div>
         </div>
+        </section>
 
-        <div class="chart-container">
+        <section class="stage-panel stage-snap" id="stage-treemap" data-stage="Treemap" data-act="3" data-act-title="Signal">
+        <div class="chart-container stage-panel-card bento-shell">
             <div class="chart-title">5-Year Total Spending by Category (Treemap)</div>
             <div class="chart-description">Larger tiles = higher 5-year spend. Hover any tile for exact amounts.</div>
+            <aside class="chart-walkthrough" id="walkTreemap" aria-live="polite">
+                <div class="chart-walkthrough-kicker">Walkthrough</div>
+                <div class="chart-walkthrough-body">Calculating insights from your plan…</div>
+            </aside>
             <div class="treemap-container">
                 <svg class="treemap-svg" id="treemapSvg"></svg>
                 <div class="treemap-tooltip" id="treemapTooltip"></div>
@@ -424,19 +676,25 @@
                 <!-- Legend will be generated here -->
             </div>
         </div>
+        </section>
 
-        <div class="chart-container">
-            <div class="chart-title">Yearly Financial Summary</div>
-            <div class="chart-description">Income, spending, savings, and cumulative balance for each of the next five years.</div>
+        <section class="stage-panel stage-snap" id="stage-ledger" data-stage="Ledger" data-act="3" data-act-title="Signal">
+        <div class="chart-container stage-panel-card bento-shell">
+            <div class="chart-title">25-Year Financial Summary</div>
+            <div class="chart-description ledger-fit-hint">Checkpoints at years 5, 10, and 20 · the complete 20-year view on one screen</div>
+            <aside class="chart-walkthrough" id="walkLedger" aria-live="polite">
+                <div class="chart-walkthrough-kicker">Walkthrough</div>
+                <div class="chart-walkthrough-body">Calculating insights from your plan…</div>
+            </aside>
             <div class="table-scroll">
                 <table>
                     <thead>
                         <tr>
                             <th>Year</th>
-                            <th>Annual Income</th>
-                            <th>Annual Spending</th>
-                            <th>Annual Savings</th>
-                            <th>Cumulative Savings</th>
+                            <th>Income</th>
+                            <th>Spend</th>
+                            <th>Saved</th>
+                            <th>Cumulative</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -445,177 +703,282 @@
                 </table>
             </div>
         </div>
+        </section>
 
         <!-- AI Analysis Section -->
-        <div class="panel ai-analysis-panel" id="analysis">
+        <section class="stage-panel stage-snap" id="stage-ai" data-stage="AI" data-act="4" data-act-title="Decide">
+        <div class="panel ai-analysis-panel stage-panel-card" id="analysis">
             <div class="ai-analysis-header">
                 <div class="ai-analysis-title-wrapper">
                     <h2 class="ai-analysis-title">AI Financial Viability Analysis</h2>
                     <div class="ai-analysis-actions">
                         <span class="coming-soon-badge" id="aiProviderBadge">POLLINATIONS</span>
-                        <button class="ai-rerun-button" id="aiRerunButton">
-                            <span class="ai-rerun-text">RERUN ANALYSIS</span>
-                            <span class="ai-rerun-loading u-hidden">ANALYZING...</span>
+                        <button class="ai-rerun-button" id="aiRerunButton" type="button" data-has-run="0">
+                            <span class="ai-rerun-text" id="aiRerunButtonLabel">Run Analysis</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Pollinations / Pollen API key (BYOP — same pattern as /motion) -->
-            <div class="pollinations-key-panel">
-                <div class="pollinations-key-header">
-                    <div class="pollinations-key-title">Pollinations API Key</div>
-                    <a class="pollinations-key-link" href="https://enter.pollinations.ai" target="_blank" rel="noopener noreferrer">Get a key at enter.pollinations.ai</a>
-                </div>
-                <div class="pollinations-key-row">
-                    <input
-                        type="password"
-                        class="form-input pollinations-key-input"
-                        id="pollinationsApiKey"
-                        placeholder="pk_... or sk_... (your Pollinations key)"
-                        autocomplete="off"
-                        spellcheck="false"
-                    />
-                    <button type="button" class="btn btn-secondary pollinations-key-toggle" id="pollinationsKeyToggle" aria-label="Show API key">Show</button>
-                    <button type="button" class="btn btn-primary pollinations-key-save" id="pollinationsKeySave">Save Key</button>
-                </div>
-                <div class="pollinations-key-status" id="pollinationsKeyStatus">Paste your key to run AI analysis with your own Pollen balance (BYOP).</div>
+            <div class="pollinations-key-panel ai-service-strip">
+                <span class="pollinations-key-title">Shared analysis service</span>
+                <span class="pollinations-key-status" id="pollinationsKeyStatus">Reports run securely through the BLACKBOX server.</span>
             </div>
 
-            <div class="ai-analysis-preview">
-                <div class="ai-grade-section">
-                    <div class="ai-grade-label">Viability Grade</div>
-                    <div class="ai-grade-display">
-                        <span class="ai-grade-letter" id="aiGradeLetter">B+</span>
-                        <div class="ai-grade-meter">
-                            <div class="ai-grade-bar"></div>
+            <!-- Terminal always visible — fills with init lines when a run starts -->
+            <div class="ai-run-console is-idle" id="aiRunConsole" aria-live="polite" aria-busy="false">
+                <div class="ai-run-console-head">
+                    <span class="ai-run-console-title">blackbox · analysis</span>
+                    <span class="ai-run-console-pct" id="aiRunConsolePct">idle</span>
+                </div>
+                <div class="ai-run-console-log" id="aiRunConsoleLog">
+                    <div class="ai-run-console-line is-meta">awaiting run</div>
+                    <div class="ai-run-console-line">$ ready · press Run Analysis</div>
+                </div>
+                <div class="ai-run-bar" aria-hidden="true">
+                    <div class="ai-run-bar-fill" id="aiRunBarFill"></div>
+                </div>
+            </div>
+
+            <div class="ai-stage-layout">
+                <div class="ai-analysis-preview">
+                    <div class="ai-grade-section is-pending" id="aiGradeSection">
+                        <div class="ai-grade-label">Viability Grade</div>
+                        <div class="ai-grade-display">
+                            <div class="ai-grade-mark">
+                                <!-- Empty-state glyph (hidden once a grade exists) -->
+                                <span class="ai-grade-idle" id="aiGradeIdle" aria-hidden="true">
+                                    <span class="ai-grade-idle-ring"></span>
+                                    <span class="ai-grade-idle-diamond"></span>
+                                </span>
+                                <span class="ai-grade-letter" id="aiGradeLetter"></span>
+                                <span class="ai-grade-status" id="aiGradeStatus">Not run yet</span>
+                            </div>
+                            <div class="ai-grade-meter" aria-hidden="true">
+                                <div class="ai-grade-bar" id="aiGradeBar" style="width: 0%"></div>
+                            </div>
+                            <span class="ai-grade-score" id="aiGradeScore">—/100</span>
                         </div>
-                        <span class="ai-grade-score">78/100</span>
+                    </div>
+                    <div class="ai-insights" id="aiInsights">
+                        <div class="ai-insight-item" data-report-section="goal">
+                            <div class="ai-insight-icon">✓</div>
+                            <div class="ai-insight-content">
+                                <div class="ai-insight-title">Savings Trajectory</div>
+                                <div class="ai-insight-text">Your projected savings show consistent growth, with the 5-year mark highlighted on a 10-year path.</div>
+                            </div>
+                        </div>
+                        <div class="ai-insight-item">
+                            <div class="ai-insight-icon">⚠</div>
+                            <div class="ai-insight-content">
+                                <div class="ai-insight-title">Expense Ratio</div>
+                                <div class="ai-insight-text">Review lifestyle categories in Planning if spending is high relative to income.</div>
+                            </div>
+                        </div>
+                        <div class="ai-insight-item">
+                            <div class="ai-insight-icon">✓</div>
+                            <div class="ai-insight-content">
+                                <div class="ai-insight-title">Debt Management</div>
+                                <div class="ai-insight-text">Major purchases are modeled in Purchases — re-run analysis after changes.</div>
+                            </div>
+                        </div>
+                        <div class="ai-insight-item">
+                            <div class="ai-insight-icon">→</div>
+                            <div class="ai-insight-content">
+                                <div class="ai-insight-title">Primary Goal</div>
+                                <div class="ai-insight-text">Protect positive monthly cash flow, then improve the five-year outcome with one measurable adjustment.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-analysis-footer">
+                        <div class="ai-analysis-note" id="aiAnalysisNote">Powered by <a href="https://pollinations.ai" target="_blank" rel="noopener noreferrer">Pollinations.ai</a> through the secured BLACKBOX service.</div>
                     </div>
                 </div>
-                <div class="ai-insights">
-                    <div class="ai-insight-item">
-                        <div class="ai-insight-icon">✓</div>
-                        <div class="ai-insight-content">
-                            <div class="ai-insight-title">Savings Trajectory</div>
-                            <div class="ai-insight-text">Your projected savings show consistent growth across all 5 years, with positive cash flow maintained even after major purchases.</div>
+
+                <!-- Structured report studio (no chatbot metaphor, no free-form input) -->
+                <div class="ai-chat ai-report-studio" id="aiChat" aria-label="Financial report studio">
+                    <header class="ai-chat-header ai-report-header">
+                        <div>
+                            <div class="ai-chat-title">Report Studio</div>
                         </div>
-                    </div>
-                    <div class="ai-insight-item">
-                        <div class="ai-insight-icon">⚠</div>
-                        <div class="ai-insight-content">
-                            <div class="ai-insight-title">Expense Ratio</div>
-                            <div class="ai-insight-text">Your spending-to-income ratio is at 72%, which is slightly above optimal. Consider reducing discretionary spending in categories like Entertainment or Dining.</div>
+                        <div class="ai-report-head-actions">
+                            <span class="ai-report-status"><i aria-hidden="true"></i> <span id="aiBundleStatus">Run analysis to generate bundle</span></span>
+                            <button type="button" class="ai-report-action" id="aiCopyReport" disabled>Copy</button>
+                            <button type="button" class="ai-report-action" id="aiDownloadMarkdown" disabled>Markdown</button>
+                            <button type="button" class="ai-report-action" id="aiPrintReport" disabled>Save PDF</button>
                         </div>
+                    </header>
+                    <div class="ai-chat-prompts ai-report-index" id="aiChatPrompts" role="group" aria-label="Report formats">
+                        <!-- filled by script -->
                     </div>
-                    <div class="ai-insight-item">
-                        <div class="ai-insight-icon">✓</div>
-                        <div class="ai-insight-content">
-                            <div class="ai-insight-title">Debt Management</div>
-                            <div class="ai-insight-text">Major purchases are well-timed and manageable. Your car and house payments represent sustainable portions of your income.</div>
-                        </div>
+                    <div class="ai-chat-messages ai-report-output" id="aiChatMessages" role="status" aria-live="polite" aria-atomic="false">
+                        <article class="ai-report-document ai-report-document--empty">
+                            <div class="ai-report-doc-head">
+                                <span>BLACKBOX / ADVISORY</span><span>LIVE MODEL</span>
+                            </div>
+                            <h3>Select a report format</h3>
+                            <p>Generate an executive brief from the plan currently modeled. Each report explains the signal, identifies the risk, defines a goal, and closes with concrete next steps.</p>
+                            <div class="ai-report-empty-grid" aria-hidden="true"><i></i><i></i><i></i></div>
+                        </article>
                     </div>
-                    <div class="ai-insight-item">
-                        <div class="ai-insight-icon">→</div>
-                        <div class="ai-insight-content">
-                            <div class="ai-insight-title">Optimization Opportunity</div>
-                            <div class="ai-insight-text">Delaying the house purchase by 6 months could increase your cumulative savings by approximately $12,500 while maintaining your lifestyle goals.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ai-analysis-footer">
-                    <div class="ai-analysis-note" id="aiAnalysisNote">Powered by <a href="https://pollinations.ai" target="_blank" rel="noopener noreferrer">Pollinations.ai</a> — analysis runs on your Pollen. Without a key, a local heuristic estimate is used.</div>
+                    <footer class="ai-chat-footer ai-report-footer">
+                        <span class="ai-chat-hint">Plan-bound output · no open-ended chat · <code>/api/pollinations-text</code></span>
+                    </footer>
                 </div>
             </div>
         </div>
+        </section>
 
-        <!-- Mobile app — same rail as dashboard panels -->
-        <section class="app-launch-section" id="download">
-            <div class="app-launch-inner">
-                <div class="app-launch-copy">
-                    <span class="app-launch-badge">Mobile · Flutter</span>
-                    <h2 class="app-launch-title">Same AI. On your phone.</h2>
-                    <p class="app-launch-lede">
-                        We’re building a Flutter app that brings this lifestyle model — and the same AI stress-tests —
-                        to iOS and Android. BLACKBOX for your money, wherever you are.
-                    </p>
-                    <ul class="app-launch-points">
-                        <li>Full affordability model on mobile</li>
-                        <li>AI analysis powered by your Pollinations key</li>
-                        <li>Built with Flutter for iOS &amp; Android</li>
-                    </ul>
-                    <p class="app-launch-release">
-                        <strong>Target release: August 2026</strong>
-                        <span>Join the waitlist for launch updates on iOS &amp; Android.</span>
-                    </p>
-                    <div class="app-launch-signup" id="heroEmailBar">
-                        <div class="email-signup-input-group email-signup-grid app-launch-signup-form">
+        <!-- Mobile app stage — device + QR (flat, un-nested) -->
+        <section class="stage-panel stage-snap stage-app" id="stage-app" data-stage="App" data-act="4" data-act-title="Decide">
+        <div class="panel stage-panel-card app-stage-card" id="download">
+            <header class="stage-dash-head app-stage-head">
+                <h2 class="stage-dash-title">Carry the model with you</h2>
+                <p class="stage-dash-lede">Scan for the waitlist — or preview the mobile surface beside it.</p>
+            </header>
+
+            <div class="app-mobile-layout">
+                <!-- iOS device simulator -->
+                <div class="app-device-col">
+                    <figure class="ios-device" aria-label="BLACKBOX iOS app preview">
+                        <div class="ios-device-bezel">
+                            <div class="ios-device-island" aria-hidden="true"></div>
+                            <div class="ios-device-screen">
+                                <img
+                                    class="ios-device-wallpaper"
+                                    src="/assets/atmosphere/phone-ui.jpg"
+                                    alt=""
+                                    width="864"
+                                    height="1152"
+                                    decoding="async"
+                                />
+                                <div class="ios-device-chrome">
+                                    <div class="ios-status-bar" aria-hidden="true">
+                                        <span>9:41</span>
+                                        <span class="ios-status-icons">●●●</span>
+                                    </div>
+                                    <div class="ios-app-header">
+                                        <span class="ios-app-mark">BLACKBOX</span>
+                                        <span class="ios-app-badge">Mobile</span>
+                                    </div>
+                                    <div class="ios-app-hero">
+                                        <span class="ios-app-label">5-year projection</span>
+                                        <strong class="ios-app-metric" id="appPhoneProjection">—</strong>
+                                        <span class="ios-app-sub">Live from your model</span>
+                                    </div>
+                                    <div class="ios-app-cards" aria-hidden="true">
+                                        <div class="ios-app-card">
+                                            <span>Cash flow</span>
+                                            <strong>On track</strong>
+                                        </div>
+                                        <div class="ios-app-card">
+                                            <span>Health</span>
+                                            <strong>A-band</strong>
+                                        </div>
+                                    </div>
+                                    <div class="ios-app-footer" aria-hidden="true">
+                                        <span>Waitlist · Aug 2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ios-device-home" aria-hidden="true"></div>
+                        </div>
+                        <figcaption class="ios-device-caption">iPhone preview · same model as desktop</figcaption>
+                    </figure>
+                </div>
+
+                <!-- Large QR + waitlist -->
+                <div class="app-cta-col" id="heroEmailBar">
+                    <div class="app-qr-block">
+                        <span class="app-qr-kicker">Scan to join</span>
+                        <div class="app-qr-frame">
+                            <img
+                                id="appQrCode"
+                                class="app-qr-img"
+                                src="/assets/app-waitlist-qr.svg"
+                                width="320"
+                                height="320"
+                                alt="QR code — open BLACKBOX mobile waitlist"
+                            />
+                        </div>
+                        <p class="app-qr-caption">Point your camera at the code to open the waitlist on your phone.</p>
+                    </div>
+
+                    <div class="app-waitlist">
+                        <span class="app-waitlist-label">Or join from here</span>
+                        <div class="email-signup-input-group email-signup-grid app-launch-signup-form app-waitlist-form">
                             <input class="email-signup-input" id="nameSignupInput" placeholder="Name" autocomplete="name" />
                             <input type="email" class="email-signup-input" id="emailSignupInput" placeholder="Email" autocomplete="email" />
                             <button type="button" class="email-signup-button" id="emailSignupButton">Join waitlist</button>
                         </div>
                         <div class="email-signup-success" id="emailSignupSuccess"></div>
+                        <p class="app-waitlist-meta">
+                            <strong>Target · August 2026</strong>
+                            <span>iOS first · Android next</span>
+                        </p>
                     </div>
-                </div>
-                <div class="app-launch-visual" aria-hidden="true">
-                    <div class="app-launch-phone">
-                        <div class="app-launch-phone-notch"></div>
-                        <div class="app-launch-phone-screen">
-                            <div class="app-launch-phone-brand">BLACKBOX</div>
-                            <div class="app-launch-phone-metric">
-                                <span>5-year projection</span>
-                                <strong>$146k</strong>
-                            </div>
-                            <div class="app-launch-phone-metric">
-                                <span>AI grade</span>
-                                <strong>B+</strong>
-                            </div>
-                            <div class="app-launch-phone-bar"></div>
-                            <div class="app-launch-phone-bar short"></div>
+
+                    <div class="app-store-row" aria-label="Coming soon on">
+                        <span class="app-store-label">Coming soon</span>
+                        <div class="app-store-badges">
+                            <span class="app-store-badge" title="App Store">
+                                <img src="/appstore.jpeg" alt="App Store" width="36" height="36" decoding="async" />
+                                <span>App Store</span>
+                            </span>
+                            <span class="app-store-badge" title="Google Play">
+                                <img src="/playstore.svg" alt="Google Play" width="36" height="36" decoding="async" />
+                                <span>Google Play</span>
+                            </span>
                         </div>
                     </div>
                 </div>
-                <div class="app-launch-stores">
-                    <span class="app-launch-stores-label">Coming soon</span>
-                    <div class="app-launch-stores-row">
-                        <a href="#heroEmailBar" class="footer-store-link" aria-label="App Store — join waitlist">
-                            <img src="/appstore.jpeg" alt="Download on the App Store" class="footer-store-logo" width="140" height="42">
-                        </a>
-                        <a href="#heroEmailBar" class="footer-store-link" aria-label="Google Play — join waitlist">
-                            <img src="/playstore.svg" alt="Get it on Google Play" class="footer-store-logo" width="140" height="42">
-                        </a>
-                    </div>
-                </div>
             </div>
+        </div>
         </section>
 
-        <!-- Site footer — same rail -->
-        <footer class="site-footer">
-            <div class="site-footer-inner">
-                <div class="footer-grid">
-                    <div class="footer-col footer-col-brand">
-                        <div class="footer-brand">BLACKBOX</div>
-                        <p class="footer-pitch">Income, spending, taxes, and major purchases — modeled clearly, then stress-tested with AI.</p>
-                    </div>
-
+        <!-- Outro / footer full-screen stage -->
+        <section class="stage-panel stage-snap stage-outro" id="stage-outro" data-stage="Outro" data-act="4" data-act-title="Decide">
+        <div class="panel stage-panel-card outro-stage-card" id="siteFooter">
+            <header class="stage-dash-head outro-stage-head">
+                <h2 class="stage-dash-title">A clearer plan starts here</h2>
+                <p class="stage-dash-lede">Save the scenario, revisit the evidence, and make the next decision deliberately.</p>
+            </header>
+            <div class="outro-stage-inner">
+                <div class="footer-outro-brand">
+                    <div class="footer-brand">BLACKBOX</div>
+                    <p class="footer-pitch">Cash flow first: model income, spend, and the taxes of life — then stress-test the plan with AI. Honest math, not spreadsheet SaaS.</p>
+                </div>
+                <div class="footer-grid outro-footer-grid">
                     <div class="footer-col">
                         <div class="footer-col-title">Product</div>
                         <nav class="footer-nav" aria-label="Product">
-                            <a href="#get-started">Calculator</a>
-                            <a href="#analysis">AI analysis</a>
-                            <a href="#download">Mobile app</a>
+                            <a href="#stage-planning" title="Load income and lifestyle inputs">Lifestyle Model</a>
+                            <a href="#stage-purchases" title="Cars, houses, tuition, medical as fixed floor blockers">Major Purchases</a>
+                            <a href="#stage-viability" title="5-year stress test and health grade">Affordability Board</a>
+                            <a href="#stage-ledger" title="Long-horizon projection with year 5 / 10 / 20 checkpoints">25-Year Ledger</a>
+                            <a href="#stage-ai" title="Canned AI stress reports on your plan">Report Studio</a>
                         </nav>
                     </div>
-
                     <div class="footer-col">
-                        <div class="footer-col-title">Resources</div>
-                        <nav class="footer-nav" aria-label="Resources">
-                            <a href="https://pollinations.ai" target="_blank" rel="noopener noreferrer">Pollinations AI</a>
-                            <a href="https://enter.pollinations.ai" target="_blank" rel="noopener noreferrer">Get API key</a>
-                            <a href="#" id="privacyPolicyLink">Privacy policy</a>
+                        <div class="footer-col-title">Method</div>
+                        <nav class="footer-nav" aria-label="Method">
+                            <a href="#stage-viability" title="Net cash flow = income − taxes − essentials − debt drag">Cash Flow Equation</a>
+                            <a href="#stage-viability" title="3×3 earner × spender matrix with targeted directives">Earner–Spender Matrix</a>
+                            <a href="#stage-viability" title="Scores how well you protect income — not how well you service debt">Health Score Engine</a>
+                            <a href="#stage-purchases" title="Amortization + 20/4/10 auto and 28/36 housing caps">Purchase Floor Blockers</a>
+                            <a href="#stage-budget" title="Needs vs wants; lifestyle fits income, not the reverse">Income-First Budget</a>
                         </nav>
                     </div>
-
+                    <div class="footer-col">
+                        <div class="footer-col-title">Field Notes</div>
+                        <nav class="footer-nav" aria-label="Field Notes">
+                            <a href="#stage-viability" title="High income with heavy payments can match low income with zero debt">Payment Trap vs Livable Base</a>
+                            <a href="#stage-purchases" title="20% down, 4-year max term, total auto cost under 10% of gross">20/4/10 Auto Rule</a>
+                            <a href="#stage-purchases" title="PITI under 28%; total debt under 36% of gross">28/36 Housing Cap</a>
+                            <a href="#stage-viability" title="Unlike FICO: rewards savings margin and penalizes payment drag">Health Score ≠ FICO</a>
+                            <a href="#stage-ledger" title="Lifestyle planning needs 25 years — not a 12-month budget app view">Why 25 Years</a>
+                        </nav>
+                    </div>
                     <div class="footer-col">
                         <div class="footer-col-title">Connect</div>
                         <div class="footer-social-row">
@@ -627,20 +990,45 @@
                             </a>
                             <a href="https://www.linkedin.com/in/jjohnso75/" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="LinkedIn">
                                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
-                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/>
                                 </svg>
                                 <span>LinkedIn</span>
                             </a>
                         </div>
+                        <nav class="footer-nav footer-connect-links" aria-label="Connect links">
+                            <a href="https://github.com/murderszn/blackbox" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+                            <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer">Product Updates</a>
+                            <a href="#stage-app">Launch Waitlist</a>
+                            <a href="#" id="privacyPolicyLink">Privacy Policy</a>
+                        </nav>
+                    </div>
+                    <div class="footer-col">
+                        <div class="footer-col-title">Reference</div>
+                        <nav class="footer-nav" aria-label="Reference">
+                            <a href="#get-started">Quick Guide</a>
+                            <a href="#stage-budget">Budget Breakdown</a>
+                            <a href="#stage-savings">Savings Chart</a>
+                            <a href="#stage-spending">Spending Pressure</a>
+                            <a href="#stage-treemap">Spend Treemap</a>
+                            <a href="#stage-ledger">Financial Summary</a>
+                            <a href="#stage-ai">Generated Reports</a>
+                        </nav>
                     </div>
                 </div>
-
+                <p class="footer-brain-strip" aria-label="From the BLACKBOX brain">
+                    <span class="footer-brain-kicker">From the brain</span>
+                    <span class="footer-brain-line">Cash flow &gt; gross income · Lifestyle fits earnings · Floor blockers before upgrades · Grade efficiency, not credit service</span>
+                </p>
+                <div class="footer-disclaimer">
+                    Disclaimer: BLACKBOX is an educational lifestyle modeling calculator. Projections are estimates based on standard calculations and historical averages. This tool does not provide official financial, investment, legal, or tax advice. Consult a certified financial planner before making major life decisions.
+                </div>
                 <div class="footer-bottom">
                     <span class="footer-copy">© 2026 BLACKBOX · by <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer">aurablox</a></span>
-                    <span class="footer-meta">Runs in your browser · AI via your Pollinations key</span>
+                    <span class="footer-meta">Runs in your browser · AI secured through BLACKBOX</span>
                 </div>
             </div>
-        </footer>
+        </div>
+        </section>
         </div><!-- /.app-container -->
     </main>
 
@@ -659,7 +1047,7 @@
                 <p>Names and emails are used solely to send you updates about BLACKBOX (including the mobile app). We do not sell, rent, or share this information with third parties for marketing.</p>
 
                 <h3>Data Security</h3>
-                <p>Calculator inputs (income, expenses, and similar financial figures) stay in your browser for modeling. If you run AI analysis with your Pollinations key, request data is sent to that provider under your account and is not stored by BLACKBOX after the response. Pollinations API keys you paste are kept only in your browser’s local storage.</p>
+                    <p>Calculator inputs (income, expenses, and similar financial figures) stay in your browser for modeling. When you request an AI report, the relevant plan summary is sent through the secured BLACKBOX server to the AI provider and is not stored by BLACKBOX after the response.</p>
 
                 <h3>Contact</h3>
                 <p>Questions about this privacy policy? Reach out via <a href="https://x.com/jahflyx" target="_blank" rel="noopener noreferrer">@jahflyx</a>.</p>
@@ -667,6 +1055,9 @@
         </div>
     </div>
     <script type="module" src="/hero-tesseract.js"></script>
+    <script type="module" src="/journey-webgl.js"></script>
     <script src="/script.js"></script>
+    <script src="/bento-fit.js"></script>
+    <script src="/experience.js"></script>
 </body>
 </html>

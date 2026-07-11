@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BLACKBOX × Vectrfl Migration — Status</title>
+  <style>
+    :root {
+      --bg: #030303;
+      --card: #0c0a08;
+      --text: #f4efe6;
+      --muted: rgba(244, 239, 230, 0.55);
+      --gold: #c9a86c;
+      --gold-soft: #e8d5a3;
+      --ok: #7dba8a;
+      --pending: rgba(244, 239, 230, 0.28);
+      --border: rgba(201, 168, 108, 0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Syne", system-ui, sans-serif;
+      background:
+        radial-gradient(900px 500px at 10% -10%, rgba(201, 168, 108, 0.08), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      padding: 32px 20px 64px;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; }
+    h1 {
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      margin: 0 0 8px;
+    }
+    .lede { color: var(--muted); margin: 0 0 28px; max-width: 52ch; }
+    a { color: var(--gold-soft); }
+    .phase {
+      border: 1px solid var(--border);
+      background: linear-gradient(165deg, rgba(18, 15, 12, 0.95), rgba(8, 7, 6, 0.98));
+      border-radius: 4px;
+      padding: 18px 20px 14px;
+      margin-bottom: 16px;
+    }
+    .phase h2 {
+      margin: 0 0 4px;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-soft);
+    }
+    .phase .desc { margin: 0 0 12px; font-size: 0.85rem; color: var(--muted); }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 8px 0;
+      border-top: 1px solid rgba(201, 168, 108, 0.08);
+      font-size: 0.88rem;
+    }
+    li:first-of-type { border-top: none; }
+    .box {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--gold);
+      border-radius: 2px;
+      margin-top: 2px;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      color: var(--bg);
+      background: transparent;
+    }
+    li.done .box {
+      background: var(--ok);
+      border-color: var(--ok);
+    }
+    li.done .box::after { content: "✓"; font-weight: 700; }
+    li.done span { color: rgba(244, 239, 230, 0.72); }
+    .meta {
+      margin-top: 28px;
+      padding: 14px 16px;
+      border: 1px dashed var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+    }
+    .progress {
+      height: 3px;
+      background: rgba(201, 168, 108, 0.12);
+      margin: 20px 0 28px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #8a7040, #e8d5a3);
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>BLACKBOX × Vectrfl Migration</h1>
+    <p class="lede">
+      Status board for the process-film migration. Source plan:
+      <a href="./VECTRFL_MIGRATION_PLAN.md">VECTRFL_MIGRATION_PLAN.md</a>.
+      Reference: <a href="https://www.vectrfl.com/" target="_blank" rel="noopener">vectrfl.com</a>.
+    </p>
+    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+    <section class="phase" data-phase="A">
+      <h2>Phase A — Scroll contract</h2>
+      <p class="desc">One scroll system, fractional progress, hero invitation.</p>
+      <ul>
+        <li data-id="A1"><div class="box"></div><span>A1. Single snap/scroll CSS contract</span></li>
+        <li data-id="A2"><div class="box"></div><span>A2. Tool stages min-height without hard clip where needed</span></li>
+        <li data-id="A3"><div class="box"></div><span>A3. Fractional journey progress</span></li>
+        <li data-id="A4"><div class="box"></div><span>A4. Hero invite copy</span></li>
+        <li data-id="A5"><div class="box"></div><span>A5. Simplify jumpToStage</span></li>
+        <li data-id="A6"><div class="box"></div><span>A6. Playwright smoke for film/track</span></li>
+      </ul>
+    </section>
+
+    <section class="phase" data-phase="B">
+      <h2>Phase B — Four-act film</h2>
+      <p class="desc">Load · Stress · Signal · Decide wrapping 11 stages.</p>
+      <ul>
+        <li data-id="B1"><div class="box"></div><span>B1. data-act attributes on stages</span></li>
+        <li data-id="B2"><div class="box"></div><span>B2. Film HUD act index + stage meta</span></li>
+        <li data-id="B3"><div class="box"></div><span>B3. Spine act-aware styling</span></li>
+        <li data-id="B4"><div class="box"></div><span>B4. chapterMeta + act titles in experience.js</span></li>
+        <li data-id="B5"><div class="box"></div><span>B5. Playwright act labels</span></li>
+      </ul>
+    </section>
+
+    <section class="phase" data-phase="C">
+      <h2>Phase C — Persistent WebGL</h2>
+      <p class="desc">Cube persists and becomes a gold node graph.</p>
+      <ul>
+        <li data-id="C1"><div class="box"></div><span>C1. __bbJourney + bb:journey events</span></li>
+        <li data-id="C2"><div class="box"></div><span>C2. #journeyWebgl container</span></li>
+        <li data-id="C3"><div class="box"></div><span>C3. Shared Three runtime + hero cube</span></li>
+        <li data-id="C4"><div class="box"></div><span>C4. Node graph + edges from progress</span></li>
+        <li data-id="C5"><div class="box"></div><span>C5. Cube recedes after Intro</span></li>
+        <li data-id="C6"><div class="box"></div><span>C6. Reduced-motion + tab pause</span></li>
+        <li data-id="C7"><div class="box"></div><span>C7. Playwright canvas past Planning</span></li>
+      </ul>
+    </section>
+
+    <section class="phase" data-phase="D">
+      <h2>Phase D — Modular grids</h2>
+      <p class="desc">bb-cell language for metrics and budget tiles.</p>
+      <ul>
+        <li data-id="D1"><div class="box"></div><span>D1. CSS tokens (--bb-gutter, value scales)</span></li>
+        <li data-id="D2"><div class="box"></div><span>D2. Viability 12-col + core ≠ mini type</span></li>
+        <li data-id="D3"><div class="box"></div><span>D3. Planning tiles + media/icon zone</span></li>
+        <li data-id="D4"><div class="box"></div><span>D4. Shared hover language</span></li>
+        <li data-id="D5"><div class="box"></div><span>D5. Playwright hierarchy checks</span></li>
+      </ul>
+    </section>
+
+    <section class="phase" data-phase="E">
+      <h2>Phase E — Motion polish</h2>
+      <p class="desc">Softer enters, mobile free-scroll, full smoke suite.</p>
+      <ul>
+        <li data-id="E1"><div class="box"></div><span>E1. Softer stage enter / dim</span></li>
+        <li data-id="E2"><div class="box"></div><span>E2. Optional desktop Lenis (deferred if heavy)</span></li>
+        <li data-id="E3"><div class="box"></div><span>E3. Mobile free scroll + film sync</span></li>
+        <li data-id="E4"><div class="box"></div><span>E4. Full Playwright journey suite</span></li>
+      </ul>
+    </section>
+
+    <div class="meta" id="statusMeta">
+      Progress updates as items are checked in VECTRFL_MIGRATION_PLAN.md and this board.
+    </div>
+  </div>
+  <script>
+    // Checked IDs are updated by the migration executor (and manually below as work lands).
+    const DONE = new Set([
+      'A1',
+      'A2',
+      'A3',
+      'A4',
+      'A5',
+      'A6',
+      'B1',
+      'B2',
+      'B3',
+      'B4',
+      'B5',
+      'C1',
+      'C2',
+      'C3',
+      'C4',
+      'C5',
+      'C6',
+      'C7',
+      'D1',
+      'D2',
+      'D3',
+      'D4',
+      'D5',
+      'E1',
+      'E3',
+      'E4'
+    ]);
+    function render() {
+      let n = 0, t = 0;
+      document.querySelectorAll('li[data-id]').forEach((li) => {
+        t++;
+        const id = li.dataset.id;
+        if (DONE.has(id)) {
+          li.classList.add('done');
+          n++;
+        } else {
+          li.classList.remove('done');
+        }
+      });
+      const pct = t ? Math.round((n / t) * 100) : 0;
+      document.getElementById('bar').style.width = pct + '%';
+      document.getElementById('statusMeta').textContent =
+        `${n} / ${t} items complete (${pct}%). Last render: ${new Date().toISOString()}`;
+    }
+    window.__migrationMarkDone = (ids) => {
+      (Array.isArray(ids) ? ids : [ids]).forEach((id) => DONE.add(id));
+      render();
+    };
+    render();
+  </script>
+</body>
+</html>
