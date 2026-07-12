@@ -253,6 +253,14 @@ function getCurrentState() {
         medicalInterestRate: parseFloat(document.getElementById('medicalInterestRate')?.value) || 7,
         medicalLoanMonths: parseInt(document.getElementById('medicalLoanMonths')?.value) || 48,
         medicalStartYear: parseInt(document.getElementById('medicalStartYear')?.value) || 0,
+        propertyTaxEnabled: document.getElementById('propertyTaxEnabled')?.checked || false,
+        propertyTaxAnnual: parseFloat(document.getElementById('propertyTaxAnnual')?.value) || 4800,
+        propertyTaxStartYear: parseInt(document.getElementById('propertyTaxStartYear')?.value) || 0,
+        debtEnabled: document.getElementById('debtEnabled')?.checked || false,
+        debtBalance: parseFloat(document.getElementById('debtBalance')?.value) || 15000,
+        debtInterestRate: parseFloat(document.getElementById('debtInterestRate')?.value) || 19.99,
+        debtLoanMonths: parseInt(document.getElementById('debtLoanMonths')?.value) || 36,
+        debtStartYear: parseInt(document.getElementById('debtStartYear')?.value) || 0,
         timestamp: new Date().toISOString()
     };
 }
@@ -295,6 +303,18 @@ function loadState(state) {
         if (state.medicalLoanMonths != null) document.getElementById('medicalLoanMonths').value = state.medicalLoanMonths;
         if (state.medicalStartYear != null) document.getElementById('medicalStartYear').value = state.medicalStartYear;
     }
+    if (document.getElementById('propertyTaxEnabled')) {
+        document.getElementById('propertyTaxEnabled').checked = !!state.propertyTaxEnabled;
+        if (state.propertyTaxAnnual != null) document.getElementById('propertyTaxAnnual').value = state.propertyTaxAnnual;
+        if (state.propertyTaxStartYear != null) document.getElementById('propertyTaxStartYear').value = state.propertyTaxStartYear;
+    }
+    if (document.getElementById('debtEnabled')) {
+        document.getElementById('debtEnabled').checked = !!state.debtEnabled;
+        if (state.debtBalance != null) document.getElementById('debtBalance').value = state.debtBalance;
+        if (state.debtInterestRate != null) document.getElementById('debtInterestRate').value = state.debtInterestRate;
+        if (state.debtLoanMonths != null) document.getElementById('debtLoanMonths').value = state.debtLoanMonths;
+        if (state.debtStartYear != null) document.getElementById('debtStartYear').value = state.debtStartYear;
+    }
 
     // Update UI
     renderBudgetItems();
@@ -305,6 +325,8 @@ function loadState(state) {
     toggleHouse();
     toggleCollege();
     toggleMedical();
+    togglePropertyTax();
+    toggleDebt();
 
     // Ensure fitted sizes after full scenario hydrate (metrics + purchases)
     requestNumberFit();
@@ -384,12 +406,16 @@ function updateMiniDashboard() {
     const houseEnabled = document.getElementById('houseEnabled')?.checked || false;
     const collegeEnabled = document.getElementById('collegeEnabled')?.checked || false;
     const medicalEnabled = document.getElementById('medicalEnabled')?.checked || false;
+    const propertyTaxEnabled = document.getElementById('propertyTaxEnabled')?.checked || false;
+    const debtEnabled = document.getElementById('debtEnabled')?.checked || false;
     const carPayment = carEnabled ? calculateCarPayment() : 0;
     const housePayment = houseEnabled ? calculateHousePayment() : 0;
     const houseAdditionalBills = houseEnabled ? (parseFloat(document.getElementById('houseAdditionalBills')?.value) || 0) : 0;
     const collegePayment = collegeEnabled ? calculateCollegePayment() : 0;
     const medicalPayment = medicalEnabled ? calculateMedicalPayment() : 0;
-    const totalMajorPayments = carPayment + housePayment + houseAdditionalBills + collegePayment + medicalPayment;
+    const propertyTaxPayment = propertyTaxEnabled ? calculatePropertyTaxPayment() : 0;
+    const debtPayment = debtEnabled ? calculateDebtPayment() : 0;
+    const totalMajorPayments = carPayment + housePayment + houseAdditionalBills + collegePayment + medicalPayment + propertyTaxPayment + debtPayment;
 
     const totalMonthlyExpenses = monthlySpending + totalMajorPayments;
     const monthlyCashFlow = monthlyIncome - totalMonthlyExpenses;
@@ -567,6 +593,19 @@ function calculateMedicalPayment() {
     const rate = parseFloat(document.getElementById('medicalInterestRate')?.value) || 0;
     const months = parseInt(document.getElementById('medicalLoanMonths')?.value) || 48;
     return cost > 0 ? calculateLoanPayment(cost, rate, months) : 0;
+}
+
+// Property tax is a recurring annual bill spread across 12 months — no term, no interest.
+function calculatePropertyTaxPayment() {
+    const annual = parseFloat(document.getElementById('propertyTaxAnnual')?.value) || 0;
+    return annual > 0 ? annual / 12 : 0;
+}
+
+function calculateDebtPayment() {
+    const balance = parseFloat(document.getElementById('debtBalance')?.value) || 0;
+    const rate = parseFloat(document.getElementById('debtInterestRate')?.value) || 0;
+    const months = parseInt(document.getElementById('debtLoanMonths')?.value) || 36;
+    return balance > 0 ? calculateLoanPayment(balance, rate, months) : 0;
 }
 
 /** Finite loan active in a given month (payments start month after startMonth). */
@@ -1628,6 +1667,26 @@ function toggleMedical() {
     calculate();
 }
 
+function togglePropertyTax() {
+    const enabled = document.getElementById('propertyTaxEnabled')?.checked;
+    const panel = document.getElementById('propertyTaxPanel');
+    if (!panel) return;
+    if (enabled) panel.classList.remove('disabled');
+    else panel.classList.add('disabled');
+    syncPurchaseSwitchLabel('propertyTaxEnabled');
+    calculate();
+}
+
+function toggleDebt() {
+    const enabled = document.getElementById('debtEnabled')?.checked;
+    const panel = document.getElementById('debtPanel');
+    if (!panel) return;
+    if (enabled) panel.classList.remove('disabled');
+    else panel.classList.add('disabled');
+    syncPurchaseSwitchLabel('debtEnabled');
+    calculate();
+}
+
 function calculateLoanPayment(principal, annualRate, months) {
     const monthlyRate = annualRate / 12 / 100;
     if (monthlyRate === 0) return principal / months;
@@ -1719,6 +1778,26 @@ function calculate() {
         ? calculateLoanPayment(medicalCost, medicalInterestRate, medicalLoanMonths)
         : 0;
 
+    // Property tax (recurring, ongoing floor — no term)
+    const propertyTaxEnabled = document.getElementById('propertyTaxEnabled')?.checked || false;
+    const propertyTaxAnnual = parseFloat(document.getElementById('propertyTaxAnnual')?.value) || 0;
+    const propertyTaxStartYear = parseInt(document.getElementById('propertyTaxStartYear')?.value) || 0;
+    const propertyTaxStartMonth = propertyTaxStartYear * 12;
+    const propertyTaxMonthlyPayment = propertyTaxEnabled && propertyTaxAnnual > 0
+        ? propertyTaxAnnual / 12
+        : 0;
+
+    // Debt payoff — credit card / back income tax (finite payment plan floor-blocker)
+    const debtEnabled = document.getElementById('debtEnabled')?.checked || false;
+    const debtBalance = parseFloat(document.getElementById('debtBalance')?.value) || 0;
+    const debtInterestRate = parseFloat(document.getElementById('debtInterestRate')?.value) || 0;
+    const debtLoanMonths = parseInt(document.getElementById('debtLoanMonths')?.value) || 36;
+    const debtStartYear = parseInt(document.getElementById('debtStartYear')?.value) || 0;
+    const debtStartMonth = debtStartYear * 12;
+    const debtMonthlyPayment = debtEnabled && debtBalance > 0
+        ? calculateLoanPayment(debtBalance, debtInterestRate, debtLoanMonths)
+        : 0;
+
     // Calculate Year 1 savings for house down payment if needed
     let year1Savings = 0;
     const annualReturnRate = 0.04;
@@ -1737,6 +1816,12 @@ function calculate() {
             }
             if (medicalEnabled && isFiniteLoanActive(month, medicalStartMonth, medicalLoanMonths)) {
                 monthlySavingsThisMonth -= medicalMonthlyPayment;
+            }
+            if (propertyTaxEnabled && month > propertyTaxStartMonth) {
+                monthlySavingsThisMonth -= propertyTaxMonthlyPayment;
+            }
+            if (debtEnabled && isFiniteLoanActive(month, debtStartMonth, debtLoanMonths)) {
+                monthlySavingsThisMonth -= debtMonthlyPayment;
             }
             year1Savings += monthlySavingsThisMonth;
             year1Savings = year1Savings * (1 + monthlyRate);
@@ -1766,6 +1851,12 @@ function calculate() {
     const medicalPaymentText = medicalEnabled
         ? formatCompactCurrency(medicalMonthlyPayment)
         : '$0';
+    const propertyTaxPaymentText = propertyTaxEnabled
+        ? formatCompactCurrency(propertyTaxMonthlyPayment)
+        : '$0';
+    const debtPaymentText = debtEnabled
+        ? formatCompactCurrency(debtMonthlyPayment)
+        : '$0';
 
     const carPaymentEl = document.getElementById('carPayment');
     const housePaymentEl = document.getElementById('housePayment');
@@ -1780,10 +1871,14 @@ function calculate() {
     const housePaymentDisplay = document.getElementById('housePaymentDisplay');
     const collegePaymentDisplay = document.getElementById('collegePaymentDisplay');
     const medicalPaymentDisplay = document.getElementById('medicalPaymentDisplay');
+    const propertyTaxPaymentDisplay = document.getElementById('propertyTaxPaymentDisplay');
+    const debtPaymentDisplay = document.getElementById('debtPaymentDisplay');
     if (carPaymentDisplay) carPaymentDisplay.textContent = carPaymentText;
     if (housePaymentDisplay) housePaymentDisplay.textContent = houseEstimateText;
     if (collegePaymentDisplay) collegePaymentDisplay.textContent = collegePaymentText;
     if (medicalPaymentDisplay) medicalPaymentDisplay.textContent = medicalPaymentText;
+    if (propertyTaxPaymentDisplay) propertyTaxPaymentDisplay.textContent = propertyTaxPaymentText;
+    if (debtPaymentDisplay) debtPaymentDisplay.textContent = debtPaymentText;
 
     // 20-year projection for ledger; year-5 remains viability headline
     const years = 20;
@@ -1820,6 +1915,16 @@ function calculate() {
             // Hospital / medical
             if (medicalEnabled && isFiniteLoanActive(month, medicalStartMonth, medicalLoanMonths)) {
                 monthlySavingsThisMonth -= medicalMonthlyPayment;
+            }
+
+            // Property tax (recurring once it starts)
+            if (propertyTaxEnabled && month > propertyTaxStartMonth) {
+                monthlySavingsThisMonth -= propertyTaxMonthlyPayment;
+            }
+
+            // Debt payoff (credit card / back taxes)
+            if (debtEnabled && isFiniteLoanActive(month, debtStartMonth, debtLoanMonths)) {
+                monthlySavingsThisMonth -= debtMonthlyPayment;
             }
 
             // Deduct down payments
@@ -1868,7 +1973,9 @@ function calculate() {
         - (carEnabled ? carMonthlyPayment : 0)
         - (houseEnabled ? houseMonthlyPayment + houseAdditionalBills : 0)
         - (collegeEnabled ? collegeMonthlyPayment : 0)
-        - (medicalEnabled ? medicalMonthlyPayment : 0);
+        - (medicalEnabled ? medicalMonthlyPayment : 0)
+        - (propertyTaxEnabled ? propertyTaxMonthlyPayment : 0)
+        - (debtEnabled ? debtMonthlyPayment : 0);
 
     if (banner && bannerTitle && bannerText) {
         const cannotAfford = finalSavings < 0 || monthlySavingsAfterLoans < 0;
@@ -1952,11 +2059,15 @@ function calculate() {
         updateSavingsChart(labels, savingsData);
         updateSpendingChart(labels, budgetItems, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseEnabled, months, {
             collegeEnabled, collegeMonthlyPayment, collegeStartMonth, collegeLoanMonths,
-            medicalEnabled, medicalMonthlyPayment, medicalStartMonth, medicalLoanMonths
+            medicalEnabled, medicalMonthlyPayment, medicalStartMonth, medicalLoanMonths,
+            propertyTaxEnabled, propertyTaxMonthlyPayment, propertyTaxStartMonth,
+            debtEnabled, debtMonthlyPayment, debtStartMonth, debtLoanMonths
         });
         updateBentoBox(budgetItems, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseEnabled, months, {
             collegeEnabled, collegeMonthlyPayment, collegeStartMonth, collegeLoanMonths,
-            medicalEnabled, medicalMonthlyPayment, medicalStartMonth, medicalLoanMonths
+            medicalEnabled, medicalMonthlyPayment, medicalStartMonth, medicalLoanMonths,
+            propertyTaxEnabled, propertyTaxMonthlyPayment, propertyTaxStartMonth,
+            debtEnabled, debtMonthlyPayment, debtStartMonth, debtLoanMonths
         });
         updateBudgetPieChart(budgetItems);
     } catch (err) {
@@ -1965,7 +2076,9 @@ function calculate() {
     try {
         updateYearlyTable(monthlyIncome, baseMonthlySavings, carMonthlyPayment, carPurchaseMonth, carLoanMonths, carEnabled, houseMonthlyPayment, housePurchaseMonth, houseAdditionalBills, houseDownPayment, houseEnabled, years, months, monthlyRate, {
             collegeEnabled, collegeMonthlyPayment, collegeStartMonth, collegeLoanMonths,
-            medicalEnabled, medicalMonthlyPayment, medicalStartMonth, medicalLoanMonths
+            medicalEnabled, medicalMonthlyPayment, medicalStartMonth, medicalLoanMonths,
+            propertyTaxEnabled, propertyTaxMonthlyPayment, propertyTaxStartMonth,
+            debtEnabled, debtMonthlyPayment, debtStartMonth, debtLoanMonths
         });
     } catch (err) {
         console.warn('Yearly table update skipped:', err?.message || err);
@@ -2541,7 +2654,14 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
         medicalEnabled = false,
         medicalMonthlyPayment = 0,
         medicalStartMonth = 0,
-        medicalLoanMonths = 0
+        medicalLoanMonths = 0,
+        propertyTaxEnabled = false,
+        propertyTaxMonthlyPayment = 0,
+        propertyTaxStartMonth = 0,
+        debtEnabled = false,
+        debtMonthlyPayment = 0,
+        debtStartMonth = 0,
+        debtLoanMonths = 0
     } = extras || {};
 
     if (collegeEnabled && collegeMonthlyPayment > 0) {
@@ -2574,6 +2694,40 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
             data,
             backgroundColor: 'rgba(224, 122, 106, 0.75)',
             borderColor: '#e07a6a',
+            borderWidth: 1.5
+        });
+    }
+
+    if (propertyTaxEnabled && propertyTaxMonthlyPayment > 0) {
+        const data = yearMonths.map(month => {
+            let total = 0;
+            for (let m = 1; m <= month; m++) {
+                if (m > propertyTaxStartMonth) total += propertyTaxMonthlyPayment;
+            }
+            return total > 0 ? total : null;
+        });
+        datasets.push({
+            label: 'Property Tax',
+            data,
+            backgroundColor: 'rgba(122, 148, 110, 0.78)',
+            borderColor: '#9fb890',
+            borderWidth: 1.5
+        });
+    }
+
+    if (debtEnabled && debtMonthlyPayment > 0) {
+        const data = yearMonths.map(month => {
+            let total = 0;
+            for (let m = 1; m <= month; m++) {
+                if (isFiniteLoanActive(m, debtStartMonth, debtLoanMonths)) total += debtMonthlyPayment;
+            }
+            return total > 0 ? total : null;
+        });
+        datasets.push({
+            label: 'Debt Payoff',
+            data,
+            backgroundColor: 'rgba(180, 120, 150, 0.75)',
+            borderColor: '#cf9bb6',
             borderWidth: 1.5
         });
     }
@@ -2794,7 +2948,14 @@ function updateBentoBox(budgetItems, carPayment, carMonth, carMonths, carEnabled
         medicalEnabled = false,
         medicalMonthlyPayment = 0,
         medicalStartMonth = 0,
-        medicalLoanMonths = 0
+        medicalLoanMonths = 0,
+        propertyTaxEnabled = false,
+        propertyTaxMonthlyPayment = 0,
+        propertyTaxStartMonth = 0,
+        debtEnabled = false,
+        debtMonthlyPayment = 0,
+        debtStartMonth = 0,
+        debtLoanMonths = 0
     } = extras || {};
 
     if (collegeEnabled && collegeMonthlyPayment > 0) {
@@ -2811,6 +2972,22 @@ function updateBentoBox(budgetItems, carPayment, carMonth, carMonths, carEnabled
             if (isFiniteLoanActive(m, medicalStartMonth, medicalLoanMonths)) medicalTotal += medicalMonthlyPayment;
         }
         if (medicalTotal > 0) categories.push({ name: 'Hospital / Medical', value: medicalTotal });
+    }
+
+    if (propertyTaxEnabled && propertyTaxMonthlyPayment > 0) {
+        let propertyTaxTotal = 0;
+        for (let m = 1; m <= totalMonths; m++) {
+            if (m > propertyTaxStartMonth) propertyTaxTotal += propertyTaxMonthlyPayment;
+        }
+        if (propertyTaxTotal > 0) categories.push({ name: 'Property Tax', value: propertyTaxTotal });
+    }
+
+    if (debtEnabled && debtMonthlyPayment > 0) {
+        let debtTotal = 0;
+        for (let m = 1; m <= totalMonths; m++) {
+            if (isFiniteLoanActive(m, debtStartMonth, debtLoanMonths)) debtTotal += debtMonthlyPayment;
+        }
+        if (debtTotal > 0) categories.push({ name: 'Debt Payoff', value: debtTotal });
     }
 
     if (categories.length === 0) return;
@@ -3288,7 +3465,14 @@ function updateYearlyTable(income, baseSavings, carPayment, carMonth, carMonths,
         medicalEnabled = false,
         medicalMonthlyPayment = 0,
         medicalStartMonth = 0,
-        medicalLoanMonths = 0
+        medicalLoanMonths = 0,
+        propertyTaxEnabled = false,
+        propertyTaxMonthlyPayment = 0,
+        propertyTaxStartMonth = 0,
+        debtEnabled = false,
+        debtMonthlyPayment = 0,
+        debtStartMonth = 0,
+        debtLoanMonths = 0
     } = extras || {};
 
     for (let year = 1; year <= years; year++) {
@@ -3314,6 +3498,14 @@ function updateYearlyTable(income, baseSavings, carPayment, carMonth, carMonths,
 
             if (medicalEnabled && isFiniteLoanActive(month, medicalStartMonth, medicalLoanMonths)) {
                 monthlySavingsThisMonth -= medicalMonthlyPayment;
+            }
+
+            if (propertyTaxEnabled && month > propertyTaxStartMonth) {
+                monthlySavingsThisMonth -= propertyTaxMonthlyPayment;
+            }
+
+            if (debtEnabled && isFiniteLoanActive(month, debtStartMonth, debtLoanMonths)) {
+                monthlySavingsThisMonth -= debtMonthlyPayment;
             }
 
             if (houseEnabled && month === houseMonth && houseDownPayment > 0) {
@@ -4020,10 +4212,14 @@ function collectFinancialDataForAI() {
     const houseEnabled = document.getElementById('houseEnabled')?.checked || false;
     const collegeEnabled = document.getElementById('collegeEnabled')?.checked || false;
     const medicalEnabled = document.getElementById('medicalEnabled')?.checked || false;
+    const propertyTaxEnabled = document.getElementById('propertyTaxEnabled')?.checked || false;
+    const debtEnabled = document.getElementById('debtEnabled')?.checked || false;
     const carPayment = carEnabled ? calculateCarPayment() : 0;
     const housePayment = houseEnabled ? calculateHousePayment() : 0;
     const collegePayment = collegeEnabled ? calculateCollegePayment() : 0;
     const medicalPayment = medicalEnabled ? calculateMedicalPayment() : 0;
+    const propertyTaxPayment = propertyTaxEnabled ? calculatePropertyTaxPayment() : 0;
+    const debtPayment = debtEnabled ? calculateDebtPayment() : 0;
     const carLoanMonths = carEnabled
         ? (parseInt(document.getElementById('carLoanMonths')?.value, 10) || 60)
         : 0;
@@ -4035,6 +4231,9 @@ function collectFinancialDataForAI() {
         : 0;
     const medicalLoanMonths = medicalEnabled
         ? (parseInt(document.getElementById('medicalLoanMonths')?.value, 10) || 48)
+        : 0;
+    const debtLoanMonths = debtEnabled
+        ? (parseInt(document.getElementById('debtLoanMonths')?.value, 10) || 36)
         : 0;
 
     const parseMoney = (id) => {
@@ -4048,7 +4247,7 @@ function collectFinancialDataForAI() {
         if (item.enabled === false) return sum;
         return sum + (parseFloat(item.amount) || 0);
     }, 0);
-    const computedMonthly = income - monthlySpending - carPayment - housePayment - houseBills - collegePayment - medicalPayment;
+    const computedMonthly = income - monthlySpending - carPayment - housePayment - houseBills - collegePayment - medicalPayment - propertyTaxPayment - debtPayment;
     const monthlySavings = parseMoney('monthlySavings') ?? computedMonthly;
     const finalSavings = parseMoney('totalSavings')
         ?? parseMoney('topRightSavings')
@@ -4075,6 +4274,11 @@ function collectFinancialDataForAI() {
         medicalEnabled,
         medicalPayment,
         medicalLoanMonths,
+        propertyTaxEnabled,
+        propertyTaxPayment,
+        debtEnabled,
+        debtPayment,
+        debtLoanMonths,
         monthlySpending,
     };
 }
@@ -4082,7 +4286,11 @@ function collectFinancialDataForAI() {
 function buildPollinationsAnalysisPrompt(data) {
     const totalOut = (data.monthlySpending || 0)
         + (data.carEnabled ? data.carPayment : 0)
-        + (data.houseEnabled ? data.housePayment + data.houseBills : 0);
+        + (data.houseEnabled ? data.housePayment + data.houseBills : 0)
+        + (data.collegeEnabled ? data.collegePayment : 0)
+        + (data.medicalEnabled ? data.medicalPayment : 0)
+        + (data.propertyTaxEnabled ? data.propertyTaxPayment : 0)
+        + (data.debtEnabled ? data.debtPayment : 0);
     const spendingRatio = data.income > 0 ? totalOut / data.income : 0;
     const savingsRatio = data.income > 0 ? data.monthlySavings / data.income : 0;
 
@@ -4103,6 +4311,8 @@ ${data.carEnabled ? `Car Payment: $${Number(data.carPayment || 0).toLocaleString
 ${data.houseEnabled ? `House Payment: $${Number(data.housePayment || 0).toLocaleString()}/month + $${Number(data.houseBills || 0).toLocaleString()}/month in additional bills` : 'No house purchase planned'}
 ${data.collegeEnabled ? `College/Tuition: $${Number(data.collegePayment || 0).toLocaleString()}/month for ${data.collegeLoanMonths || 0} months` : 'No college/tuition planned'}
 ${data.medicalEnabled ? `Hospital/Medical: $${Number(data.medicalPayment || 0).toLocaleString()}/month for ${data.medicalLoanMonths || 0} months` : 'No medical/hospital bill planned'}
+${data.propertyTaxEnabled ? `Property Tax: $${Number(data.propertyTaxPayment || 0).toLocaleString()}/month (recurring, ongoing)` : 'No property tax planned'}
+${data.debtEnabled ? `Debt Payoff (credit card / back taxes): $${Number(data.debtPayment || 0).toLocaleString()}/month for ${data.debtLoanMonths || 0} months` : 'No outstanding debt payoff planned'}
 
 Provide a comprehensive financial viability report in JSON format with this exact structure. The four insights must be, in order: executive diagnosis, primary risk, measurable goal, and immediate next step:
 {
@@ -4447,7 +4657,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Purchase switches — sync On/Off labels + disabled chrome on boot
-    ['carEnabled', 'houseEnabled', 'collegeEnabled', 'medicalEnabled'].forEach((id) => {
+    ['carEnabled', 'houseEnabled', 'collegeEnabled', 'medicalEnabled', 'propertyTaxEnabled', 'debtEnabled'].forEach((id) => {
         syncPurchaseSwitchLabel(id);
         const input = document.getElementById(id);
         const panel = document.getElementById(id.replace('Enabled', 'Panel'));
@@ -4519,6 +4729,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     const medicalStartYear = document.getElementById('medicalStartYear');
     if (medicalStartYear) medicalStartYear.addEventListener('change', calculate);
+
+    // Property tax recurring floor
+    const propertyTaxEnabledEl = document.getElementById('propertyTaxEnabled');
+    if (propertyTaxEnabledEl) {
+        propertyTaxEnabledEl.addEventListener('change', togglePropertyTax);
+    }
+    ['propertyTaxAnnual'].forEach((id) => {
+        const input = document.getElementById(id);
+        if (input) input.addEventListener('input', calculate);
+    });
+    const propertyTaxStartYear = document.getElementById('propertyTaxStartYear');
+    if (propertyTaxStartYear) propertyTaxStartYear.addEventListener('change', calculate);
+
+    // Debt payoff floor-blocker
+    const debtEnabledEl = document.getElementById('debtEnabled');
+    if (debtEnabledEl) {
+        debtEnabledEl.addEventListener('change', toggleDebt);
+    }
+    ['debtBalance', 'debtInterestRate', 'debtLoanMonths'].forEach((id) => {
+        const input = document.getElementById(id);
+        if (input) input.addEventListener('input', calculate);
+    });
+    const debtStartYear = document.getElementById('debtStartYear');
+    if (debtStartYear) debtStartYear.addEventListener('change', calculate);
 
     // Privacy policy link
     const privacyPolicyLink = document.getElementById('privacyPolicyLink');
@@ -4776,6 +5010,8 @@ function formatPlanContextBlock(data) {
 - House: ${data.houseEnabled ? `${formatCompactCurrency(data.housePayment || 0)}/mo + ${formatCompactCurrency(data.houseBills || 0)} bills` : 'off'}
 - College/Tuition: ${data.collegeEnabled ? `${formatCompactCurrency(data.collegePayment || 0)}/mo × ${data.collegeLoanMonths || 0} mo` : 'off'}
 - Hospital/Medical: ${data.medicalEnabled ? `${formatCompactCurrency(data.medicalPayment || 0)}/mo × ${data.medicalLoanMonths || 0} mo` : 'off'}
+- Property Tax: ${data.propertyTaxEnabled ? `${formatCompactCurrency(data.propertyTaxPayment || 0)}/mo recurring` : 'off'}
+- Debt Payoff: ${data.debtEnabled ? `${formatCompactCurrency(data.debtPayment || 0)}/mo × ${data.debtLoanMonths || 0} mo` : 'off'}
 `;
 }
 
@@ -4909,7 +5145,7 @@ function localCannedReport(promptId, plan) {
     const lines = {
         viability: `**Viability report**\n\nCash flow: ${money(plan.monthlySavings)}/mo after majors.\nLifestyle savings rate (pre-purchase): ${rate.toFixed(1)}%.\n5-year mark: ${money(five)}.\n10-year mark: ${ten != null ? money(ten) : 'n/a'}.\n20-year mark: ${twenty != null ? money(twenty) : 'n/a'}.\n\n${five >= 0 ? 'Plan stays solvent at the 5-year checkpoint.' : 'Plan is underwater by year 5 — cut spend or delay purchases.'}`,
         cuts: `**Where to cut**\n\nTop categories:\n${(plan.budgetItems || []).slice().sort((a,b)=>b.amount-a.amount).slice(0,3).map((i,idx)=>`${idx+1}. ${i.name}: ${money(i.amount)}/mo`).join('\n') || 'No categories'}\n\nTrim the #1 category 10–15% first for the largest cash-flow lift.`,
-        purchases: `**Floor-blocker stress test**\n\nCar: ${plan.carEnabled ? money(plan.carPayment) + '/mo' : 'off'}\nHouse: ${plan.houseEnabled ? money(plan.housePayment) + '/mo + ' + money(plan.houseBills) + ' bills' : 'off'}\nCollege: ${plan.collegeEnabled ? money(plan.collegePayment) + '/mo' : 'off'}\nMedical: ${plan.medicalEnabled ? money(plan.medicalPayment) + '/mo' : 'off'}\n\nCombined major load: ${money((plan.carEnabled?plan.carPayment:0)+(plan.houseEnabled?plan.housePayment+plan.houseBills:0)+(plan.collegeEnabled?plan.collegePayment:0)+(plan.medicalEnabled?plan.medicalPayment:0))}/mo against income ${money(inc)}.`,
+        purchases: `**Floor-blocker stress test**\n\nCar: ${plan.carEnabled ? money(plan.carPayment) + '/mo' : 'off'}\nHouse: ${plan.houseEnabled ? money(plan.housePayment) + '/mo + ' + money(plan.houseBills) + ' bills' : 'off'}\nCollege: ${plan.collegeEnabled ? money(plan.collegePayment) + '/mo' : 'off'}\nMedical: ${plan.medicalEnabled ? money(plan.medicalPayment) + '/mo' : 'off'}\nProperty tax: ${plan.propertyTaxEnabled ? money(plan.propertyTaxPayment) + '/mo recurring' : 'off'}\nDebt payoff: ${plan.debtEnabled ? money(plan.debtPayment) + '/mo' : 'off'}\n\nCombined major load: ${money((plan.carEnabled?plan.carPayment:0)+(plan.houseEnabled?plan.housePayment+plan.houseBills:0)+(plan.collegeEnabled?plan.collegePayment:0)+(plan.medicalEnabled?plan.medicalPayment:0)+(plan.propertyTaxEnabled?plan.propertyTaxPayment:0)+(plan.debtEnabled?plan.debtPayment:0))}/mo against income ${money(inc)}.`,
         year5: `**Year 5 checkpoint**\n\nProjected cumulative savings: ${money(five)}.\nThis is the first highlight on your 20-year ledger (years 5, 10, and 20 are marked).\nKeep expense ratio and purchase payments stable to protect this number.`,
         year10: `**Year 10 outlook**\n\nProjected cumulative savings: ${ten != null ? money(ten) : 'run calculate to populate'}.\nYears 6–10 compound if cash flow stays positive after loans.\nThe ledger closes at the highlighted year-20 outcome.`,
         action: `**30-day action plan**\n\nWeek 1: Freeze discretionary in top category.\nWeek 2: Re-run viability after a 10% cut test.\nWeek 3: Stress purchase year timing ±1 year.\nWeek 4: Save a scenario and compare 5 / 10 / 20-year marks.`

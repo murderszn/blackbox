@@ -225,7 +225,7 @@
         <div class="panel stage-panel-card purchases-stage-card bento-shell">
             <header class="stage-dash-head">
                 <h2 class="stage-dash-title">Major Purchases</h2>
-                <p class="stage-dash-lede">Four fixed obligations layered on lifestyle spend. Toggle on to stress the plan.</p>
+                <p class="stage-dash-lede">Six fixed obligations layered on lifestyle spend. Toggle on to stress the plan.</p>
             </header>
             <div class="main-layout purchases-sym-grid">
                 <!-- Car -->
@@ -425,6 +425,96 @@
                     </div>
                 </article>
 
+                <!-- Property Tax -->
+                <article class="purchase-tile panel purchase-tile--propertytax" id="propertyTaxPanel"
+                    data-vd-tip
+                    data-tip-title="Property Tax · recurring floor"
+                    data-tip-body="Property tax is an ongoing annual bill that never fully retires while you own the home. Entered as an annual amount and spread monthly. Typical range is ~1–2% of home value per year — it rises over time as assessments climb.">
+                    <span class="purchase-tile-corners" aria-hidden="true"></span>
+                    <span class="purchase-tile-glyph" aria-hidden="true">
+                        <svg viewBox="0 0 64 64" width="28" height="28" fill="none" aria-hidden="true">
+                            <path d="M12 30L32 14l20 16" stroke="#C9A86C" stroke-width="1.5" stroke-linejoin="round"/>
+                            <path d="M18 28v20h28V28" stroke="#E8D5A3" stroke-width="1.5" stroke-linejoin="round"/>
+                            <path d="M28 48V36h8v12" stroke="#C9A86C" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <header class="purchase-tile-head">
+                        <span class="purchase-tile-index">05</span>
+                        <span class="purchase-tile-name">Property Tax</span>
+                        <button type="button" class="vd-tip-btn purchase-tip-btn" aria-label="Explain property tax rule" tabindex="0">?</button>
+                        <label class="purchase-tile-switch">
+                            <input type="checkbox" id="propertyTaxEnabled" aria-label="Include Property Tax">
+                            <span class="purchase-tile-switch-ui" aria-hidden="true"></span>
+                            <span class="purchase-tile-switch-label">Off</span>
+                        </label>
+                    </header>
+                    <div class="purchase-tile-hero">
+                        <span class="purchase-tile-hero-label">Est. monthly</span>
+                        <span class="payment-estimate-value purchase-tile-hero-value" id="propertyTaxPaymentDisplay">$0</span>
+                        <span class="purchase-tile-rule">Recurring</span>
+                    </div>
+                    <div class="purchase-tile-fields">
+                        <div class="form-group">
+                            <label class="form-label" for="propertyTaxAnnual">Annual bill</label>
+                            <input type="number" id="propertyTaxAnnual" class="form-input" value="4800" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="propertyTaxStartYear">Start year</label>
+                            <select id="propertyTaxStartYear" class="form-input" data-year-options data-default="0"></select>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Debt Payoff -->
+                <article class="purchase-tile panel purchase-tile--debt" id="debtPanel"
+                    data-vd-tip
+                    data-tip-title="Debt Payoff · floor blocker"
+                    data-tip-body="Model a large outstanding balance — credit-card debt or back income tax — as a payoff plan. Enter the balance, APR, and how many months you'll take to clear it. High-APR balances (cards near 20%+) cost the most; front-load payoff to reclaim cash flow.">
+                    <span class="purchase-tile-corners" aria-hidden="true"></span>
+                    <span class="purchase-tile-glyph" aria-hidden="true">
+                        <svg viewBox="0 0 64 64" width="28" height="28" fill="none" aria-hidden="true">
+                            <rect x="12" y="20" width="40" height="26" rx="3" stroke="#C9A86C" stroke-width="1.5"/>
+                            <path d="M12 28h40" stroke="#E8D5A3" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M20 38h10" stroke="#C9A86C" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <header class="purchase-tile-head">
+                        <span class="purchase-tile-index">06</span>
+                        <span class="purchase-tile-name">Debt Payoff</span>
+                        <button type="button" class="vd-tip-btn purchase-tip-btn" aria-label="Explain debt payoff rule" tabindex="0">?</button>
+                        <label class="purchase-tile-switch">
+                            <input type="checkbox" id="debtEnabled" aria-label="Include Debt Payoff">
+                            <span class="purchase-tile-switch-ui" aria-hidden="true"></span>
+                            <span class="purchase-tile-switch-label">Off</span>
+                        </label>
+                    </header>
+                    <div class="purchase-tile-hero">
+                        <span class="purchase-tile-hero-label">Est. monthly</span>
+                        <span class="payment-estimate-value purchase-tile-hero-value" id="debtPaymentDisplay">$0</span>
+                        <span class="purchase-tile-rule">Payoff plan</span>
+                    </div>
+                    <div class="purchase-tile-fields">
+                        <div class="form-group">
+                            <label class="form-label" for="debtBalance">Balance</label>
+                            <input type="number" id="debtBalance" class="form-input" value="15000" step="500">
+                        </div>
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label class="form-label" for="debtInterestRate">APR %</label>
+                                <input type="number" id="debtInterestRate" class="form-input" value="19.99" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="debtLoanMonths">Term mo</label>
+                                <input type="number" id="debtLoanMonths" class="form-input" value="36" step="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="debtStartYear">Start year</label>
+                            <select id="debtStartYear" class="form-input" data-year-options data-default="0"></select>
+                        </div>
+                    </div>
+                </article>
+
             </div>
         </div>
         </section>
@@ -490,7 +580,7 @@
 
                     <article class="core-metric monthly-cash-flow-metric vd-tile vd-tile--kpi" data-vd-tip
                         data-tip-title="Monthly cash flow"
-                        data-tip-body="Income minus lifestyle categories and every enabled major purchase (car, house, college, medical). This is your steady-state surplus each month after those payments.">
+                        data-tip-body="Income minus lifestyle categories and every enabled major purchase (car, house, college, medical, property tax, debt payoff). This is your steady-state surplus each month after those payments.">
                         <div class="vd-tile-top">
                             <span class="core-metric-label vd-tile-label">Monthly cash flow</span>
                             <button type="button" class="vd-tip-btn" aria-label="Explain monthly cash flow">?</button>
@@ -514,7 +604,7 @@
                 <div class="affordability-metrics viability-kpi-secondary vd-kpi-row" id="affordabilityMiniMetrics">
                     <article class="mini-metric vd-tile vd-tile--kpi" data-vd-tip
                         data-tip-title="Floor blockers"
-                        data-tip-body="Combined monthly payments from enabled major purchases: car, house (plus bills), college/tuition, and hospital/medical. These are the fixed floors under your cash flow.">
+                        data-tip-body="Combined monthly payments from enabled major purchases: car, house (plus bills), college/tuition, hospital/medical, property tax, and debt payoff. These are the fixed floors under your cash flow.">
                         <div class="vd-tile-top">
                             <span class="mini-metric-label vd-tile-label">Floor blockers</span>
                             <button type="button" class="vd-tip-btn" aria-label="Explain floor blockers">?</button>

@@ -9955,7 +9955,7 @@ html.stages-armed .stage-panel.stage-snap {
     min-height: 0 !important;
     height: 100% !important;
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     grid-template-rows: 1fr 1fr !important;
     gap: 8px !important;
     overflow: hidden !important;
@@ -11089,9 +11089,9 @@ html.bb-camera .stage-panel.is-stage-active .stage-panel-card {
     #stage-outro .outro-stage-card { padding-bottom: 84px !important; }
 }
 
-/* Four purchase tools only: exact 2 × 2 board after removing rules sidebar. */
+/* Six purchase tools: exact 3 × 2 board (car, house, college, medical, property tax, debt). */
 #stage-purchases .main-layout.purchases-sym-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
 }
 
