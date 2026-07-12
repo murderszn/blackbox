@@ -121,7 +121,7 @@
 
             <div class="header-banner-title">
                 <div class="header-banner-title-wrapper">
-                    <h1 class="header-banner-title-text">BLACKBOX</h1>
+                    <h1 class="header-banner-title-text brand-wordmark">BLACKBOX</h1>
                     <p class="header-banner-subtitle">Model the life you want — then see if income, spending, and major plans can hold up over time.</p>
                 </div>
                 <div class="hero-cta-row">
@@ -815,21 +815,6 @@
                 <span class="pollinations-key-status" id="pollinationsKeyStatus">Reports run securely through the BLACKBOX server.</span>
             </div>
 
-            <!-- Terminal always visible — fills with init lines when a run starts -->
-            <div class="ai-run-console is-idle" id="aiRunConsole" aria-live="polite" aria-busy="false">
-                <div class="ai-run-console-head">
-                    <span class="ai-run-console-title">blackbox · analysis</span>
-                    <span class="ai-run-console-pct" id="aiRunConsolePct">idle</span>
-                </div>
-                <div class="ai-run-console-log" id="aiRunConsoleLog">
-                    <div class="ai-run-console-line is-meta">awaiting run</div>
-                    <div class="ai-run-console-line">$ ready · press Run Analysis</div>
-                </div>
-                <div class="ai-run-bar" aria-hidden="true">
-                    <div class="ai-run-bar-fill" id="aiRunBarFill"></div>
-                </div>
-            </div>
-
             <div class="ai-stage-layout">
                 <div class="ai-analysis-preview">
                     <div class="ai-grade-section is-pending" id="aiGradeSection">
@@ -850,6 +835,22 @@
                             <span class="ai-grade-score" id="aiGradeScore">—/100</span>
                         </div>
                     </div>
+
+                    <!-- Terminal always visible — fills with kinetic init lines when a run starts -->
+                    <div class="ai-run-console is-idle" id="aiRunConsole" aria-live="polite" aria-busy="false">
+                        <div class="ai-run-console-head">
+                            <span class="ai-run-console-title">blackbox · analysis</span>
+                            <span class="ai-run-console-pct" id="aiRunConsolePct">idle</span>
+                        </div>
+                        <div class="ai-run-console-log" id="aiRunConsoleLog">
+                            <div class="ai-run-console-line is-meta">awaiting run</div>
+                            <div class="ai-run-console-line">$ ready · press Run Analysis</div>
+                        </div>
+                        <div class="ai-run-bar" aria-hidden="true">
+                            <div class="ai-run-bar-fill" id="aiRunBarFill"></div>
+                        </div>
+                    </div>
+
                     <div class="ai-insights" id="aiInsights">
                         <div class="ai-insight-item" data-report-section="goal">
                             <div class="ai-insight-icon">✓</div>
@@ -948,7 +949,7 @@
                                         <span class="ios-status-icons">●●●</span>
                                     </div>
                                     <div class="ios-app-header">
-                                        <span class="ios-app-mark">BLACKBOX</span>
+                                        <span class="ios-app-mark brand-wordmark">BLACKBOX</span>
                                         <span class="ios-app-badge">Mobile</span>
                                     </div>
                                     <div class="ios-app-hero">
@@ -1035,7 +1036,7 @@
             </header>
             <div class="outro-stage-inner">
                 <div class="footer-outro-brand">
-                    <div class="footer-brand">BLACKBOX</div>
+                    <div class="footer-brand brand-wordmark">BLACKBOX</div>
                     <p class="footer-pitch">Cash flow first: model income, spend, and the taxes of life — then stress-test the plan with AI. Honest math, not spreadsheet SaaS.</p>
                 </div>
                 <div class="footer-grid outro-footer-grid">

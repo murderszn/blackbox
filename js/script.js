@@ -2444,7 +2444,7 @@ function updateSavingsChart(labels, data) {
             },
             plugins: {
                 legend: {
-                    display: true,
+                    display: window.innerWidth >= 560,
                     position: 'top',
                     labels: {
                         color: '#e8d5a3',
@@ -2750,8 +2750,8 @@ function updateSpendingChart(labels, budgetItems, carPayment, carMonth, carMonth
             },
             plugins: {
                 legend: {
-                    display: true,
-                    position: window.innerWidth < 480 ? 'bottom' : 'top',
+                    display: window.innerWidth >= 700,
+                    position: 'top',
                     labels: { 
                         color: '#e8d5a3',
                         font: { family: "'JetBrains Mono', ui-monospace, monospace", size: window.innerWidth < 480 ? 11 : 13, weight: 500 }, 
@@ -4120,9 +4120,32 @@ function appendAIRunLog(text, kind = '') {
     if (!log) return;
     const line = document.createElement('div');
     line.className = 'ai-run-console-line' + (kind ? ` is-${kind}` : '');
-    line.textContent = text;
     log.appendChild(line);
-    log.scrollTop = log.scrollHeight;
+
+    const shouldType =
+        document.getElementById('aiRunConsole')?.classList.contains('is-active')
+        && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        && text.length < 90;
+
+    if (!shouldType) {
+        line.textContent = text;
+        log.scrollTop = log.scrollHeight;
+        return;
+    }
+
+    line.classList.add('is-typing');
+    let i = 0;
+    const tick = () => {
+        i += Math.max(1, Math.floor(text.length / 28));
+        line.textContent = text.slice(0, i);
+        log.scrollTop = log.scrollHeight;
+        if (i < text.length) {
+            window.setTimeout(tick, 18 + Math.random() * 24);
+        } else {
+            line.classList.remove('is-typing');
+        }
+    };
+    tick();
 }
 
 function resetAIRunConsoleIdle() {
@@ -4319,14 +4342,14 @@ Provide a comprehensive financial viability report in JSON format with this exac
   "grade": "A|B+|B|C+|C|D|F",
   "score": 0-100,
   "insights": [
-    { "icon": "✓", "title": "Executive diagnosis", "text": "2-3 sentence evidence-based summary" },
-    { "icon": "!", "title": "Primary risk", "text": "2-3 sentence explanation with relevant numbers" },
-    { "icon": "→", "title": "Measurable goal", "text": "A quantified outcome and timeframe" },
-    { "icon": "→", "title": "Immediate next step", "text": "A specific first action and expected impact" }
+    { "icon": "✓", "title": "Executive diagnosis", "text": "One concise sentence with the key number. Max 180 characters." },
+    { "icon": "!", "title": "Primary risk", "text": "One concise sentence with the relevant risk number. Max 180 characters." },
+    { "icon": "→", "title": "Measurable goal", "text": "One quantified outcome and timeframe. Max 180 characters." },
+    { "icon": "→", "title": "Immediate next step", "text": "One specific first action and expected impact. Max 180 characters." }
   ]
 }
 
-Be professional and concise. Return ONLY valid JSON — no markdown fences, no preamble.`;
+Be professional and concise. Keep every insight text under 180 characters so it fits in the dashboard cards. Return ONLY valid JSON — no markdown fences, no preamble.`;
 }
 
 function parseAIAnalysisContent(content) {
@@ -4481,6 +4504,13 @@ function initAIAnalysis() {
     });
 }
 
+function fitAIInsightText(text, max = 210) {
+    const value = String(text || '').replace(/\s+/g, ' ').trim();
+    if (value.length <= max) return value;
+    const clipped = value.slice(0, max - 1);
+    return clipped.slice(0, Math.max(0, clipped.lastIndexOf(' '))).trim() + '…';
+}
+
 function updateAIDisplay(grade, score, insights) {
     const section = document.getElementById('aiGradeSection');
     const letter = document.getElementById('aiGradeLetter');
@@ -4503,7 +4533,7 @@ function updateAIDisplay(grade, score, insights) {
             const insight = insights[index];
             item.querySelector('.ai-insight-icon').textContent = insight.icon || '✓';
             item.querySelector('.ai-insight-title').textContent = insight.title || 'Analysis';
-            item.querySelector('.ai-insight-text').textContent = insight.text || 'No insight available.';
+            item.querySelector('.ai-insight-text').textContent = fitAIInsightText(insight.text || 'No insight available.');
         }
     });
 }

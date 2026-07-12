@@ -11089,10 +11089,14 @@ html.bb-camera .stage-panel.is-stage-active .stage-panel-card {
     #stage-outro .outro-stage-card { padding-bottom: 84px !important; }
 }
 
-/* Six purchase tools: exact 3 × 2 board (car, house, college, medical, property tax, debt). */
-#stage-purchases .main-layout.purchases-sym-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+/* Six purchase tools: exact 3 × 2 board (car, house, college, medical, property tax, debt).
+   Desktop only — below 901px the responsive rules collapse this to a single scrolling column,
+   so this high-specificity rule must not leak down and re-impose 3 cramped columns. */
+@media (min-width: 901px) {
+    #stage-purchases .main-layout.purchases-sym-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+    }
 }
 
 /* Six supporting viability metrics: two matching three-column bands. */
@@ -11289,3 +11293,1451 @@ html.bb-camera .stage-panel.is-stage-active .stage-panel-card {
 .stage-panel .chart-title::after {
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 90%) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE SCROLL — override all overflow:hidden / max-height
+   clips so content flows and scrolls naturally on small screens
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+    /* Stage panels: allow natural height instead of viewport-locked clip */
+    .stage-panel,
+    .stage-panel.stage-snap,
+    .stage-panel.stage-free,
+    #stage-planning.stage-panel,
+    #stage-purchases.stage-panel,
+    #stage-viability.stage-panel,
+    #stage-budget.stage-panel,
+    #stage-savings.stage-panel,
+    #stage-spending.stage-panel,
+    #stage-treemap.stage-panel,
+    #stage-ledger.stage-panel,
+    #stage-ai.stage-panel {
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    /* Stage cards: let content expand beyond one viewport */
+    .stage-panel > .stage-panel-card,
+    .stage-panel > .panel.stage-panel-card,
+    .stage-panel > .chart-container.stage-panel-card,
+    #stage-planning .planning-stage-card,
+    #stage-purchases .purchases-stage-card,
+    #stage-viability .viability-dashboard,
+    #stage-viability .affordability-banner,
+    #stage-viability .vd-dash.viability-dashboard,
+    #stage-budget .chart-container.stage-panel-card,
+    #stage-savings .chart-container.stage-panel-card,
+    #stage-spending .chart-container.stage-panel-card,
+    #stage-treemap .chart-container.stage-panel-card,
+    #stage-ledger .chart-container.stage-panel-card,
+    #stage-ai .ai-analysis-panel,
+    #stage-ai .stage-panel-card,
+    #stage-app .app-stage-card,
+    #stage-outro .outro-stage-card {
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    /* Bento shells: no longer clipped on mobile */
+    .bento-shell,
+    .stage-panel > .bento-shell,
+    #stage-app .app-stage-card.bento-shell,
+    #stage-purchases .purchases-stage-card.bento-shell,
+    #stage-viability .viability-dashboard.bento-shell {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    /* Bento cells: allow content to show */
+    .bento-cell,
+    .bento-cell-inner {
+        overflow: visible !important;
+    }
+
+    /* Purchases grid: single-column scrollable, not clipped */
+    #stage-purchases .purchases-sym-grid,
+    #stage-purchases .main-layout.purchases-sym-grid {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: none !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    #stage-purchases .purchases-sym-grid > .panel,
+    #stage-purchases .purchases-sym-grid > #carPanel,
+    #stage-purchases .purchases-sym-grid > #housePanel,
+    #stage-purchases .purchases-sym-grid > #collegePanel,
+    #stage-purchases .purchases-sym-grid > #medicalPanel,
+    #stage-purchases .purchase-tile {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+    #stage-purchases .purchase-tile-fields {
+        overflow: visible !important;
+    }
+
+    /* Viability board: single-column scrollable */
+    #stage-viability .vd-board {
+        overflow: visible !important;
+    }
+
+    /* Planning mixing board: auto rows, scrollable */
+    #stage-planning .mixing-board-container {
+        grid-auto-rows: minmax(min-content, auto) !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+    #stage-planning .income-budget-content,
+    #stage-planning .income-budget-content.expanded {
+        overflow: visible !important;
+    }
+
+    /* Chart wrappers: auto height */
+    .stage-panel .chart-wrapper,
+    .stage-panel .treemap-container,
+    .stage-panel .budget-pie-container,
+    .stage-panel .budget-pie-split,
+    .stage-panel .table-scroll {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+    }
+
+    /* Tables: horizontal scroll within their container */
+    .stage-panel .table-scroll {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Viability dash: no inner clip */
+    #stage-viability .vd-dash.viability-dashboard {
+        overflow: visible !important;
+    }
+
+    /* Budget donut: don't clip the chart */
+    #stage-budget .budget-dash-donut.budget-pie-chart-stage {
+        height: auto !important;
+        max-height: none !important;
+    }
+    #stage-budget .budget-cat-board {
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    /* Ensure global scroll works */
+    html {
+        overflow-x: clip;
+        overflow-y: auto;
+        scroll-behavior: auto;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE STACK — every multi-column layout → single column
+   Intentionally AFTER all cascade rules to win specificity
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+    /* ── Planning ───────────────────────────────────────── */
+    .planning-topbar {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    .planning-toolbar {
+        grid-template-columns: 1fr !important;
+    }
+    .planning-scenario-bar {
+        grid-template-columns: 1fr !important;
+        gap: 6px !important;
+    }
+    #stage-planning .mixing-board-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    /* ── Viability board — single-column everything ──────── */
+    #stage-viability .vd-board {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto !important;
+    }
+    #stage-viability .vd-board > * {
+        grid-column: 1 / -1 !important;
+        grid-row: auto !important;
+    }
+    #stage-viability .affordability-core-metrics,
+    #stage-viability .affordability-metrics {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── Budget pie — donut over legend ──────────────────── */
+    #stage-budget .budget-pie-chart-wrapper,
+    #stage-budget .budget-pie-split-grid,
+    #stage-budget .budget-dash-grid {
+        grid-template-columns: 1fr !important;
+    }
+    #stage-budget .budget-dash-head {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    #stage-budget .budget-dash-totals {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+
+    /* ── Purchases — single column ──────────────────────── */
+    #stage-purchases .purchases-sym-grid,
+    #stage-purchases .main-layout.purchases-sym-grid {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: none !important;
+    }
+
+    /* ── AI stage — stack preview under chat ─────────────── */
+    #stage-ai .ai-stage-layout {
+        grid-template-columns: 1fr !important;
+    }
+    #stage-ai .ai-report-index {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── App stage — single column everything ────────────── */
+    #stage-app .app-stage-head,
+    #stage-outro .outro-stage-head {
+        grid-template-columns: 1fr !important;
+        gap: 4px !important;
+    }
+    #stage-app .app-stage-head .stage-dash-lede,
+    #stage-outro .outro-stage-head .stage-dash-lede {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+        text-align: left !important;
+        max-width: none !important;
+    }
+    #stage-app .app-mobile-layout,
+    #stage-app .bento-grid--app,
+    .app-stage-grid {
+        grid-template-columns: 1fr !important;
+    }
+    #stage-app .app-launch-signup-form,
+    #stage-app .app-waitlist-form {
+        grid-template-columns: 1fr !important;
+    }
+    #stage-app .bento-cell--span-hero,
+    #stage-app .bento-cell--span-signup {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+    }
+
+    /* ── Outro / footer — all single column ──────────────── */
+    #stage-outro .outro-stage-inner {
+        grid-template-rows: auto auto auto auto !important;
+    }
+    #stage-outro .footer-outro-brand {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+    }
+    #stage-outro .footer-grid,
+    #stage-outro .outro-footer-grid {
+        grid-template-columns: 1fr !important;
+    }
+    #stage-outro .footer-bottom {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+    }
+
+    /* ── Summary grid ────────────────────────────────────── */
+    .summary-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── Viability insight row ───────────────────────────── */
+    .viability-insight-row {
+        grid-template-columns: 1fr !important;
+    }
+    .viability-insight-card {
+        border-right: none !important;
+        border-bottom: 1px solid var(--border) !important;
+    }
+    .viability-insight-card:last-child {
+        border-bottom: none !important;
+    }
+
+    /* ── Chart walkthrough body ──────────────────────────── */
+    .chart-walkthrough-body {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── Stage dash heads ────────────────────────────────── */
+    .stage-dash-head {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── Auto-fit grids: force single column ─────────────── */
+    .instructions-content,
+    .ai-insights {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE VISUAL OPTIMIZATION PASS — final cascade
+   Natural document flow on phones, no viewport-flex collapse/overlap.
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+    html.stages-armed,
+    html.bb-smooth.stages-armed {
+        scroll-snap-type: none !important;
+    }
+
+    .content,
+    .app-container,
+    .financial-planning-container {
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .stage-panel,
+    .stage-panel.stage-snap,
+    #stage-planning.stage-panel,
+    #stage-purchases.stage-panel,
+    #stage-viability.stage-panel,
+    #stage-budget.stage-panel,
+    #stage-savings.stage-panel,
+    #stage-spending.stage-panel,
+    #stage-treemap.stage-panel,
+    #stage-ledger.stage-panel,
+    #stage-ai.stage-panel,
+    #stage-app.stage-panel,
+    #stage-outro.stage-panel {
+        display: block !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        padding: 76px 0 18px !important;
+        overflow: visible !important;
+        scroll-margin-top: 76px !important;
+    }
+
+    .stage-panel > .stage-panel-card,
+    .stage-panel > .panel.stage-panel-card,
+    .stage-panel > .chart-container.stage-panel-card,
+    #stage-planning .planning-stage-card,
+    #stage-purchases .purchases-stage-card,
+    #stage-viability .viability-dashboard,
+    #stage-viability .affordability-banner,
+    #stage-budget .chart-container.stage-panel-card,
+    #stage-savings .chart-container.stage-panel-card,
+    #stage-spending .chart-container.stage-panel-card,
+    #stage-treemap .chart-container.stage-panel-card,
+    #stage-ledger .chart-container.stage-panel-card,
+    #stage-ai .ai-analysis-panel,
+    #stage-ai .stage-panel-card,
+    #stage-app .app-stage-card,
+    #stage-outro .outro-stage-card {
+        display: block !important;
+        flex: none !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 18px 16px 72px !important;
+    }
+
+    .stage-panel-card::before,
+    .chart-container.stage-panel-card::before,
+    .purchases-stage-card::before,
+    .planning-stage-card::before,
+    .ai-analysis-panel.stage-panel-card::before,
+    .app-stage-card::before,
+    .outro-stage-card::before {
+        inset: 8px !important;
+        opacity: 0.22 !important;
+    }
+
+    .stage-panel .chart-title,
+    .stage-panel .stage-dash-title,
+    .stage-panel .planning-heading,
+    .stage-panel .ai-analysis-title,
+    .stage-panel .affordability-title,
+    .stage-panel .vd-title {
+        font-size: clamp(1.45rem, 8vw, 2.1rem) !important;
+        line-height: 1.02 !important;
+        margin-bottom: 6px !important;
+    }
+
+    .stage-panel .chart-description,
+    .stage-panel .stage-dash-lede,
+    .stage-panel .affordability-subtitle {
+        font-size: 0.82rem !important;
+        line-height: 1.35 !important;
+        max-width: none !important;
+    }
+
+    #stage-planning .planning-stage-card {
+        padding-top: 18px !important;
+    }
+    #stage-planning .planning-toolbar,
+    #stage-planning .income-budget-content,
+    #stage-planning .income-budget-content.expanded,
+    #stage-planning .mixing-board-container {
+        display: grid !important;
+        flex: none !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+    #stage-planning .mixing-board-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+    }
+
+    #stage-purchases .purchases-stage-card {
+        padding-top: 18px !important;
+    }
+    #stage-purchases .purchases-stage-card > .panel-title {
+        font-size: clamp(1.6rem, 8vw, 2.25rem) !important;
+        line-height: 1 !important;
+        margin: 0 0 4px !important;
+    }
+    #stage-purchases .purchases-sym-grid,
+    #stage-purchases .main-layout.purchases-sym-grid {
+        display: grid !important;
+        flex: none !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: none !important;
+        gap: 12px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+    #stage-purchases .purchase-tile,
+    #stage-purchases .purchases-sym-grid > .panel {
+        display: block !important;
+        flex: none !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 16px 14px !important;
+    }
+    #stage-purchases .purchase-tile-head {
+        display: grid !important;
+        grid-template-columns: auto minmax(0, 1fr) auto auto !important;
+        gap: 8px !important;
+        align-items: center !important;
+    }
+    #stage-purchases .purchase-tile-name {
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+    }
+    #stage-purchases .purchase-tile-hero-value,
+    #stage-purchases .payment-estimate-value {
+        font-size: clamp(2.6rem, 18vw, 4.2rem) !important;
+        line-height: 0.95 !important;
+        max-width: 100% !important;
+        overflow-wrap: anywhere !important;
+    }
+    #stage-purchases .purchase-tile-fields {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px 10px !important;
+        height: auto !important;
+        overflow: visible !important;
+        padding-right: 0 !important;
+    }
+    #stage-purchases .purchase-tile-fields .form-group,
+    #stage-purchases .purchase-tile-fields .input-group {
+        min-width: 0 !important;
+    }
+
+    #stage-viability .vd-board,
+    #stage-viability .affordability-core-metrics,
+    #stage-viability .affordability-metrics {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .stage-panel .chart-wrapper,
+    .stage-panel .budget-pie-container,
+    .stage-panel .treemap-container {
+        min-height: 300px !important;
+        height: 320px !important;
+    }
+    #stage-budget .budget-pie-split,
+    #stage-budget .budget-pie-split-grid,
+    #stage-budget .budget-dash-grid,
+    #stage-ai .ai-stage-layout,
+    #stage-app .bento-grid--app {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .journey-film {
+        max-width: calc(100vw - 24px) !important;
+        left: 12px !important;
+        bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    #stage-purchases .purchases-stage-card.stage-panel-card.bento-shell,
+    #stage-purchases .panel.purchases-stage-card.stage-panel-card,
+    #stage-budget .chart-container.stage-panel-card.bento-shell,
+    #stage-savings .chart-container.stage-panel-card.bento-shell,
+    #stage-spending .chart-container.stage-panel-card.bento-shell,
+    #stage-treemap .chart-container.stage-panel-card.bento-shell,
+    #stage-ledger .chart-container.stage-panel-card.bento-shell,
+    #stage-ai .panel.ai-analysis-panel.stage-panel-card,
+    #stage-viability .vd-dash.viability-dashboard.bento-shell {
+        display: block !important;
+        flex: none !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    #stage-purchases .main-layout.purchases-sym-grid,
+    #stage-purchases .purchases-sym-grid {
+        display: grid !important;
+        flex: none !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-auto-rows: auto !important;
+        grid-template-rows: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        align-items: stretch !important;
+    }
+
+    #stage-purchases .purchase-tile.panel,
+    #stage-purchases .purchases-sym-grid > .panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+}
+
+@media (max-width: 900px) {
+    html.bb-camera .stage-panel,
+    html.bb-camera .stage-panel.stage-snap,
+    html.bb-camera .stage-panel-card,
+    html.bb-camera .chart-container.stage-panel-card,
+    html.journey-live .stage-panel,
+    html.journey-live .stage-panel-card {
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+        visibility: visible !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .bento-shell,
+    #stage-purchases .purchases-stage-card.bento-shell,
+    #stage-viability .viability-dashboard.bento-shell,
+    #stage-app .app-stage-card.bento-shell,
+    .bento-cell,
+    .bento-cell-inner {
+        container-type: normal !important;
+        contain: none !important;
+    }
+}
+
+@media (max-width: 900px) {
+    #stage-purchases .main-layout.purchases-sym-grid,
+    #stage-purchases .purchases-sym-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: repeat(6, auto) !important;
+        grid-auto-rows: auto !important;
+        align-content: start !important;
+        overflow: visible !important;
+    }
+    #stage-purchases .purchase-tile.panel,
+    #stage-purchases .purchase-tile,
+    #stage-purchases .purchases-sym-grid > .panel {
+        display: block !important;
+        height: auto !important;
+        min-height: max-content !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+}
+
+@media (max-width: 900px) {
+    #stage-purchases .purchase-tile,
+    #stage-purchases .purchases-sym-grid > .panel,
+    #stage-viability .viability-mega,
+    #stage-viability .core-metric,
+    #stage-viability .mini-metric {
+        container-type: normal !important;
+        contain: none !important;
+    }
+}
+
+@media (max-width: 900px) {
+    html,
+    body {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    .header-banner-title-text {
+        font-size: clamp(2.25rem, 14vw, 4.25rem) !important;
+        letter-spacing: 0.04em !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        text-align: center !important;
+    }
+    #stage-purchases .form-input,
+    #stage-purchases .input-group,
+    #stage-purchases .purchase-tile-fields * {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GRAPH + VIABILITY PRECISION PASS
+   Mobile charts get a real render box; viability bento keeps exact lattice.
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+    /* Remove size containers from chart parents: cqh/cqw collapsed donut to 0px. */
+    #stage-budget .budget-dash-donut.budget-pie-chart-stage,
+    #stage-budget .budget-donut-frame,
+    #stage-savings .chart-wrapper,
+    #stage-spending .chart-wrapper,
+    #stage-treemap .treemap-container {
+        container-type: normal !important;
+        contain: none !important;
+    }
+
+    /* Chart cards: natural mobile flow with consistent bento gutters. */
+    #stage-budget .chart-container.stage-panel-card,
+    #stage-savings .chart-container.stage-panel-card,
+    #stage-spending .chart-container.stage-panel-card,
+    #stage-treemap .chart-container.stage-panel-card {
+        display: block !important;
+        padding: 18px 16px 72px !important;
+        overflow: visible !important;
+    }
+
+    #stage-budget .budget-dash-head,
+    #stage-spending .chart-header-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 10px !important;
+        align-items: start !important;
+    }
+
+    #stage-budget .budget-dash-totals {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        width: 100% !important;
+    }
+
+    #stage-budget .budget-pie-container,
+    #stage-budget .budget-pie-chart-wrapper,
+    #stage-budget .budget-dash-grid {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 12px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+
+    #stage-budget .budget-dash-donut.budget-pie-chart-stage,
+    #stage-budget .budget-donut-frame {
+        width: min(100%, 330px) !important;
+        height: min(76vw, 330px) !important;
+        min-height: 260px !important;
+        max-height: 330px !important;
+        aspect-ratio: 1 / 1 !important;
+        margin: 0 auto !important;
+        display: grid !important;
+        place-items: center !important;
+    }
+
+    #stage-budget .budget-pie-canvas,
+    #budgetPieChart {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 260px !important;
+        min-height: 260px !important;
+    }
+
+    #stage-budget .budget-dash-side,
+    #stage-budget .budget-dash-board,
+    #stage-budget .budget-pie-legend,
+    #stage-budget .budget-cat-board {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    #stage-budget .budget-pie-key,
+    #stage-budget .budget-cat-board {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 6px !important;
+    }
+
+    #stage-savings .chart-wrapper,
+    #stage-spending .chart-wrapper,
+    #stage-treemap .treemap-container {
+        width: 100% !important;
+        height: clamp(280px, 72vw, 360px) !important;
+        min-height: 280px !important;
+        max-height: 360px !important;
+        padding: 8px !important;
+        overflow: hidden !important;
+    }
+
+    #stage-savings canvas,
+    #stage-spending canvas,
+    #stage-treemap .treemap-svg {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        display: block !important;
+    }
+
+    #stage-treemap .treemap-legend {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 6px !important;
+        max-height: none !important;
+        overflow: visible !important;
+        margin-top: 10px !important;
+    }
+
+    .chart-scale-toggle {
+        justify-self: start !important;
+        margin-top: 0 !important;
+    }
+}
+
+/* Viability / “Can You Afford This Lifestyle” — exact bento lattice. */
+#stage-viability .vd-board,
+#stage-viability .affordability-core-metrics,
+#stage-viability .affordability-metrics {
+    align-items: stretch !important;
+    justify-items: stretch !important;
+}
+#stage-viability .vd-tile,
+#stage-viability .core-metric,
+#stage-viability .mini-metric {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+#stage-viability .vd-tile-value,
+#stage-viability .core-metric-value,
+#stage-viability .mini-metric-value {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    font-variant-numeric: tabular-nums !important;
+}
+
+@media (min-width: 901px) {
+    #stage-viability .vd-board {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        grid-template-rows: minmax(0, 1.15fr) repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+    #stage-viability .vd-board > .vd-tile--hero:nth-child(1) { grid-column: 1 / 3 !important; }
+    #stage-viability .vd-board > .vd-tile--hero:nth-child(2) { grid-column: 3 / 5 !important; }
+    #stage-viability .vd-board > #affordabilityCoreMetrics,
+    #stage-viability .vd-board > #affordabilityMiniMetrics {
+        grid-column: 1 / 5 !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+}
+
+@media (max-width: 900px) {
+    #stage-viability .vd-dash.viability-dashboard.bento-shell {
+        padding: 18px 16px 72px !important;
+        overflow: visible !important;
+    }
+    #stage-viability .vd-board {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        grid-auto-rows: auto !important;
+        gap: 8px !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    #stage-viability .vd-board > .vd-tile--hero {
+        grid-column: auto !important;
+        min-height: 148px !important;
+        padding: 14px 12px !important;
+    }
+    #stage-viability .vd-board > #affordabilityCoreMetrics,
+    #stage-viability .vd-board > #affordabilityMiniMetrics {
+        grid-column: 1 / -1 !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    #stage-viability .vd-tile,
+    #stage-viability .core-metric,
+    #stage-viability .mini-metric {
+        min-height: 126px !important;
+        padding: 12px !important;
+    }
+    #stage-viability .vd-tile--hero .vd-tile-value,
+    #stage-viability .vd-tile--hero .viability-mega-value {
+        font-size: clamp(2.05rem, 11vw, 3.2rem) !important;
+        letter-spacing: -0.06em !important;
+    }
+    #stage-viability .vd-tile--kpi .vd-tile-value,
+    #stage-viability .core-metric-value,
+    #stage-viability .mini-metric-value {
+        font-size: clamp(1.55rem, 8vw, 2.35rem) !important;
+        letter-spacing: -0.055em !important;
+    }
+    #stage-viability .vd-tile-label,
+    #stage-viability .core-metric-label,
+    #stage-viability .mini-metric-label {
+        font-size: 0.58rem !important;
+        letter-spacing: 0.14em !important;
+    }
+}
+
+/* Mobile viability correction: full-width hero bento, two-column KPI lattice. */
+@media (max-width: 900px) {
+    #stage-viability .vd-board > .vd-tile--hero {
+        grid-column: 1 / -1 !important;
+        min-height: 154px !important;
+        width: 100% !important;
+    }
+    #stage-viability .vd-tile,
+    #stage-viability .core-metric,
+    #stage-viability .mini-metric {
+        align-items: stretch !important;
+    }
+    #stage-viability .vd-tile-value,
+    #stage-viability .core-metric-value,
+    #stage-viability .mini-metric-value {
+        font-size: clamp(1.35rem, 7.2vw, 2.05rem) !important;
+        line-height: 1 !important;
+    }
+    #stage-viability .vd-tile--hero .vd-tile-value,
+    #stage-viability .vd-tile--hero .viability-mega-value {
+        font-size: clamp(2.65rem, 16vw, 4.6rem) !important;
+    }
+    #stage-viability .vd-tile-label,
+    #stage-viability .core-metric-label,
+    #stage-viability .mini-metric-label {
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        line-height: 1.15 !important;
+    }
+    #stage-viability .core-metric-status,
+    #stage-viability .mini-metric-status,
+    #stage-viability .vd-chip {
+        max-width: 100% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}
+
+@media (max-width: 900px) {
+    #stage-viability .vd-board > .vd-tile--hero:nth-child(1),
+    #stage-viability .vd-board > .vd-tile--hero:nth-child(2),
+    #stage-viability .vd-board > .vd-tile--hero:nth-of-type(1),
+    #stage-viability .vd-board > .vd-tile--hero:nth-of-type(2) {
+        grid-column: 1 / -1 !important;
+        grid-row: auto !important;
+        width: 100% !important;
+    }
+    #stage-viability .vd-board > #affordabilityCoreMetrics,
+    #stage-viability .vd-board > #affordabilityMiniMetrics {
+        grid-column: 1 / -1 !important;
+        grid-row: auto !important;
+        width: 100% !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AI REPORT STUDIO REDESIGN — terminal + analyst workspace
+   ═══════════════════════════════════════════════════════════ */
+#stage-ai .ai-analysis-panel.stage-panel-card {
+    --ai-gap: 10px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--ai-gap) !important;
+    padding: clamp(14px, 2vh, 22px) clamp(18px, 2vw, 30px) 84px !important;
+    overflow: hidden !important;
+}
+#stage-ai .ai-analysis-header {
+    flex: 0 0 auto !important;
+    padding: 0 0 10px !important;
+    border-bottom: 1px solid rgba(201,168,108,.16) !important;
+}
+#stage-ai .ai-analysis-title-wrapper {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+#stage-ai .ai-analysis-title {
+    font-family: var(--font-display) !important;
+    font-size: clamp(1.35rem, 2.2vw, 2rem) !important;
+    letter-spacing: .035em !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+}
+#stage-ai .ai-analysis-title::after {
+    content: "REPORT STUDIO · LIVE MODEL INTERPRETER";
+    display: block;
+    margin-top: 7px;
+    font-family: var(--font-data);
+    font-size: .58rem;
+    letter-spacing: .18em;
+    color: rgba(232,213,163,.42);
+}
+#stage-ai .ai-service-strip {
+    flex: 0 0 auto !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    gap: 12px !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 9px 12px !important;
+    border: 1px solid rgba(201,168,108,.13) !important;
+    background: rgba(0,0,0,.22) !important;
+}
+#stage-ai .ai-stage-layout {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(320px, .86fr) minmax(0, 1.14fr) !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+}
+#stage-ai .ai-analysis-preview,
+#stage-ai .ai-report-studio {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    border: 1px solid rgba(201,168,108,.14) !important;
+    background:
+        linear-gradient(180deg, rgba(232,213,163,.028), transparent 32%),
+        rgba(0,0,0,.24) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.018) !important;
+}
+#stage-ai .ai-analysis-preview {
+    display: grid !important;
+    grid-template-rows: auto minmax(140px, .78fr) minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    padding: 12px !important;
+    overflow: hidden !important;
+}
+#stage-ai .ai-grade-section {
+    margin: 0 !important;
+    padding: 12px !important;
+    border: 1px solid rgba(201,168,108,.13) !important;
+    background: rgba(0,0,0,.26) !important;
+}
+#stage-ai .ai-grade-label {
+    text-align: left !important;
+    font-family: var(--font-data) !important;
+    letter-spacing: .18em !important;
+    color: rgba(232,213,163,.55) !important;
+}
+#stage-ai .ai-grade-display {
+    display: grid !important;
+    grid-template-columns: auto minmax(0,1fr) auto !important;
+    gap: 12px !important;
+    align-items: center !important;
+}
+#stage-ai .ai-run-console {
+    position: relative !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    padding: 0 !important;
+    display: grid !important;
+    grid-template-rows: auto minmax(0,1fr) auto !important;
+    border: 1px solid rgba(201,168,108,.16) !important;
+    background:
+        linear-gradient(90deg, rgba(201,168,108,.05) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(201,168,108,.04) 1px, transparent 1px),
+        rgba(2,2,2,.72) !important;
+    background-size: 28px 28px, 28px 28px, auto !important;
+    overflow: hidden !important;
+}
+#stage-ai .ai-run-console::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, rgba(232,213,163,.045) 50%, transparent 100%);
+    transform: translateY(-100%);
+    animation: aiScanline 4.8s linear infinite;
+    opacity: .65;
+}
+@keyframes aiScanline { to { transform: translateY(100%); } }
+#stage-ai .ai-run-console-head {
+    padding: 10px 12px !important;
+    border-bottom: 1px solid rgba(201,168,108,.16) !important;
+    background: rgba(0,0,0,.32) !important;
+}
+#stage-ai .ai-run-console-title::before {
+    content: "●";
+    color: #8fd49a;
+    margin-right: 8px;
+    text-shadow: 0 0 12px rgba(143,212,154,.65);
+}
+#stage-ai .ai-run-console-log {
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 12px !important;
+    overflow: auto !important;
+    font-size: .72rem !important;
+    line-height: 1.65 !important;
+}
+#stage-ai .ai-run-console-line {
+    color: rgba(244,239,230,.68) !important;
+    text-shadow: 0 0 12px rgba(232,213,163,.08);
+}
+#stage-ai .ai-run-console-line.is-typing::after {
+    content: "_";
+    color: var(--gold-soft);
+    animation: terminalCaret .75s steps(1,end) infinite;
+}
+@keyframes terminalCaret { 50% { opacity: 0; } }
+#stage-ai .ai-run-bar {
+    height: 3px !important;
+    background: rgba(201,168,108,.08) !important;
+}
+#stage-ai .ai-run-bar-fill {
+    background: linear-gradient(90deg, #8a7040, #e8d5a3) !important;
+    box-shadow: 0 0 18px rgba(232,213,163,.35) !important;
+}
+#stage-ai .ai-insights {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+}
+#stage-ai .ai-insight-item {
+    min-height: 0 !important;
+    padding: 10px !important;
+    border: 1px solid rgba(201,168,108,.12) !important;
+    background: rgba(0,0,0,.18) !important;
+}
+#stage-ai .ai-insight-title {
+    font-family: var(--font-data) !important;
+    font-size: .68rem !important;
+    letter-spacing: .14em !important;
+    text-transform: uppercase !important;
+}
+#stage-ai .ai-insight-text {
+    font-size: .68rem !important;
+    line-height: 1.35 !important;
+}
+#stage-ai .ai-analysis-footer {
+    margin: 0 !important;
+    padding: 8px 0 0 !important;
+    border-top: 1px solid rgba(201,168,108,.1) !important;
+}
+#stage-ai .ai-report-studio {
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0,1fr) auto !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+#stage-ai .ai-report-header {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 12px !important;
+    align-items: center !important;
+    padding: 12px 14px !important;
+    border-bottom: 1px solid rgba(201,168,108,.16) !important;
+}
+#stage-ai .ai-chat-title {
+    font-family: var(--font-display) !important;
+    font-size: clamp(1.15rem, 1.5vw, 1.55rem) !important;
+    letter-spacing: .04em !important;
+}
+#stage-ai .ai-chat-title::after {
+    content: "Bundle, compare, export";
+    display: block;
+    margin-top: 4px;
+    font-family: var(--font-data);
+    font-size: .55rem;
+    letter-spacing: .16em;
+    color: rgba(244,239,230,.38);
+    text-transform: uppercase;
+}
+#stage-ai .ai-report-head-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+    gap: 6px !important;
+}
+#stage-ai .ai-report-index {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0,1fr)) !important;
+    gap: 1px !important;
+    padding: 10px 12px !important;
+    border-bottom: 1px solid rgba(201,168,108,.12) !important;
+    background: rgba(0,0,0,.16) !important;
+}
+#stage-ai .ai-report-index .ai-chat-prompt-btn {
+    min-height: 44px !important;
+    padding: 10px 8px !important;
+    border: 1px solid rgba(201,168,108,.13) !important;
+    background: rgba(0,0,0,.24) !important;
+    font-size: .62rem !important;
+    letter-spacing: .11em !important;
+}
+#stage-ai .ai-report-index .ai-chat-prompt-btn:hover,
+#stage-ai .ai-report-index .ai-chat-prompt-btn.is-active {
+    background: rgba(201,168,108,.12) !important;
+    color: var(--gold-soft) !important;
+}
+#stage-ai .ai-report-output {
+    min-height: 0 !important;
+    padding: 12px !important;
+    overflow: auto !important;
+    background:
+        linear-gradient(rgba(201,168,108,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,108,.04) 1px, transparent 1px) !important;
+    background-size: 36px 36px !important;
+}
+#stage-ai .ai-report-document {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    border: 1px solid rgba(201,168,108,.15) !important;
+    background: rgba(5,4,3,.88) !important;
+}
+#stage-ai .ai-report-document h3 {
+    font-family: var(--font-display) !important;
+    font-size: clamp(1.45rem, 2.2vw, 2.25rem) !important;
+    line-height: 1 !important;
+}
+#stage-ai .ai-report-footer {
+    border-top: 1px solid rgba(201,168,108,.12) !important;
+    background: rgba(0,0,0,.24) !important;
+}
+
+@media (max-width: 900px) {
+    #stage-ai .ai-analysis-panel.stage-panel-card {
+        display: block !important;
+        padding: 18px 16px 72px !important;
+        overflow: visible !important;
+    }
+    #stage-ai .ai-analysis-title-wrapper,
+    #stage-ai .ai-service-strip,
+    #stage-ai .ai-stage-layout,
+    #stage-ai .ai-report-header,
+    #stage-ai .ai-report-index,
+    #stage-ai .ai-insights {
+        grid-template-columns: minmax(0,1fr) !important;
+    }
+    #stage-ai .ai-stage-layout {
+        display: grid !important;
+        gap: 12px !important;
+    }
+    #stage-ai .ai-analysis-preview,
+    #stage-ai .ai-report-studio {
+        height: auto !important;
+        overflow: visible !important;
+    }
+    #stage-ai .ai-analysis-preview {
+        grid-template-rows: auto 240px auto auto !important;
+    }
+    #stage-ai .ai-run-console {
+        height: 240px !important;
+    }
+    #stage-ai .ai-report-studio {
+        min-height: 760px !important;
+        display: grid !important;
+        grid-template-rows: auto auto minmax(420px, 1fr) auto !important;
+    }
+    #stage-ai .ai-report-head-actions {
+        justify-content: flex-start !important;
+    }
+    #stage-ai .ai-report-index {
+        padding: 8px !important;
+        gap: 6px !important;
+    }
+    #stage-ai .ai-report-index .ai-chat-prompt-btn {
+        min-height: 46px !important;
+    }
+    #stage-ai .ai-grade-display {
+        grid-template-columns: 1fr !important;
+        justify-items: start !important;
+    }
+}
+
+/* AI studio polish: keep global nav from bisecting header; compact mobile grade. */
+@media (min-width: 901px) {
+    #stage-ai .ai-analysis-title-wrapper > .ai-analysis-title,
+    #stage-ai .ai-analysis-title-wrapper > .ai-analysis-title-wrapper {
+        max-width: 520px !important;
+    }
+    #stage-ai .ai-analysis-title {
+        font-size: clamp(1.25rem, 1.65vw, 1.75rem) !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}
+@media (max-width: 900px) {
+    #stage-ai .ai-analysis-title-wrapper {
+        padding-top: 18px !important;
+    }
+    #stage-ai .ai-analysis-actions {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+    #stage-ai .ai-rerun-button,
+    #stage-ai .coming-soon-badge {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    #stage-ai .ai-grade-display {
+        grid-template-columns: auto minmax(0,1fr) auto !important;
+        justify-items: stretch !important;
+        align-items: center !important;
+    }
+    #stage-ai .ai-grade-mark {
+        min-width: 92px !important;
+    }
+    #stage-ai .ai-grade-meter {
+        min-width: 90px !important;
+        width: 100% !important;
+    }
+    #stage-ai .ai-grade-score {
+        justify-self: end !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* BLACKBOX wordmark: square “O” brand glyph */
+.brand-wordmark .brand-square-o {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 0.82em;
+    height: 0.82em;
+    margin: 0 0.015em;
+    color: transparent;
+    vertical-align: -0.055em;
+    border: 0.075em solid currentColor;
+    border-color: var(--gold-soft, currentColor);
+    box-shadow:
+        inset 0 0 0 0.055em rgba(0, 0, 0, 0.72),
+        0 0 0.28em rgba(232, 213, 163, 0.16);
+    animation: brandBoxBeat 4.8s ease-in-out infinite;
+}
+.brand-wordmark .brand-square-o::after {
+    content: "";
+    width: 24%;
+    height: 24%;
+    border: 0.055em solid var(--gold-soft, currentColor);
+    opacity: 0.72;
+}
+.header-banner-title-text.brand-wordmark .brand-square-o {
+    width: 0.78em;
+    height: 0.78em;
+    border-width: 0.055em;
+    vertical-align: -0.035em;
+    box-shadow:
+        inset 0 0 0 0.045em rgba(0, 0, 0, 0.8),
+        0 0 0.34em rgba(232, 213, 163, 0.18);
+}
+.footer-brand.brand-wordmark .brand-square-o,
+.ios-app-mark.brand-wordmark .brand-square-o {
+    border-width: 0.08em;
+    vertical-align: -0.07em;
+}
+.ios-app-mark.brand-wordmark .brand-square-o {
+    width: 0.76em;
+    height: 0.76em;
+    box-shadow: inset 0 0 0 0.05em rgba(0,0,0,.7);
+}
+@keyframes brandBoxBeat {
+    0%, 72%, 100% { transform: scale(1); filter: brightness(1); }
+    78% { transform: scale(0.94); filter: brightness(0.9); }
+    84% { transform: scale(1.045); filter: brightness(1.18); }
+    90% { transform: scale(1); filter: brightness(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .brand-wordmark .brand-square-o { animation: none !important; }
+}
+
+/* AI insight cards: prevent long generated diagnostics from overlapping. */
+#stage-ai .ai-analysis-preview {
+    grid-template-rows: auto minmax(128px, .62fr) minmax(0, 1.38fr) auto !important;
+}
+#stage-ai .ai-insights {
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-content: start !important;
+    gap: 8px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 2px !important;
+}
+#stage-ai .ai-insight-item {
+    display: grid !important;
+    grid-template-columns: 26px minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: 10px !important;
+    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+#stage-ai .ai-insight-icon {
+    width: 22px !important;
+    height: 22px !important;
+    display: grid !important;
+    place-items: center !important;
+    line-height: 1 !important;
+    flex: none !important;
+}
+#stage-ai .ai-insight-content {
+    min-width: 0 !important;
+    overflow: visible !important;
+}
+#stage-ai .ai-insight-title,
+#stage-ai .ai-insight-text {
+    overflow: visible !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+}
+#stage-ai .ai-insight-text {
+    display: block !important;
+    max-height: none !important;
+    line-height: 1.38 !important;
+}
+@media (max-width: 900px) {
+    #stage-ai .ai-analysis-preview {
+        grid-template-rows: auto 240px auto auto !important;
+    }
+    #stage-ai .ai-insights {
+        max-height: none !important;
+        overflow: visible !important;
+    }
+}
+
+/* Viability numbers: keep K/% suffixes inside the bento, never masked. */
+#stage-viability .vd-tile,
+#stage-viability .core-metric,
+#stage-viability .mini-metric {
+    overflow: visible !important;
+    padding-right: max(14px, 1.15vw) !important;
+}
+#stage-viability .vd-tile-value,
+#stage-viability .core-metric-value,
+#stage-viability .mini-metric-value,
+#stage-viability .viability-mega-value {
+    display: block !important;
+    width: calc(100% - 2px) !important;
+    max-width: calc(100% - 2px) !important;
+    overflow: visible !important;
+    clip-path: none !important;
+    contain: none !important;
+    line-height: 1.12 !important;
+    padding: 0 .12em .04em 0 !important;
+    box-sizing: border-box !important;
+    text-rendering: geometricPrecision;
+}
+#stage-viability .vd-tile--hero .vd-tile-value,
+#stage-viability .vd-tile--hero .viability-mega-value {
+    letter-spacing: -0.055em !important;
+}
+#stage-viability .vd-tile--kpi .vd-tile-value,
+#stage-viability .vd-tile--kpi .core-metric-value,
+#stage-viability .vd-tile--kpi .mini-metric-value {
+    letter-spacing: -0.045em !important;
+}
+@media (max-width: 900px) {
+    #stage-viability .vd-tile,
+    #stage-viability .core-metric,
+    #stage-viability .mini-metric {
+        overflow: visible !important;
+        padding-right: 14px !important;
+    }
+    #stage-viability .vd-tile-value,
+    #stage-viability .core-metric-value,
+    #stage-viability .mini-metric-value,
+    #stage-viability .viability-mega-value {
+        line-height: 1.14 !important;
+        padding-right: .18em !important;
+        letter-spacing: -0.04em !important;
+    }
+    #stage-viability .vd-tile--hero .vd-tile-value,
+    #stage-viability .vd-tile--hero .viability-mega-value {
+        font-size: clamp(2.45rem, 14.5vw, 4.25rem) !important;
+    }
+}
+
+/* Brand wordmark reset: plain block text, no custom boxed O glyph. */
+.brand-wordmark,
+.header-banner-title-text.brand-wordmark,
+.footer-brand.brand-wordmark,
+.ios-app-mark.brand-wordmark {
+    font-family: var(--font-ui), "Syne", system-ui, sans-serif !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.105em !important;
+    font-feature-settings: "kern" 1, "liga" 0 !important;
+}
+.header-banner-title-text.brand-wordmark {
+    font-size: clamp(2.55rem, 8vw, 6rem) !important;
+    line-height: 0.9 !important;
+}
+.footer-brand.brand-wordmark {
+    letter-spacing: 0.09em !important;
+}
+.ios-app-mark.brand-wordmark {
+    letter-spacing: 0.08em !important;
+}
+.brand-wordmark .brand-square-o {
+    display: inline !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    color: inherit !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    animation: none !important;
+    vertical-align: baseline !important;
+}
+.brand-wordmark .brand-square-o::after { content: none !important; }
