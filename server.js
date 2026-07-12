@@ -120,7 +120,11 @@ function localAIAnalysis(financialData) {
     const housePayment = financialData.houseEnabled
         ? (parseFloat(financialData.housePayment) || 0) + (parseFloat(financialData.houseBills) || 0)
         : 0;
-    const totalOut = totalSpending + carPayment + housePayment;
+    const collegePayment = financialData.collegeEnabled ? (parseFloat(financialData.collegePayment) || 0) : 0;
+    const medicalPayment = financialData.medicalEnabled ? (parseFloat(financialData.medicalPayment) || 0) : 0;
+    const propertyTaxPayment = financialData.propertyTaxEnabled ? (parseFloat(financialData.propertyTaxPayment) || 0) : 0;
+    const debtPayment = financialData.debtEnabled ? (parseFloat(financialData.debtPayment) || 0) : 0;
+    const totalOut = totalSpending + carPayment + housePayment + collegePayment + medicalPayment + propertyTaxPayment + debtPayment;
     const baseSavings = income - totalOut;
     const spendingRatio = income > 0 ? totalOut / income : 1;
     const savingsRatio = income > 0 ? baseSavings / income : 0;
@@ -167,12 +171,12 @@ function localAIAnalysis(financialData) {
                     : `Spending is ${(spendingRatio * 100).toFixed(1)}% of income. Cutting 10–15% from lifestyle categories would free meaningful cash flow.`,
         },
         {
-            icon: carPayment + housePayment > income * 0.36 ? '⚠' : '✓',
+            icon: (totalOut - totalSpending) > income * 0.36 ? '⚠' : '✓',
             title: 'Major Purchases',
             text:
-                carPayment + housePayment > income * 0.36
-                    ? 'Car and housing costs consume a large share of income. Consider delaying a purchase or reducing loan amounts.'
-                    : 'Major purchase payments look manageable relative to income and leave room for emergency savings.',
+                (totalOut - totalSpending) > income * 0.36
+                    ? 'Loans, taxes, and debt payments consume a large share of income. Consider delaying a purchase, paying down debt faster, or reducing loan amounts.'
+                    : 'Major purchase and debt payments look manageable relative to income and leave room for emergency savings.',
         },
         {
             icon: '→',
