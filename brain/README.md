@@ -15,7 +15,7 @@ While this is designed to open directly in Obsidian, you can also spin up the bu
 
 1.  **Launch the server:**
     ```bash
-    node brain-server.js
+    node brain/server.js
     ```
 2.  **Open in your browser:**  
     👉 **[http://localhost:4444](http://localhost:4444)**

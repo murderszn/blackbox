@@ -12,6 +12,6 @@ Fixed **left** node spine (`.stage-rail.journey-spine`).
 - Hover/active tooltip opens **to the right** (`left: calc(100% + …)`)
 - Mobile: smaller dots, tooltips hidden
 
-Implementation: `experience.js` builds dots; styles in `atelier.css`.
+Implementation: `js/experience.js` builds dots; styles in `styles/atelier.css`.
 
 See [[Journey Film]] · [[ADR - Left Journey Rail]]

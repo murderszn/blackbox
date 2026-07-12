@@ -22,6 +22,6 @@ A plan is only as good as its resilience to shock. If your cash flow margin is t
 
 *   **Affordability Banner:** A high-impact panel changing states (`healthy` to `unaffordable`) depending on cash flow sustainability.
 *   **KPI Board:** Visual cards presenting the 5-year savings balance, the net savings rate, and the overall Health Score.
-*   **Dynamic Grade Indicator:** Real-time feedback loops displaying the grading assessment computed by `script.js`.
+*   **Dynamic Grade Indicator:** Real-time feedback loops displaying the grading assessment computed by `js/script.js`.
 
 Skill: [[Health Score]] · [[Projection Engine]] · [[Financial Brain Framework]]

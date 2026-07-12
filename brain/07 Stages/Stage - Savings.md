@@ -21,7 +21,7 @@ Your savings curve is the mathematical reflection of your cash flow margin. If y
 ## 🛠️ Code Implementation
 
 *   **Chart.js Line Chart:** Renders the 300-month series showing the growth projection.
-*   **Scrub HUD:** Interactive scrubbing mechanism in `experience.js` that allows users to hover across the timeline to view precise balance readouts at specific months.
+*   **Scrub HUD:** Interactive scrubbing mechanism in `js/experience.js` that allows users to hover across the timeline to view precise balance readouts at specific months.
 *   **Compact Tooltips:** Integrates [[Compact Currency]] formatting on axes and tooltips.
 
 Skill: [[Tool - Chart.js]] · [[Projection Engine]] · [[Financial Brain Framework]]

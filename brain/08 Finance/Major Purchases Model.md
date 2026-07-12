@@ -36,7 +36,7 @@ Where:
 
 ## 🛠️ Code Implementation
 
-Calculated in `script.js` during the projection cycle:
+Calculated in `js/script.js` during the projection cycle:
 *   **Auto Options:** The loan starts in the user-selected `purchaseYear` and is added to the monthly outflow array for exactly `Term` months, after which it drops off, freeing up cash flow.
 *   **Housing Bills:** Monthly housing costs are computed as $M + \text{bills}$, where bills represent utilities, property tax estimates, and maintenance reserves.
 *   **Display:** Output fields are reformatted dynamically using [[Compact Currency]].

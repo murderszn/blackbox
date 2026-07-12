@@ -78,7 +78,7 @@ $$\text{Outflow Ratio} = \frac{\text{Total Monthly Outflow (Housing + Transport 
 
 ## 5. Implementation Heuristics for the Codebase
 
-These rules drive the grading algorithms in `script.js`:
+These rules drive the grading algorithms in `js/script.js`:
 *   **Earner Tier:** Determined via `getEarnerTier(income)`.
 *   **Spender Tier:** Determined via `getSpenderTier(outflow, income)`.
 *   **Debt Penalty:** Deduct **10 points** from the [[Health Score]] for every active non-mortgage debt payment (car, college, medical) that exceeds **10%** of gross income.

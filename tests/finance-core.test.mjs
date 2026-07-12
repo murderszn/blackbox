@@ -28,8 +28,8 @@ async function main() {
 
   // Structural assets on disk
   for (const rel of [
-    'atelier.css',
-    'experience.js',
+    'styles/atelier.css',
+    'js/experience.js',
     'assets/atmosphere/hero-monolith.jpg',
     'assets/atmosphere/vault-glow.jpg',
     'assets/icons/income.svg',
@@ -46,8 +46,8 @@ async function main() {
   await page.waitForTimeout(1200);
 
   // Shell present
-  assert.ok(await page.locator('link[href="/atelier.css"]').count());
-  assert.ok(await page.locator('script[src="/experience.js"]').count());
+  assert.ok(await page.locator('link[href="/styles/atelier.css"]').count());
+  assert.ok(await page.locator('script[src="/js/experience.js"]').count());
   assert.ok(await page.locator('.hero-atmosphere').count());
   assert.ok(await page.locator('.header-banner-title-text').textContent() === 'BLACKBOX');
 

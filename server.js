@@ -379,7 +379,7 @@ function safeJoin(root, requestPath) {
 function serveStatic(req, res) {
     let urlPath = req.url.split('?')[0];
     if (urlPath === '/' || urlPath === '') urlPath = '/index.html';
-    if (urlPath === '/favicon.ico') urlPath = '/blackbox.png';
+    if (urlPath === '/favicon.ico') urlPath = '/assets/brand/blackbox.png';
 
     const filePath = safeJoin(ROOT, urlPath);
     if (!filePath) {

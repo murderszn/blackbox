@@ -11,12 +11,12 @@
     },
     {
       "source": "/favicon.ico",
-      "destination": "/blackbox.png"
+      "destination": "/assets/brand/blackbox.png"
     }
   ],
   "headers": [
     {
-      "source": "/style.css",
+      "source": "/styles/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -25,7 +25,7 @@
       ]
     },
     {
-      "source": "/script.js",
+      "source": "/js/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

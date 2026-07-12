@@ -19,7 +19,7 @@ BLACKBOX scrolls as a **process film**: linked nodes on a gold spine, act titles
 ## Progress model
 
 - Stages expose `data-stage`, `data-act`, `data-act-title`
-- `experience.js` drives `window.__bbJourney` + `bb:journey` events
+- `js/experience.js` drives `window.__bbJourney` + `bb:journey` events
 - `html.stages-armed` enables **proximity** snap after leaving hero
 - Keyboard: `j` / `k` / arrows / PageUp-Down jump stages when not in inputs
 

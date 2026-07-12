@@ -1,182 +1,126 @@
 # BLACKBOX — Lifestyle Affordability Calculator
 
-A sophisticated financial planning tool that helps you visualize and understand how your lifestyle choices impact your savings over a 5-year period.
+BLACKBOX is an editorial financial-planning experience for testing whether a lifestyle, major purchase, or long-term plan can survive real cash-flow pressure.
 
-![BLACKBOX](blackbox.png)
+![BLACKBOX](assets/brand/blackbox.png)
 
-## Overview
+## What it does
 
-**BLACKBOX** is an interactive financial calculator that provides comprehensive analysis of your income, spending, and savings projections. With a modern, monochromatic design and real-time visualizations, it helps you make informed decisions about major purchases like cars and houses, and understand their long-term financial impact.
+- Models income, recurring expenses, and custom budget categories
+- Plans major purchases: car, home, college, medical, and other floor blockers
+- Projects cash flow, savings, spending, and ledger outcomes across long horizons
+- Visualizes the model with Chart.js, D3 treemaps, and a cinematic stage journey
+- Provides AI-assisted finance summaries through a server-side Pollinations proxy
+- Ships as a static-first Vercel site with local Node API parity
 
-## Features
+## Design system
 
-### 📊 **Interactive Budget Management**
-- Adjust monthly income with a vertical fader control
-- Manage multiple spending categories with individual sliders
-- Add custom budget items as needed
-- Real-time calculation updates
+BLACKBOX uses the **Obsidian Atelier** visual system:
 
-### 💰 **Major Purchase Planning**
-- **Dream Car Calculator**: Plan car purchases with loan details, purchase timing, and monthly payments
-- **Dream House Calculator**: Analyze home purchases with mortgage calculations, down payments, and additional costs
-- Visualize how major purchases affect your savings trajectory
+- Deep black vault UI with champagne-gold data accents
+- Editorial display typography + compact mono financial values
+- Full-screen staged sections: Planning, Purchases, Viability, Budget, Savings, Spending, Treemap, Ledger, AI, App, Outro
+- Three.js/WebGL ambience for the hero and journey field
+- Frameless controls, dense dashboards, and mobile-first fallback layouts
 
-### 📈 **Visual Analytics**
-- **Savings Projection Chart**: Line graph showing cumulative savings over 5 years
-- **Cumulative Spending by Category**: Bar chart displaying yearly spending totals
-- **Treemap Visualization**: Interactive view of total spending by category
-- **Yearly Financial Summary Table**: Comprehensive year-by-year breakdown
+## Live deployment
 
-### 🤖 **AI Analysis** (Pollinations / Pollen)
-- Live analysis via [Pollinations.ai](https://pollinations.ai) using **your** API key (BYOP)
-- Paste a `pk_…` or `sk_…` key from [enter.pollinations.ai](https://enter.pollinations.ai)
-- Personalized grade, score, and actionable insights
-- Falls back to a local heuristic if no key is set
+Production is auto-deployed by Vercel from `main`.
 
-### 🎨 **Design — Obsidian Atelier**
-- Private-vault aesthetic: deep black, champagne gold, film grain
-- Editorial display type (Cormorant Garamond) + Syne UI + JetBrains Mono data
-- Real atmosphere photography + champagne SVG financial iconography
-- Advanced motion: chart scrub HUD, magnetic CTAs, scroll reveals, affordability state morph
-- Three.js onyx glass hero cube
+- Repository: <https://github.com/murderszn/blackbox>
+- Live app: Vercel production deployment
 
-## Knowledge brain (Obsidian)
+## Local development
 
-Product second brain lives in [`brain/`](./brain/) — tools, skills, links, stages, finance, and ADRs as interlinked markdown.
+Requires Node.js 18+.
 
-```bash
-# Open folder as vault in Obsidian:
-#   blackbox/brain
-# Start at: 00 Maps/Home.md
-```
-
-See [brain/README.md](./brain/README.md).
-
-## Awwwards / craft plan
-
-Site review + phased upgrade plan (smoothness, ledger fit, analytics clarity):
-
-- [docs/AWWWARDS_REVIEW_PLAN.md](./docs/AWWWARDS_REVIEW_PLAN.md)
-- [docs/VECTRFL_MIGRATION_PLAN.md](./docs/VECTRFL_MIGRATION_PLAN.md)
-
-## Getting Started
-
-### Live Demo
-
-Visit the live application: [Deployed on Vercel](https://test-15m8lw1yp-murderszns-projects.vercel.app)
-
-### Local Development
-
-1. Clone the repository:
 ```bash
 git clone https://github.com/murderszn/blackbox.git
 cd blackbox
-```
-
-2. Start the local server (serves the app + API routes):
-```bash
+npm install
 npm start
 ```
 
-3. Open [http://localhost:8080](http://localhost:8080)
+Open <http://localhost:8080>.
 
-Requires Node.js 18+. Static files work without a server, but email signup and **Pollinations AI** need `npm start` (or `vercel dev`) so `/api/*` proxies respond.
-
-For shared AI access, configure `POLLINATIONS_API_KEY` in the server or Vercel environment. The key remains server-side and is never delivered to visitors.
+Useful scripts:
 
 ```bash
-# Smoke test (server must already be running on :8080)
+npm start       # local app + API server
+npm run dev     # dev wrapper
+npm run dev:raw # direct server.js launch
+npm test        # Playwright smoke test; server must already be running
+```
+
+## Environment variables
+
+Optional server-side configuration:
+
+```bash
+POLLINATIONS_API_KEY=...   # shared AI key, never sent to visitors
+SUPABASE_URL=...           # optional signup backend
+SUPABASE_ANON_KEY=...      # optional signup backend
+```
+
+If no Pollinations key is configured, the app falls back to local heuristic analysis.
+
+## Project structure
+
+```text
+blackbox/
+├── index.html              # Main document and stage markup
+├── server.js               # Local static/API server
+├── api/                    # Vercel-compatible API routes
+├── assets/
+│   ├── atmosphere/         # Editorial photography / scene images
+│   ├── brand/              # Logo, store badges, social preview art
+│   └── icons/              # Finance category icons
+├── styles/
+│   ├── style.css           # Base layout and legacy calculator styles
+│   └── atelier.css         # Obsidian Atelier system and stage polish
+├── js/
+│   ├── script.js           # Finance engine, charts, state, AI UI
+│   ├── experience.js       # Stage rail, reveals, scrub HUD, motion layer
+│   ├── hero-tesseract.js   # Hero Three.js object
+│   ├── journey-webgl.js    # Background journey field
+│   └── bento-fit.js        # App-stage bento text fitting
+├── tests/                  # Playwright smoke/visual helpers
+├── scripts/                # Developer scripts
+├── docs/                   # Craft plans and migration notes
+└── brain/                  # Obsidian product/architecture knowledge vault
+```
+
+## Knowledge brain
+
+The product second brain lives in [`brain/`](./brain/). Open `blackbox/brain` as an Obsidian vault and start at `00 Maps/Home.md`.
+
+A local brain utility is available at:
+
+```bash
+node brain/server.js
+```
+
+## Quality check
+
+Run the smoke test after starting the server:
+
+```bash
+npm start
+# in another terminal
 npm test
 ```
 
-### Pollinations API key (Pollen)
+The test verifies that the app boots, core assets load, finance calculations respond to input, loan math behaves, and the atelier shell is present.
 
-1. Create a key at [enter.pollinations.ai](https://enter.pollinations.ai)
-2. Open BLACKBOX → **AI Financial Viability Analysis**
-3. Paste the key → **Save Key** (stored only in your browser’s `localStorage`)
-4. Click **Rerun Analysis** — requests go through `/api/pollinations-text` with your Bearer token so usage spends **your** Pollen, same idea as `/motion`
+## Deployment notes
 
-## How to Use
+- Vercel deploys from `main` automatically.
+- Static assets are grouped under `assets/`, `styles/`, and `js/`.
+- Root-level QA screenshots and Playwright MCP logs are ignored by git.
+- Secrets and local Vercel metadata are ignored.
 
-### Setting Your Income
-1. Find the **Income** slider in the Income & Monthly Spending panel
-2. Drag the vertical fader or click the amount to edit directly
-3. Maximum income is $50,000/month
+## Credits
 
-### Managing Budget Items
-1. Adjust spending categories using the vertical faders
-2. Maximum per category is $5,000/month
-3. Click the amount display to edit values directly
-4. Click "Add Budget Item" to create custom categories
-5. Click the × button to remove unwanted items
-
-### Planning Major Purchases
-
-#### Dream Car
-1. Toggle "Include" checkbox to enable car purchase
-2. Set purchase price, interest rate, loan term, and purchase month
-3. Adjust down payment and additional monthly payments
-4. See real-time impact on your savings
-
-#### Dream House
-1. Toggle "Include" checkbox to enable house purchase
-2. Set house price, interest rate, and loan term
-3. Configure down payment and monthly bills (taxes, insurance)
-4. Choose purchase month to see timing impact
-
-### Understanding the Results
-
-- **Affordability Banner**: Shows if you can afford your lifestyle over 5 years
-- **Summary Cards**: Quick overview of monthly savings, total savings, and major payments
-- **Charts**: Visual representations help identify spending patterns and trends
-- **Yearly Table**: Detailed breakdown of income, spending, and savings by year
-
-## Technology Stack
-
-- **HTML5**: Semantic markup
-- **CSS3**: Custom styling with CSS Grid and Flexbox
-- **JavaScript**: Vanilla JS for interactivity
-- **Chart.js**: Data visualization for savings and spending charts
-- **D3.js**: Treemap visualization
-- **Vercel**: Hosting and deployment
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## Project Structure
-
-```
-blackbox/
-├── index.html          # Main application file
-├── blackbox.png        # Hero banner image
-├── README.md           # This file
-└── .vercel/            # Vercel deployment configuration
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Acknowledgments
-
-- Designed and developed by [aurawlbx](https://github.com/murderszn)
-- Built with modern web technologies for optimal performance
-- Inspired by minimalist, grid-based design principles
-
-## Contact
-
-For questions or feedback, please open an issue on GitHub.
-
----
-
-**Made with <3 by aurablox**
+Designed and developed by [aurawlbx / murderszn](https://github.com/murderszn).
 
 Est. 2025

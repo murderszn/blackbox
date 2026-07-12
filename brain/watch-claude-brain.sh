@@ -1,6 +1,6 @@
 #!/bin/bash
 # Watch Claude Code transcripts for brain/ file references and notify the 3D Brainmap.
-# Auto-started and supervised by brain-server.js — no need to run it manually.
+# Auto-started and supervised by brain/server.js — no need to run it manually.
 # Manual usage (if the server isn't running): ./brain/watch-claude-brain.sh
 
 PROJECT_SLUG="-Users-jahflyx-blackbox"

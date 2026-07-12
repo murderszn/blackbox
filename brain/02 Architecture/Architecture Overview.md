@@ -9,9 +9,9 @@ updated: 2026-07-11
 flowchart TB
   subgraph client [Browser]
     HTML[index.html stages]
-    CSS[style.css + atelier.css]
-    JS[script.js calc + charts]
-    EXP[experience.js journey]
+    CSS[styles/style.css + styles/atelier.css]
+    JS[js/script.js calc + charts]
+    EXP[js/experience.js journey]
     BENTO[bento-fit.js]
     THREE[hero-tesseract / journey-webgl]
   end

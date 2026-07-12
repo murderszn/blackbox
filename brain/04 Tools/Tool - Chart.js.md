@@ -12,6 +12,6 @@ Powers:
 - Budget donut ([[Stage - Budget]])
 
 Axis ticks + tooltips use [[Compact Currency]].  
-Scrub HUD in `experience.js` should stay month-aligned with tooltip callbacks.
+Scrub HUD in `js/experience.js` should stay month-aligned with tooltip callbacks.
 
 Skills: [[Skill - Dense Dashboard Layout]] · [[Skill - Compact Money Displays]]

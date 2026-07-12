@@ -106,7 +106,7 @@ BLACKBOX already has *frames* (full-viewport stages, rail, film HUD). It lacks *
 
 | ID | Finding |
 |----|---------|
-| **P3.1** | Collapse duplicate CSS blocks in `atelier.css` (viability/ledger written 4+ times) |
+| **P3.1** | Collapse duplicate CSS blocks in `styles/atelier.css` (viability/ledger written 4+ times) |
 | **P3.2** | Single scroll contract module — kill competing snap rules |
 | **P3.3** | Finance unit tests for 25y marks + compact format |
 | **P3.4** | Visual regression set (`qa-review-*.png`) as CI smoke |
@@ -132,7 +132,7 @@ BLACKBOX already has *frames* (full-viewport stages, rail, film HUD). It lacks *
 
 **Goal:** Scrolling feels continuous and expensive.
 
-> **2026-07-11 progress:** S1 shipped as a custom engine (no Lenis dep): inertial wheel lerp + idle JS proximity snap (CSS mandatory snap disabled under `html.bb-smooth`), plus a 3D storyboard camera (perspective corridor — depth/tilt/scale/fade per stage) driven by a continuous rAF loop in `experience.js`. Reduced-motion and <900px viewports keep native scroll and the static look. S2 (cinematic rail/nav jumps) still pending — jumps remain instant.
+> **2026-07-11 progress:** S1 shipped as a custom engine (no Lenis dep): inertial wheel lerp + idle JS proximity snap (CSS mandatory snap disabled under `html.bb-smooth`), plus a 3D storyboard camera (perspective corridor — depth/tilt/scale/fade per stage) driven by a continuous rAF loop in `js/experience.js`. Reduced-motion and <900px viewports keep native scroll and the static look. S2 (cinematic rail/nav jumps) still pending — jumps remain instant.
 
 | Task | Implementation sketch |
 |------|------------------------|

@@ -35,7 +35,7 @@ Consumer debt shrinks your cash flow net. Points are deducted based on debt-to-i
 
 ## 🛠️ Code Implementation
 
-Calculated in `script.js` inside the model updater:
+Calculated in `js/script.js` inside the model updater:
 *   **Grade Thresholds:**
     *   **A (90–100):** Peak cash flow efficiency. High savings margin, zero non-mortgage debt.
     *   **B (75–89):** Balanced. Stable, but could optimize discretionary leaks or pay down debts.

@@ -5,7 +5,7 @@ updated: 2026-07-11
 
 # Projection Engine
 
-Core: `calculate()` in `script.js`.
+Core: `calculate()` in `js/script.js`.
 
 ## Horizon
 

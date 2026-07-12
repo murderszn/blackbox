@@ -8,13 +8,13 @@ updated: 2026-07-11
 | Path | Role |
 |------|------|
 | `index.html` | Stages, structure, waitlist, footer |
-| `style.css` | Base layout + legacy systems |
-| `atelier.css` | Obsidian Atelier overrides (film, frameless, bento) |
-| `script.js` | Budget, loans, charts, ledger, AI chat, money format |
-| `experience.js` | Stages, rail, film HUD, scrub, magnetic, reveals |
-| `bento-fit.js` | Container-query type fit for App |
-| `hero-tesseract.js` | Hero Three cube |
-| `journey-webgl.js` | Optional journey graph (disabled path) |
+| `styles/style.css` | Base layout + legacy systems |
+| `styles/atelier.css` | Obsidian Atelier overrides (film, frameless, bento) |
+| `js/script.js` | Budget, loans, charts, ledger, AI chat, money format |
+| `js/experience.js` | Stages, rail, film HUD, scrub, magnetic, reveals |
+| `js/bento-fit.js` | Container-query type fit for App |
+| `js/hero-tesseract.js` | Hero Three cube |
+| `js/journey-webgl.js` | Optional journey graph (disabled path) |
 | `server.js` | Static + `/api/*` |
 | `api/pollinations-text.js` | SSE proxy for canned chat |
 | `api/ai-analysis.js` | Grade / insights |

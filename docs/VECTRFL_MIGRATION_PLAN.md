@@ -58,7 +58,7 @@
 - [x] B1. `data-act` / `data-act-title` on each stage in HTML
 - [x] B2. Film HUD shows act index + stage meta
 - [x] B3. Spine: act-aware passed/active styling
-- [x] B4. `chapterMeta` + act titles in `experience.js`
+- [x] B4. `chapterMeta` + act titles in `js/experience.js`
 - [x] B5. Playwright: act labels advance correctly across jumps
 
 ### Phase C — Persistent WebGL journey layer
@@ -90,9 +90,9 @@
 | Area | Primary files |
 |------|----------------|
 | Plan / status | `docs/VECTRFL_MIGRATION_PLAN.md`, `docs/vectrfl-migration-plan.html` |
-| Scroll / film | `experience.js`, `atelier.css`, `index.html` |
-| 3D | `hero-tesseract.js` → + `journey-webgl.js`, `index.html` |
-| Grids | `index.html`, `script.js`, `atelier.css` |
+| Scroll / film | `js/experience.js`, `styles/atelier.css`, `index.html` |
+| 3D | `js/hero-tesseract.js` → + `js/journey-webgl.js`, `index.html` |
+| Grids | `index.html`, `js/script.js`, `styles/atelier.css` |
 
 ## Definition of done (global)
 
@@ -111,4 +111,4 @@
 
 | 2026-07-11 | A–E | Scroll contract (proximity), fractional progress, hero invite, 4-act film, journey-webgl.js node graph, bb-cell metric scales, Playwright smoke |
 | 2026-07-11 | 3D engine | Lerped rAF storyboard camera (perspective corridor: z-depth/tilt/scale/fade per stage incl. #summaryCards) + custom inertial wheel scroll with JS proximity snap replacing CSS mandatory snap on desktop; reduced-motion & <900px keep native scroll/crossfade. Files: experience.js (initStageJumps engine block), atelier.css (bb-camera / bb-smooth rules) |
-| 2026-07-11 | Persistent field | Restored `journey-webgl.js` as a scroll-directed champagne node path with semantic stage focus, pointer parallax, sparse depth atmosphere, tab pause, reduced-motion opt-out, and capped pixel ratio. |
+| 2026-07-11 | Persistent field | Restored `js/journey-webgl.js` as a scroll-directed champagne node path with semantic stage focus, pointer parallax, sparse depth atmosphere, tab pause, reduced-motion opt-out, and capped pixel ratio. |
