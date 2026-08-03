@@ -36,7 +36,7 @@ function sendJson(res, status, body) {
     const payload = JSON.stringify(body);
     res.writeHead(status, {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || 'http://localhost:8080',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-goog-api-key, X-Api-Key',
         'Cache-Control': 'no-store',
@@ -300,7 +300,7 @@ async function handlePollinationsText(req, res) {
                 'Content-Type': 'text/event-stream; charset=utf-8',
                 'Cache-Control': 'no-cache, no-transform',
                 Connection: 'keep-alive',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || 'http://localhost:8080',
             });
             const reader = upstream.body.getReader();
             try {
@@ -338,7 +338,7 @@ async function handlePollinationsText(req, res) {
                 'Content-Type': 'text/event-stream; charset=utf-8',
                 'Cache-Control': 'no-cache, no-transform',
                 Connection: 'keep-alive',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || 'http://localhost:8080',
             });
             const full = typeof content === 'string' ? content : JSON.stringify(content);
             // Word-ish chunks for progressive UI
